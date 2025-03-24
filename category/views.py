@@ -79,7 +79,7 @@ class CategoryViewSet(generics.GenericAPIView):
                 for item in items:
                     item_data = {
                         "id" : item.pk,
-                        'image': "item.image",  # Assuming 'image_url' is the field for the image
+                        'image': item.image,  # Assuming 'image_url' is the field for the image
                         'name': item.name,  # Assuming 'name' is the field for item name
                         'count': "",  # Assuming 'count' is the field for item count
                     }
