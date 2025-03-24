@@ -75,12 +75,10 @@ class CategoryViewSet(generics.GenericAPIView):
 
                 # Get items related to the sub-category
                 items = SubItem.objects.filter(item=sub_category)
-                base_url = request.build_absolute_uri("/").rstrip("/")
-                print(base_url,'base_url')
                 for item in items:
                     item_data = {
                         "id" : item.pk,
-                        'image': base_url + item.image.url if item.image else None,  # Assuming 'image_url' is the field for the image
+                        'image': item.image.url if item.image else None,  # Assuming 'image_url' is the field for the image
                         'name': item.name,  # Assuming 'name' is the field for item name
                         'count': "",  # Assuming 'count' is the field for item count
                     }
