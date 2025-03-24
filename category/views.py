@@ -50,7 +50,7 @@ class CategoryViewSet(generics.GenericAPIView):
     # Handle GET request for fetching the list of Categories
     def get(self, request):
         # Fetch categories
-        categories = Category.objects.all().filter(is_deleted = True)
+        categories = Category.objects.all().filter(is_deleted = False)
 
         # Prepare the response structure
         response_data = []
