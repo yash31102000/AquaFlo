@@ -75,11 +75,12 @@ class CategoryViewSet(generics.GenericAPIView):
 
                 # Get items related to the sub-category
                 items = SubItem.objects.filter(item=sub_category)
-
+                base_url = request.build_absolute_uri("/").rstrip("/")
+                print(base_url,'base_url')
                 for item in items:
                     item_data = {
                         "id" : item.pk,
-                        'image': item.image,  # Assuming 'image_url' is the field for the image
+                        'image': base_url + item.image.url if item.image else None,  # Assuming 'image_url' is the field for the image
                         'name': item.name,  # Assuming 'name' is the field for item name
                         'count': "",  # Assuming 'count' is the field for item count
                     }
@@ -167,7 +168,7 @@ class ItemViewSet(generics.GenericAPIView):
     
     # Handle GET request for fetching the list of Items
     def get(self, request):
-        queryset = Item.objects.all()
+        queryset = Item.objects.all().filter(is_deleted=False)
         serializer = ItemSerializer(queryset, many=True)
         return Response(
             {
@@ -243,7 +244,7 @@ class SubItemViewSet(generics.GenericAPIView):
     
     # Handle GET request for fetching the list of Items
     def get(self, request):
-        queryset = SubItem.objects.all()
+        queryset = SubItem.objects.all().filter(is_deleted=False)
         serializer = SubItemSerializer(queryset, many=True)
         return Response(
             {
