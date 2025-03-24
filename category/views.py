@@ -1,12 +1,14 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAuthenticated
+from AquaFlo.Utils.permissions import IsAdminOrReadOnly
 from .models import Category
 from .serializers import *
 
 
 class CategoryViewSet(generics.GenericAPIView):
     serializer_class = CategorySerializer
+    permission_classes = [IsAuthenticated, IsAdminOrReadOnly]
 
     # Handle POST request for creating a new Category
     def post(self, request):
@@ -129,7 +131,7 @@ class CategoryViewSet(generics.GenericAPIView):
 
 class ItemViewSet(generics.GenericAPIView):
     serializer_class = ItemSerializer
-    # permission_classes = [IsAdminUser]  # Use IsAdminUser for admins only, adjust as needed
+    permission_classes = [IsAuthenticated, IsAdminOrReadOnly]
 
     def post(self, request, *args, **kwargs):
         # Check if the item with the same name already exists
@@ -206,7 +208,7 @@ class ItemViewSet(generics.GenericAPIView):
 
 class SubItemViewSet(generics.GenericAPIView):
     serializer_class = SubItemSerializer
-    # permission_classes = [IsAdminUser]  # Use IsAdminUser for admins only, adjust as needed
+    permission_classes = [IsAuthenticated, IsAdminOrReadOnly]
 
     def post(self, request, *args, **kwargs):
         # Check if the item with the same name already exists
