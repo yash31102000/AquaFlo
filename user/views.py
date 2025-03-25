@@ -5,11 +5,6 @@ from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework import status
 
-
-
-
-
-
 # Create your views here.
 class RegisterAPI(generics.GenericAPIView):
     """
@@ -60,6 +55,7 @@ class LoginAPI(generics.GenericAPIView):
                 "last_name": user.last_name,
                 "email": user.email,
                 "tokens": user.tokens,
+                "addresses" : user.addresses
             }
             return Response(
                 {
