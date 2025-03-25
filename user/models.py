@@ -40,7 +40,6 @@ class UserModel(AbstractUser):
     last_name = models.CharField(max_length=255, blank=True, null=True)
     password = models.CharField(max_length=255)
     email = models.EmailField(max_length=255, unique=True, null=True)
-    gst_number = models.CharField(max_length=15, unique=True,null=True)
     addresses = models.JSONField(default=list, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)  # Required for admin login
