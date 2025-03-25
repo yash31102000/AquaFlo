@@ -1,5 +1,6 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
+
 class IsAdminOrReadOnly(BasePermission):
     """
     Custom permission that allows only admins to perform write/delete actions,
@@ -12,4 +13,6 @@ class IsAdminOrReadOnly(BasePermission):
             return True
 
         # Allow POST, DELETE only for admin users
-        return request.user and request.user.is_staff  # Adjust based on your admin check
+        return (
+            request.user and request.user.is_staff
+        )  # Adjust based on your admin check
