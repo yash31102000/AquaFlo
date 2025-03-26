@@ -1,21 +1,22 @@
+from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
+from AquaFlo.Utils.permissions import IsAdminOrReadOnly
 from .serializers import *
-from rest_framework import status, generics
-from rest_framework.permissions import IsAdminUser
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
-from rest_framework.response import Response
-from rest_framework import status
 from django.core.mail import send_mail
 from django.conf import settings
 
 
+
 # Create your views here.
-class RegisterAPI(generics.GenericAPIView):
+class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
     """
     User Register
     """
 
     serializer_class = RegisterSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminOrReadOnly]
 
     def post(self, request):
         serializer = RegisterSerializer(
@@ -36,18 +37,10 @@ class RegisterAPI(generics.GenericAPIView):
 
             # Sending the email
             send_mail(subject, message, from_email, [self.request.data.get("email")])
-
-            return Response(
-                {
-                    "status": True,
-                    "message": "Registered successfully",
-                    "data": serializer.data,
-                },
-                status=status.HTTP_200_OK,
-            )
+            return self.success_response("Registered successfully", serializer.data)
 
 
-class LoginAPI(generics.GenericAPIView):
+class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
     """
     User Register
     """
@@ -61,12 +54,8 @@ class LoginAPI(generics.GenericAPIView):
         if UserModel.objects.filter(
             phone_number=phone_number, is_deleted=True
         ).exists():
-            return Response(
-                {
-                    "status": False,
-                    "message": "This user account has been deleted and is no longer active.",
-                },
-                status=status.HTTP_200_OK,  # 404 as the account doesn't exist in an active state
+            return self.error_response(
+                "This user account has been deleted and is no longer active."
             )
         user = authenticate(request, phone_number=phone_number, password=password)
         if user:
@@ -79,20 +68,26 @@ class LoginAPI(generics.GenericAPIView):
                 "tokens": user.tokens,
                 "addresses": user.addresses,
             }
-            return Response(
-                {
-                    "status": True,
-                    "message": "Login successfully",
-                    "data": response_data,
-                },
-                status=status.HTTP_200_OK,
-            )
+            return self.success_response("Login successfully", response_data)
         else:
-            return Response(
-                {
-                    "status": False,
-                    "message": "Somthig wont's wrong",
-                    "data": {},
-                },
-                status=status.HTTP_200_OK,
-            )
+            return self.error_response("Somthig wont's wrong")
+
+
+class AddorRemoveAddressAPI(DefaultResponseMixin, generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user_id = request.user.id
+        addresses = request.data.get("addresses")
+
+        get_address = UserModel.objects.filter(id=user_id).first()
+
+        if not get_address:
+            return self.error_response("Address Not Found")
+
+        get_address.addresses = addresses
+
+        get_address.save()
+        return self.success_response(
+            "Address Update or Delete Successfully", get_address.addresses
+        )

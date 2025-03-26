@@ -1,51 +1,32 @@
-from rest_framework import generics, status
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+from rest_framework import generics
+from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from AquaFlo.Utils.permissions import IsAdminOrReadOnly
 from .models import Category
 from .serializers import *
 
 
-class CategoryViewSet(generics.GenericAPIView):
+class CategoryViewSet(DefaultResponseMixin, generics.GenericAPIView):
     serializer_class = CategorySerializer
-    # permission_classes = [IsAuthenticated, IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
 
     # Handle POST request for creating a new Category
     def post(self, request):
         # Check if the category already exists
         if Category.objects.filter(name=request.data.get("name")).exists():
-            return Response(
-                {
-                    "status": False,
-                    "message": "Category already exists",
-                    "data": {},
-                },
-                status=status.HTTP_200_OK,
-            )
+            return self.error_response("Category already exists")
 
         # Serialize and validate the request data
         serializer = CategorySerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             # Save the category
             serializer.save()
-            return Response(
-                {
-                    "status": True,
-                    "message": "Category created successfully",
-                    "data": serializer.data,
-                },
-                status=status.HTTP_201_CREATED,
+            return self.success_response(
+                "Category created successfully", serializer.data
             )
 
         # Handle errors
-        return Response(
-            {
-                "status": False,
-                "message": "Something went wrong",
-                "data": {},
-            },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        return self.error_response("Something went wrong")
 
     # Handle GET request for fetching the list of Categories
     def get(self, request):
@@ -95,13 +76,8 @@ class CategoryViewSet(generics.GenericAPIView):
             response_data.append(category_data)
 
         # Return the formatted response
-        return Response(
-            {
-                "status": True,
-                "message": "Category list fetched successfully",
-                "data": response_data,
-            },
-            status=status.HTTP_200_OK,
+        return self.success_response(
+            "Category list fetched successfully", response_data
         )
 
     def delete(self, request, pk):
@@ -110,76 +86,36 @@ class CategoryViewSet(generics.GenericAPIView):
             admin = Category.objects.get(id=pk, is_deleted=False)
             admin.is_deleted = True
             admin.save()
-
-            return Response(
-                {
-                    "status": True,
-                    "message": f"{pk}  deleted successfully",
-                },
-                status=status.HTTP_200_OK,
+            return self.success_response(
+                f"{pk}  deleted successfully",
             )
 
         except Category.DoesNotExist:
-            return Response(
-                {
-                    "status": False,
-                    "message": f" {pk} not found or already deleted",
-                },
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            return self.error_response(f"{pk} not found or already deleted")
 
 
-class ItemViewSet(generics.GenericAPIView):
+class ItemViewSet(DefaultResponseMixin, generics.GenericAPIView):
     serializer_class = ItemSerializer
-    # permission_classes = [IsAuthenticated, IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
 
     def post(self, request, *args, **kwargs):
         # Check if the item with the same name already exists
         if Item.objects.filter(name=request.data.get("name")).exists():
-            return Response(
-                {
-                    "status": False,
-                    "message": "Item already exists",
-                    "data": {},
-                },
-                status=status.HTTP_400_BAD_REQUEST,  # Use 400 Bad Request when there's a validation issue
-            )
+            return self.error_response("Item already exists")
 
         # Create a new item if it does not exist
         serializer = ItemSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
 
             serializer.save()
-            return Response(
-                {
-                    "status": True,
-                    "message": "Item created successfully",
-                    "data": serializer.data,
-                },
-                status=status.HTTP_201_CREATED,  # Use 201 Created on success
-            )
-
-        return Response(
-            {
-                "status": False,
-                "message": "Something went wrong",
-                "data": {},
-            },
-            status=status.HTTP_400_BAD_REQUEST,  # Use 400 Bad Request if the serializer validation fails
-        )
+            return self.success_response("Item created successfully", serializer.data)
+        return self.error_response("Something went wrong")
 
     # Handle GET request for fetching the list of Items
     def get(self, request):
         queryset = Item.objects.all().filter(is_deleted=False)
         serializer = ItemSerializer(queryset, many=True)
-        return Response(
-            {
-                "status": True,
-                "message": "Item list fetched successfully",
-                "data": serializer.data,
-            },
-            status=status.HTTP_200_OK,
-        )
+        return self.success_response("Item list fetched successfully", serializer.data)
 
     def delete(self, request, pk):
 
@@ -187,76 +123,36 @@ class ItemViewSet(generics.GenericAPIView):
             admin = Item.objects.get(id=pk, is_deleted=False)
             admin.is_deleted = True
             admin.save()
-
-            return Response(
-                {
-                    "status": True,
-                    "message": f"{pk}  deleted successfully",
-                },
-                status=status.HTTP_200_OK,
+            return self.success_response(
+                f"{pk}  deleted successfully",
             )
 
         except Item.DoesNotExist:
-            return Response(
-                {
-                    "status": False,
-                    "message": f" {pk} not found or already deleted",
-                },
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            return self.error_response(f" {pk} not found or already deleted")
 
 
-class SubItemViewSet(generics.GenericAPIView):
+class SubItemViewSet(DefaultResponseMixin, generics.GenericAPIView):
     serializer_class = SubItemSerializer
-    # permission_classes = [IsAuthenticated, IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
 
     def post(self, request, *args, **kwargs):
         # Check if the item with the same name already exists
         if SubItem.objects.filter(name=request.data.get("name")).exists():
-            return Response(
-                {
-                    "status": False,
-                    "message": "Item already exists",
-                    "data": {},
-                },
-                status=status.HTTP_400_BAD_REQUEST,  # Use 400 Bad Request when there's a validation issue
-            )
+            return self.error_response("Item already exists")
 
         # Create a new item if it does not exist
         serializer = SubItemSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
 
             serializer.save()
-            return Response(
-                {
-                    "status": True,
-                    "message": "Item created successfully",
-                    "data": serializer.data,
-                },
-                status=status.HTTP_201_CREATED,  # Use 201 Created on success
-            )
-
-        return Response(
-            {
-                "status": False,
-                "message": "Something went wrong",
-                "data": {},
-            },
-            status=status.HTTP_400_BAD_REQUEST,  # Use 400 Bad Request if the serializer validation fails
-        )
+            return self.success_response("Item created successfully", serializer.data)
+        return self.error_response("Something went wrong")
 
     # Handle GET request for fetching the list of Items
     def get(self, request):
         queryset = SubItem.objects.all().filter(is_deleted=False)
         serializer = SubItemSerializer(queryset, many=True)
-        return Response(
-            {
-                "status": True,
-                "message": "Item list fetched successfully",
-                "data": serializer.data,
-            },
-            status=status.HTTP_200_OK,
-        )
+        return self.success_response("Item list fetched successfully", serializer.data)
 
     def delete(self, request, pk):
 
@@ -264,20 +160,10 @@ class SubItemViewSet(generics.GenericAPIView):
             admin = SubItem.objects.get(id=pk, is_deleted=False)
             admin.is_deleted = True
             admin.save()
-
-            return Response(
-                {
-                    "status": True,
-                    "message": f"{pk}  deleted successfully",
-                },
-                status=status.HTTP_200_OK,
+            return self.success_response(
+                f"{pk}  deleted successfully",
             )
 
         except Item.DoesNotExist:
-            return Response(
-                {
-                    "status": False,
-                    "message": f" {pk} not found or already deleted",
-                },
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            return self.error_response(f" {pk} not found or already deleted")
+

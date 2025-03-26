@@ -1,16 +1,15 @@
-from rest_framework import status
-from rest_framework.response import Response
+from requests import Response
 from rest_framework import generics
 from .models import Banner
 from .serializers import BannerSerializer
-from rest_framework.permissions import IsAuthenticated
+from AquaFlo.Utils.permissions import IsAdminOrReadOnly
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 
 
-class BannerViewSet(generics.GenericAPIView):
+class BannerViewSet(DefaultResponseMixin,generics.GenericAPIView):
     serializer_class = BannerSerializer
-    authentication_classes = [JWTAuthentication]  # Add JWT Authentication
-    permission_classes = [IsAuthenticated]  # Ensure user is authenticated
+    permission_classes = [IsAdminOrReadOnly]
 
     def post(self, request, *args, **kwargs):
         """
@@ -19,25 +18,26 @@ class BannerViewSet(generics.GenericAPIView):
         serializer = BannerSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return self.success_response(
+                "Category created successfully", 
+                serializer.data
+            )
+            
+        return self.error_response("Failed")
 
     def get(self, request, *args, **kwargs):
         """
         Retrieve a list of all banners.
         """
         if self.request.user.is_deleted:
-            return Response(
-                {
-                    "status": False,
-                    "massege": "User was not found plase connect Admin",
-                    "data": [],
-                },
-                status=status.HTTP_200_OK,
-            )
+            return self.error_response("User was not found plase connect Admin")
         banners = Banner.objects.all()
         serializer = BannerSerializer(banners, many=True, context={"request": request})
-        return Response(serializer.data)
+        return self.success_response(
+                "Banner created successfully", 
+                serializer.data
+            )
+
 
     def delete(self, request, *args, **kwargs):
         """
@@ -49,6 +49,6 @@ class BannerViewSet(generics.GenericAPIView):
             return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
 
         banner.delete()
-        return Response(
-            {"detail": "Deleted successfully."}, status=status.HTTP_204_NO_CONTENT
-        )
+        return self.success_response(
+                "Deleted successfully.",
+            )
