@@ -29,6 +29,24 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+# Allow specific origins
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173","https://radhika-admin.evenmore.in",
+]
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Allow specific HTTP methods
+CORS_ALLOW_METHODS = [
+    "*",
+]
+
+# Allow specific headers
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+]
+
+
 
 # Application definition
 
