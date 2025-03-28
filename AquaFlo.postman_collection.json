@@ -290,7 +290,7 @@
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/list-banner/"
+						"url": "{{base_url}}/banner/"
 					},
 					"response": []
 				},
@@ -310,22 +310,22 @@
 							"formdata": [
 								{
 									"key": "title",
-									"value": "BLACK PVC PIPE",
+									"value": "COMMERCIAL PVC PIPE",
 									"type": "text"
 								},
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/home/evenmore/Desktop/AquaFlo/media/BLACK-PVC-_PIPE.png"
+									"src": []
 								},
 								{
 									"key": "description",
-									"value": "Black Pvc Pipe",
+									"value": "Commercial Pvc Pipe",
 									"type": "text"
 								}
 							]
 						},
-						"url": "{{base_url}}/add-banner/"
+						"url": "{{base_url}}/banner/"
 					},
 					"response": []
 				},
@@ -334,7 +334,7 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{base_url}}/delete-banner/1"
+						"url": "{{base_url}}/banner/"
 					},
 					"response": []
 				}
