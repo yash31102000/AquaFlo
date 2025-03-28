@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "user",
     "category",
+    "Invoice",
     "banner",
     "order"
 ]
