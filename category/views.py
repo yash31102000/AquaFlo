@@ -57,7 +57,6 @@ class CategoryViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 # Get items related to the sub-category
                 items = SubItem.objects.filter(item=sub_category, is_deleted=False)
                 base_url = request.build_absolute_uri("/").rstrip("/")
-                print(base_url, "base_url")
                 for item in items:
                     item_data = {
                         "id": item.pk,
@@ -65,8 +64,18 @@ class CategoryViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             base_url + item.image.url if item.image else None
                         ),  # Assuming 'image_url' is the field for the image
                         "name": item.name,  # Assuming 'name' is the field for item name
-                        "count": "",  # Assuming 'count' is the field for item count
+                        "count": "",  # Assuming 'count' is the field for item count,
                     }
+                    watertank = Watertank.objects.filter(sub_item=item.pk)
+                    for watertank_data in watertank:
+                        item_data.update(
+                            {
+                                "height": (
+                                    watertank_data.height if watertank_data else ""
+                                ),
+                                "width": watertank_data.width if watertank_data else "",
+                            }
+                        )
                     sub_category_data["sub_item"].append(item_data)
 
                 # Add sub-category data to the category data
@@ -172,18 +181,21 @@ class WatertankViewSet(DefaultResponseMixin, generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
 
         # Check if the item with the same name already exists
-        if Watertank.objects.filter(height=request.data.get("height"),width=request.data.get("width")).exists():
+        if Watertank.objects.filter(
+            height=request.data.get("height"), width=request.data.get("width")
+        ).exists():
             return self.error_response("Watertank height and width already exists")
 
         # Create a new item if it does not exist
         serializer = WaterTankSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return self.success_response("Watertank height and width created successfully")
+            return self.success_response(
+                "Watertank height and width created successfully"
+            )
         return self.error_response("Watertank height and width Create Faild")
 
-
-    def put(self, request,pk):
+    def put(self, request, pk):
 
         watertank = Watertank.objects.filter(id=pk).first()
 
@@ -191,8 +203,10 @@ class WatertankViewSet(DefaultResponseMixin, generics.GenericAPIView):
             return self.error_response("Watertank Not Found")
 
         # Create a new item if it does not exist
-        serializer = WaterTankSerializer(watertank,data=request.data, partial=True)
+        serializer = WaterTankSerializer(watertank, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return self.success_response("Watertank height and width Update successfully")
+            return self.success_response(
+                "Watertank height and width Update successfully"
+            )
         return self.error_response("Watertank height and width Update Faild")
