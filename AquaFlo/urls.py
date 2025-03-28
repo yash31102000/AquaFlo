@@ -28,7 +28,7 @@ urlpatterns = [
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/", include("category.urls")),
     path("api/", include("banner.urls")),
-    path("api/",include("order.urls")),
+    # path("api/",include("order.urls")),
 ]
 
 if settings.DEBUG:
