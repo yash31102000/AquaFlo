@@ -337,6 +337,46 @@
 						"url": "{{base_url}}/banner/"
 					},
 					"response": []
+				},
+				{
+					"name": "update-banner",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "COMMERCIAL PVC PIPE",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/home/evenmore/Pictures/Screenshots/COMMERCIAL-WHITE-PIPE.png"
+								},
+								{
+									"key": "description",
+									"value": "Commercial Pvc Pipe",
+									"type": "text"
+								},
+								{
+									"key": "flag",
+									"value": "True",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{base_url}}/banner/1"
+					},
+					"response": []
 				}
 			]
 		},

@@ -7,6 +7,7 @@ class Banner(models.Model):
     image = models.ImageField()
     description = models.TextField()
     date = models.DateField(auto_now_add=True)  # Automatically set to the current date when created
+    flag = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
