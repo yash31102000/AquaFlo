@@ -28,3 +28,9 @@ class CategorySerializer(serializers.ModelSerializer):
             "main_category",
             "items",
         ]
+
+class WaterTankSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Watertank
+        fields = ["id","sub_item","height","width"]

@@ -26,3 +26,8 @@ class SubItem(models.Model):
 
     def __str__(self):
         return self.name
+
+class Watertank(models.Model):
+    sub_item = models.ForeignKey(SubItem,on_delete=models.CASCADE, related_name="watertank")
+    height = models.CharField(max_length=200)
+    width = models.CharField(max_length=200)

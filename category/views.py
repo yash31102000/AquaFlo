@@ -164,3 +164,35 @@ class SubItemViewSet(DefaultResponseMixin, generics.GenericAPIView):
         except Item.DoesNotExist:
             return self.error_response(f" {pk} not found or already deleted")
 
+
+class WatertankViewSet(DefaultResponseMixin, generics.GenericAPIView):
+    serializer_class = WaterTankSerializer
+    # permission_classes = [IsAdminOrReadOnly]
+
+    def post(self, request, *args, **kwargs):
+
+        # Check if the item with the same name already exists
+        if Watertank.objects.filter(height=request.data.get("height"),width=request.data.get("width")).exists():
+            return self.error_response("Watertank height and width already exists")
+
+        # Create a new item if it does not exist
+        serializer = WaterTankSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return self.success_response("Watertank height and width created successfully")
+        return self.error_response("Watertank height and width Create Faild")
+
+
+    def put(self, request,pk):
+
+        watertank = Watertank.objects.filter(id=pk).first()
+
+        if not watertank:
+            return self.error_response("Watertank Not Found")
+
+        # Create a new item if it does not exist
+        serializer = WaterTankSerializer(watertank,data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return self.success_response("Watertank height and width Update successfully")
+        return self.error_response("Watertank height and width Update Faild")

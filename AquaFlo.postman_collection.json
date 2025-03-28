@@ -224,22 +224,22 @@
 									"formdata": [
 										{
 											"key": "name",
-											"value": "75mm-10 Kgf / cm2",
+											"value": "5000-Ltr.",
 											"type": "text"
 										},
 										{
 											"key": "item",
-											"value": "5",
+											"value": "18",
 											"type": "text"
 										},
 										{
 											"key": "image",
 											"type": "file",
-											"src": "/home/evenmore/Pictures/Screenshots/COMMERCIAL-WHITE-PIPE.png"
+											"src": "/home/evenmore/Pictures/Screenshots/4 layer water tank.png"
 										},
 										{
 											"key": "uniqcode",
-											"value": "CWP-10k1",
+											"value": "WT-4-200",
 											"type": "text"
 										}
 									]
@@ -269,6 +269,47 @@
 								"method": "DELETE",
 								"header": [],
 								"url": "{{base_url}}/items/1"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Watertank",
+					"item": [
+						{
+							"name": "all-hight-width-watertank-list",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sub_item\":\"103\",\n    \"height\":\"26.5\",\n    \"width\":\"23.5\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base_url}}/watertank/1"
+							},
+							"response": []
+						},
+						{
+							"name": "add-hight-width-watertank",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sub_item\":\"103\",\n    \"height\":\"26.5\",\n    \"width\":\"23.5\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{base_url}}/watertank/"
 							},
 							"response": []
 						}

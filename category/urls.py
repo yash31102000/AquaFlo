@@ -8,4 +8,6 @@ urlpatterns = [
     path("sub-category/<int:pk>", CategoryViewSet.as_view()),
     path("items/", SubItemViewSet.as_view()),
     path("items/<int:pk>", CategoryViewSet.as_view()),
+    path("watertank/",WatertankViewSet.as_view()),
+    path("watertank/<int:pk>",WatertankViewSet.as_view())
 ]
