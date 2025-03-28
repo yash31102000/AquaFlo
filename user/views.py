@@ -70,7 +70,7 @@ class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
             }
             return self.success_response("Login successfully", response_data)
         else:
-            return self.error_response("Somthig wont's wrong")
+            return self.error_response("The phone number and password do not match. Please try again.")
 
 
 class AddorRemoveAddressAPI(DefaultResponseMixin, generics.GenericAPIView):

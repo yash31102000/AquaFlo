@@ -26,7 +26,7 @@ class CategoryViewSet(DefaultResponseMixin, generics.GenericAPIView):
             )
 
         # Handle errors
-        return self.error_response("Something went wrong")
+        return self.error_response("Category Create Faild")
 
     # Handle GET request for fetching the list of Categories
     def get(self, request):
@@ -109,7 +109,7 @@ class ItemViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
             serializer.save()
             return self.success_response("Item created successfully", serializer.data)
-        return self.error_response("Something went wrong")
+        return self.error_response("Item Create Faild")
 
     # Handle GET request for fetching the list of Items
     def get(self, request):
@@ -143,7 +143,7 @@ class SubItemViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
             serializer.save()
             return self.success_response("Item created successfully", serializer.data)
-        return self.error_response("Something went wrong")
+        return self.error_response("SubItem Create Faild")
 
     # Handle GET request for fetching the list of Items
     def get(self, request):

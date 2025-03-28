@@ -4,7 +4,8 @@
 		"name": "AquaFlo",
 		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "33163402"
+		"_exporter_id": "33163402",
+		"_collection_link": "https://develop-7967.postman.co/workspace/My-Workspace~6ab690bf-a9dd-4aae-8ab5-1b3214de0215/collection/33163402-d6f070b2-138e-4cc4-bb53-e08c8509f612?action=share&source=collection_link&creator=33163402"
 	},
 	"item": [
 		{
@@ -35,7 +36,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone_number\": \"9998533013\",\n    \"first_name\": \"Test\",\n    \"last_name\": \"demo\",\n    \"email\": \"yash31102000.s@gmail.com\",\n    \"gst_number\": \"24AAACH7409R2Z6\",\n    \"password\": \"1234\",\n    \"addresses\": [\n        {\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        }\n    ]\n}",
+							"raw": "{\n    \"phone_number\": \"9998533017\",\n    \"first_name\": \"Test\",\n    \"last_name\": \"demo\",\n    \"email\": \"yash.sanghani.g10@gmail.com\",\n    \"password\": \"1234\",\n    \"addresses\": [\n        {\n            \"company_name\":\"\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -163,7 +164,7 @@
 								},
 								"method": "DELETE",
 								"header": [],
-								"url": "{{base_url}}/category/1"
+								"url": "{{base_url}}/category/10"
 							},
 							"response": []
 						}
@@ -223,22 +224,22 @@
 									"formdata": [
 										{
 											"key": "name",
-											"value": "PVC TEE 6kg",
+											"value": "75mm-10 Kgf / cm2",
 											"type": "text"
 										},
 										{
 											"key": "item",
-											"value": "4",
+											"value": "5",
 											"type": "text"
 										},
 										{
 											"key": "image",
 											"type": "file",
-											"src": "/home/evenmore/Pictures/Screenshots/TYPE-B3.png"
+											"src": "/home/evenmore/Pictures/Screenshots/COMMERCIAL-WHITE-PIPE.png"
 										},
 										{
 											"key": "uniqcode",
-											"value": "TYPE-B3",
+											"value": "CWP-10k1",
 											"type": "text"
 										}
 									]
@@ -321,6 +322,74 @@
 					"request": {
 						"method": "GET",
 						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "create order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_items\": [\n        {\n            \"item_id\": \"27\",\n            \"quantity\": \"50\"\n        }\n    ],\n    \"address\": {\n        \"company_name\": \"Abc Sales\",\n        \"GST_Number\": \"1234567890\",\n        \"street\": \"456 Patel St\",\n        \"city\": \"Ahmedabad\",\n        \"state\": \"GJ\",\n        \"zip\": \"380001\"\n    },\n    \"address_link\": \"https://www.google.com/maps/place/23%C2%B007'27.6%22N+72%C2%B002'47.0%22E/@23.124334,72.0456591,18z/data=!3m1!4b1!4m7!1m2!7m1!2e1!3m3!8m2!3d23.124334!4d72.046377?entry=ttu&g_ep=EgoyMDI1MDMyNC4wIKXMDSoASAFQAw%3D%3D\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/order/"
+					},
+					"response": []
+				},
+				{
+					"name": "all-order-list",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/orders/"
+					},
+					"response": []
+				},
+				{
+					"name": "update-order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_items\": [\n        {\n            \"item_id\": \"27\",\n            \"quantity\": \"30\"\n        }\n    ],\n    \"address\": {\n        \"company_name\": \"Abc Sales\",\n        \"GST_Number\": \"1234567890\",\n        \"street\": \"456 Patel St\",\n        \"city\": \"Ahmedabad\",\n        \"state\": \"GJ\",\n        \"zip\": \"380001\"\n    },\n    \"address_link\": \"https://www.google.com/maps/place/23%C2%B007'27.6%22N+72%C2%B002'47.0%22E/@23.124334,72.0456591,18z/data=!3m1!4b1!4m7!1m2!7m1!2e1!3m3!8m2!3d23.124334!4d72.046377?entry=ttu&g_ep=EgoyMDI1MDMyNC4wIKXMDSoASAFQAw%3D%3D\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/order/1"
 					},
 					"response": []
 				}

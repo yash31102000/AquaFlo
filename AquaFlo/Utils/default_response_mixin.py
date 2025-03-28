@@ -11,7 +11,7 @@ class DefaultResponseMixin:
         :return: Response object with 200 OK status
         """
         response_data = {"status": True, "message": message, "data": data or {}}
-        print(response_data,'response_data')
+
         return response.Response(response_data, status=status.HTTP_200_OK)
 
     def error_response(self, message, data=None):
