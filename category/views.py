@@ -136,9 +136,6 @@ class SubItemViewSet(DefaultResponseMixin, generics.GenericAPIView):
     # permission_classes = [IsAdminOrReadOnly]
 
     def post(self, request, *args, **kwargs):
-        # Check if the item with the same name already exists
-        if SubItem.objects.filter(name=request.data.get("name")).exists():
-            return self.error_response("Item already exists")
 
         # Create a new item if it does not exist
         serializer = SubItemSerializer(data=request.data)

@@ -19,7 +19,7 @@ class Item(models.Model):
 
 class SubItem(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="sub_items")
-    name = models.CharField(max_length=200, unique=True)
+    name = models.CharField(max_length=200)
     image = models.ImageField()
     uniqcode = models.CharField(max_length=200, null=True)
     is_deleted = models.BooleanField(default=False)
