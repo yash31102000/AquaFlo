@@ -282,15 +282,27 @@
 				{
 					"name": "banner-list",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/banner/list-banner/"
+						"url": "{{base_url}}/list-banner/"
 					},
 					"response": []
 				},
 				{
 					"name": "add-banner",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -298,30 +310,31 @@
 							"formdata": [
 								{
 									"key": "title",
-									"value": "Test",
+									"value": "BLACK PVC PIPE",
 									"type": "text"
 								},
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/home/evenmore/Downloads/kathiyawadi horse.jpeg"
+									"src": "/home/evenmore/Desktop/AquaFlo/media/BLACK-PVC-_PIPE.png"
 								},
 								{
 									"key": "description",
-									"value": "test description",
+									"value": "Black Pvc Pipe",
 									"type": "text"
 								}
 							]
 						},
-						"url": "{{base_url}}/banner/add-banner/"
+						"url": "{{base_url}}/add-banner/"
 					},
 					"response": []
 				},
 				{
 					"name": "delete-banner",
 					"request": {
-						"method": "GET",
-						"header": []
+						"method": "DELETE",
+						"header": [],
+						"url": "{{base_url}}/delete-banner/1"
 					},
 					"response": []
 				}
