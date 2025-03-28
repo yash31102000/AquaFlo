@@ -418,7 +418,7 @@
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/orders/"
+						"url": "{{base_url}}/order/"
 					},
 					"response": []
 				},

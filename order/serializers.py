@@ -8,7 +8,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['user','order_items', 'address', 'address_link', 'status', 'cancellation_reason']
+        fields = ['id','user','order_items', 'address', 'address_link', 'status', 'cancellation_reason']
     
     def create(self, validated_data):
         # Ensure user is set before saving
