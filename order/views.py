@@ -4,7 +4,6 @@ from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from AquaFlo.Utils.permissions import IsAdminOrReadOnly
 from .models import *
 from .serializers import *
-from category.models import SubItem
 from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
@@ -27,9 +26,9 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
         response_data = serializer.data.copy()
         for data in response_data:
             for order_items in  data.get("order_items"):
-                sub_item = SubItem.objects.filter(pk=order_items.get("item_id")).values().first()
+                # sub_item = SubItem.objects.filter(pk=order_items.get("item_id")).values().first()
                 order_items.pop("item_id")
-                order_items["item"] = sub_item
+                order_items["item"] = "sub_item"
         return self.success_response("Order list fetched successfully", serializer.data)
     
 
