@@ -7,7 +7,7 @@ class Pipe(models.Model):
     """
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    image = models.CharField(max_length=255, blank=True, null=True)
+    image = models.ImageField(blank=True, null=True)
     
     # Self-referential relationship to allow unlimited nesting
     parent = models.ForeignKey(

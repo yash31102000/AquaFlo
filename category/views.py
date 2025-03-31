@@ -46,9 +46,25 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         
         # Use recursive serializer to get full nested structure
         serializer = RecursivePipeSerializer(queryset, many=True)
+        base_url = request.build_absolute_uri("/").rstrip("/")
+        # Update image URLs to include base URL
+        def update_image_urls(data):
+            if isinstance(data, list):
+                for item in data:
+                    update_image_urls(item)
+            elif isinstance(data, dict):
+                for key, value in data.items():
+                    if key == 'image' and value:
+                        data[key] = f"{base_url}{value}"
+                    elif isinstance(value, (dict, list)):
+                        update_image_urls(value)
+        
+        # Apply the image URL update to the serialized data
+        updated_data = serializer.data
+        update_image_urls(updated_data)
         return self.success_response(
             "Pipe list fetched successfully", 
-            serializer.data
+            updated_data
         )
 
     def delete(self, request, pk=None):
