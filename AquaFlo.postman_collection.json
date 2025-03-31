@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "d6f070b2-138e-4cc4-bb53-e08c8509f612",
+		"_postman_id": "53224502-1ae0-45f4-abe9-371f1aa175c4",
 		"name": "AquaFlo",
 		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "33163402",
-		"_collection_link": "https://develop-7967.postman.co/workspace/My-Workspace~6ab690bf-a9dd-4aae-8ab5-1b3214de0215/collection/33163402-d6f070b2-138e-4cc4-bb53-e08c8509f612?action=share&source=collection_link&creator=33163402"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40162854",
+		"_collection_link": "https://develop-7967.postman.co/workspace/develop-Workspace~8780b293-fc38-4b51-8a1a-08547dca5444/collection/40162854-53224502-1ae0-45f4-abe9-371f1aa175c4?action=share&source=collection_link&creator=40162854"
 	},
 	"item": [
 		{
@@ -28,9 +28,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -43,7 +47,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/register/",
+						"url": {
+							"raw": "{{base_url}}/register/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register",
+								""
+							]
+						},
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 					},
 					"response": []
@@ -78,7 +91,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/login/"
+						"url": {
+							"raw": "{{base_url}}/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -87,9 +109,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -102,218 +128,18 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/add-remove-address/"
+						"url": {
+							"raw": "{{base_url}}/add-remove-address/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"add-remove-address",
+								""
+							]
+						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "STOKES",
-			"item": [
-				{
-					"name": "Main Category",
-					"item": [
-						{
-							"name": "all-categoris-list",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": {
-										"token": "{{token}}"
-									}
-								},
-								"method": "GET",
-								"header": [],
-								"url": "{{base_url}}/category/"
-							},
-							"response": []
-						},
-						{
-							"name": "add -categoris",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": {
-										"token": "{{token}}"
-									}
-								},
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"main_category\":\"PVC\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": "{{base_url}}/category/"
-							},
-							"response": []
-						},
-						{
-							"name": "delete-categoris",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": {
-										"token": "{{token}}"
-									}
-								},
-								"method": "DELETE",
-								"header": [],
-								"url": "{{base_url}}/category/10"
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Sub Category",
-					"item": [
-						{
-							"name": "sub-category-list",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": "{{base_url}}/sub-category/"
-							},
-							"response": []
-						},
-						{
-							"name": "add-sub-category",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"sub_category\": \"PVC 75MM\",\n    \"category\": \"7\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": "{{base_url}}/sub-category/"
-							},
-							"response": []
-						},
-						{
-							"name": "delete-sub-category",
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": "{{base_url}}/sub-category/1"
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Items",
-					"item": [
-						{
-							"name": "sub items add",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "formdata",
-									"formdata": [
-										{
-											"key": "name",
-											"value": "5000-Ltr.",
-											"type": "text"
-										},
-										{
-											"key": "item",
-											"value": "18",
-											"type": "text"
-										},
-										{
-											"key": "image",
-											"type": "file",
-											"src": "/home/evenmore/Pictures/Screenshots/4 layer water tank.png"
-										},
-										{
-											"key": "uniqcode",
-											"value": "WT-4-200",
-											"type": "text"
-										}
-									]
-								},
-								"url": "{{base_url}}/items/"
-							},
-							"response": []
-						},
-						{
-							"name": "all-items-list",
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "GET",
-								"header": [],
-								"url": "{{base_url}}/items/"
-							},
-							"response": []
-						},
-						{
-							"name": "delete-items",
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "DELETE",
-								"header": [],
-								"url": "{{base_url}}/items/1"
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Watertank",
-					"item": [
-						{
-							"name": "all-hight-width-watertank-list",
-							"request": {
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"sub_item\":\"103\",\n    \"height\":\"26.5\",\n    \"width\":\"23.5\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": "{{base_url}}/watertank/1"
-							},
-							"response": []
-						},
-						{
-							"name": "add-hight-width-watertank",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"sub_item\":\"103\",\n    \"height\":\"26.5\",\n    \"width\":\"23.5\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": "{{base_url}}/watertank/"
-							},
-							"response": []
-						}
-					]
 				}
 			]
 		},
@@ -325,13 +151,26 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/banner/"
+						"url": {
+							"raw": "{{base_url}}/banner/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"banner",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -340,9 +179,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -366,7 +209,16 @@
 								}
 							]
 						},
-						"url": "{{base_url}}/banner/"
+						"url": {
+							"raw": "{{base_url}}/banner/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"banner",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -375,7 +227,16 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{base_url}}/banner/"
+						"url": {
+							"raw": "{{base_url}}/banner/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"banner",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -384,9 +245,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "PUT",
 						"header": [],
@@ -415,7 +280,16 @@
 								}
 							]
 						},
-						"url": "{{base_url}}/banner/1"
+						"url": {
+							"raw": "{{base_url}}/banner/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"banner",
+								"1"
+							]
+						}
 					},
 					"response": []
 				}
@@ -429,9 +303,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -444,7 +322,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/order/"
+						"url": {
+							"raw": "{{base_url}}/order/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -453,13 +340,26 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/order/"
+						"url": {
+							"raw": "{{base_url}}/order/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -468,9 +368,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "PUT",
 						"header": [],
@@ -483,7 +387,160 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/order/1"
+						"url": {
+							"raw": "{{base_url}}/order/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Invoice",
+			"item": [
+				{
+					"name": "get-invoice",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/invoice/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"invoice",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add-invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order\": \"2\",\n    \"order_items\": [\n        [\n            {\n                \"item_id\": \"27\",\n                \"quantity\": \"50\",\n                \"price\" : \"1000\"\n            }\n        ]\n    ],\n    \"total_amount\": \"50000\",\n    \"tax_amount\": \"9000\",\n    \"discount\": \"4000\",\n    \"final_amount\": \"55000\",\n    \"due_date\": \"2025-04-15\",\n    \"payment_method\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/invoice/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"invoice",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/invoice/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"invoice",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pipes",
+			"item": [
+				{
+					"name": "pipes",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/pipes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pipes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add-pipes",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"20mm-Heavy Super\",\n    \"parent\" : \"2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/pipes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pipes",
+								""
+							]
+						}
 					},
 					"response": []
 				}
