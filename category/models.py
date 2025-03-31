@@ -5,17 +5,26 @@ class Pipe(models.Model):
     """
     A recursive model to handle nested pipe categories with arbitrary depth.
     """
+
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     image = models.ImageField(blank=True, null=True)
     
     # Self-referential relationship to allow unlimited nesting
     parent = models.ForeignKey(
-        'self', 
-        on_delete=models.CASCADE, 
-        related_name='sub_categories', 
-        blank=True, 
-        null=True
+        "self",
+        on_delete=models.CASCADE,
+        related_name="sub_categories",
+        blank=True,
+        null=True,
+    )
+
+    product = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        related_name="related_product",
+        blank=True,
+        null=True,
     )
 
     def __str__(self):
