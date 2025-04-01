@@ -9,6 +9,7 @@ from datetime import timedelta
 from django.utils import timezone
 from django.core.files.storage import default_storage
 
+
 class BannerViewSet(DefaultResponseMixin, generics.GenericAPIView):
     serializer_class = BannerSerializer
     permission_classes = [IsAdminOrReadOnly]
@@ -21,10 +22,9 @@ class BannerViewSet(DefaultResponseMixin, generics.GenericAPIView):
         if serializer.is_valid():
             serializer.save()
             return self.success_response(
-                "Category created successfully", 
-                serializer.data
+                "Banner created successfully", serializer.data
             )
-            
+
         return self.error_response("Failed")
 
     def get(self, request, *args, **kwargs):
@@ -33,9 +33,9 @@ class BannerViewSet(DefaultResponseMixin, generics.GenericAPIView):
         """
         if self.request.user.is_deleted:
             return self.error_response("User was not found, please contact Admin")
-        
-        banners = Banner.objects.all().filter(flag = True)
-        
+
+        banners = Banner.objects.all().filter(flag=True)
+
         # Get the current time and filter out banners older than 7 days
         seven_days_ago = timezone.now() - timedelta(days=7)
         old_banners = banners.filter(date__lt=seven_days_ago)
@@ -49,11 +49,7 @@ class BannerViewSet(DefaultResponseMixin, generics.GenericAPIView):
             banner.delete()
 
         serializer = BannerSerializer(banners, many=True, context={"request": request})
-        return self.success_response(
-                "Banner fetched successfully", 
-                serializer.data
-            )
-
+        return self.success_response("Banner fetched successfully", serializer.data)
 
     def delete(self, request, *args, **kwargs):
         """
@@ -62,7 +58,7 @@ class BannerViewSet(DefaultResponseMixin, generics.GenericAPIView):
         try:
             banner = Banner.objects.get(id=kwargs["pk"])
         except Banner.DoesNotExist:
-            return self.error_response( "Banner Not found.")
+            return self.error_response("Banner Not found.")
 
         # Check if the banner's date is older than 7 days
         if timezone.now() - banner.date > timedelta(days=7):
@@ -77,23 +73,25 @@ class BannerViewSet(DefaultResponseMixin, generics.GenericAPIView):
             return self.success_response(
                 "Deleted successfully.",
             )
-        
-        return self.error_response("Banner is not older than 7 days and cannot be deleted.")
 
-    def put(self,request,pk):
-        
+        return self.error_response(
+            "Banner is not older than 7 days and cannot be deleted."
+        )
+
+    def put(self, request, pk):
+
         banner = Banner.objects.filter(id=pk).first()
-        
+
         if not banner:
             return self.error_response("Banner not found.")
-        
-        flag = request.data.get('flag')
+
+        flag = request.data.get("flag")
         if flag:
             banner.flag = flag
             banner.save()
             return self.success_response("Banner Update successfully.")
 
-        serializer = BannerSerializer(banner,data=request.data, partial=True)
+        serializer = BannerSerializer(banner, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return self.success_response("Banner Update successfully.")
