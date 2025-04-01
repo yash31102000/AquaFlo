@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('category', '0005_remove_item_category_remove_subitem_item_and_more'),
+        ('category', '0006_alter_pipe_image'),
     ]
 
     operations = [
