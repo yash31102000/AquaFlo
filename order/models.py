@@ -7,7 +7,7 @@ from user.models import UserModel
 class Order(models.Model):
     ORDER_STATUS = [
         ("PENDING", "Pending"),
-        ("CONFORM","Conform"),
+        ("CONFIRM","Confirm"),
         ("COMPLETED", "Completed"),
         ("CANCEL","Cancel")
     ]

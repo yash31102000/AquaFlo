@@ -50,8 +50,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
     def get(self, request):
         # Fetch only top-level pipes (no parent)
-        queryset = Pipe.objects.filter(parent__isnull=True)
-
+        queryset = Pipe.objects.filter(parent__isnull=True , product__isnull=True)
         # Optional: Add support for filtering
         name_filter = request.query_params.get("name")
         if name_filter:
