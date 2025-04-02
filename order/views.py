@@ -31,7 +31,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 order_items.pop("item_id")
                 order_items["item"] = sub_item
                 base_url = request.build_absolute_uri("/").rstrip("/")
-                order_items["item"]["image"] = base_url + order_items["item"]["image"]
+                order_items["item"]["image"] = base_url + "/media/" + order_items["item"]["image"]
         return self.success_response("Order list fetched successfully", serializer.data)
     
 
