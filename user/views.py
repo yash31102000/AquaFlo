@@ -41,8 +41,24 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
     def get(self, request):
         all_user = UserModel.objects.all().values(
             "id", "phone_number", "first_name", "last_name", "email", "addresses"
-        )
+        ).filter(is_deleted= False)
         return self.success_response("Registered successfully", all_user)
+    
+    def delete(self, request, user_id=None):
+        """
+        Delete a user by ID
+        """
+        if user_id is None:
+            return self.error_response("User ID is required")
+        
+        try:
+            user = UserModel.objects.get(id=user_id,is_deleted = False)
+            user.is_deleted = True
+            user.save()
+            return self.success_response("User deleted successfully")
+        except UserModel.DoesNotExist:
+            return self.error_response("User not found")
+
 
 
 class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
