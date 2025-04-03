@@ -36,7 +36,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone_number\": \"9998533017\",\n    \"first_name\": \"Test\",\n    \"last_name\": \"demo\",\n    \"email\": \"yash.sanghani.g10@gmail.com\",\n    \"password\": \"1234\",\n    \"addresses\": [\n        {\n            \"company_name\":\"\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        }\n    ]\n}",
+							"raw": "{\n    \"phone_number\": \"9998233013\",\n    \"first_name\": \"Yash\",\n    \"last_name\": \"Gathiys\",\n    \"email\": \"yash.sanghani.g10@gmail.com\",\n    \"password\": \"1234\",\n    \"addresses\": [\n        {\n            \"company_name\":\"\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -112,6 +112,21 @@
 						"method": "GET",
 						"header": [],
 						"url": "{{base_url}}/user/"
+					},
+					"response": []
+				},
+				{
+					"name": "delete-user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{base_url}}/user/72ebe49fc3db4850b2505bbb1dfdd415/"
 					},
 					"response": []
 				}
