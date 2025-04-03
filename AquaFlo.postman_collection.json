@@ -291,6 +291,21 @@
 						"url": "{{base_url}}/order/1"
 					},
 					"response": []
+				},
+				{
+					"name": "get-order-user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/order/f091e57f87c94fe48c397087333fdc59/"
+					},
+					"response": []
 				}
 			]
 		},
