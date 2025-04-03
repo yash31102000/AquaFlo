@@ -8,7 +8,6 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 
-
 # Create your views here.
 class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
     """
@@ -38,6 +37,12 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
             # Sending the email
             send_mail(subject, message, from_email, [self.request.data.get("email")])
             return self.success_response("Registered successfully", serializer.data)
+
+    def get(self, request):
+        all_user = UserModel.objects.all().values(
+            "id", "phone_number", "first_name", "last_name", "email", "addresses"
+        )
+        return self.success_response("Registered successfully", all_user)
 
 
 class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
@@ -70,7 +75,9 @@ class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
             }
             return self.success_response("Login successfully", response_data)
         else:
-            return self.error_response("The phone number and password do not match. Please try again.")
+            return self.error_response(
+                "The phone number and password do not match. Please try again."
+            )
 
 
 class AddorRemoveAddressAPI(DefaultResponseMixin, generics.GenericAPIView):
