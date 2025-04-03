@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "53224502-1ae0-45f4-abe9-371f1aa175c4",
+		"_postman_id": "b816eac3-f2b8-4e9e-aa27-9c0625477ae4",
 		"name": "AquaFlo",
 		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "40162854",
-		"_collection_link": "https://develop-7967.postman.co/workspace/develop-Workspace~8780b293-fc38-4b51-8a1a-08547dca5444/collection/40162854-53224502-1ae0-45f4-abe9-371f1aa175c4?action=share&source=collection_link&creator=40162854"
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "33163402",
+		"_collection_link": "https://develop-7967.postman.co/workspace/My-Workspace~6ab690bf-a9dd-4aae-8ab5-1b3214de0215/collection/33163402-b816eac3-f2b8-4e9e-aa27-9c0625477ae4?action=share&source=collection_link&creator=33163402"
 	},
 	"item": [
 		{
@@ -28,13 +28,9 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "{{token}}"
+							}
 						},
 						"method": "POST",
 						"header": [],
@@ -47,16 +43,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{base_url}}/register/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"register",
-								""
-							]
-						},
+						"url": "{{base_url}}/register/",
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 					},
 					"response": []
@@ -91,16 +78,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{base_url}}/login/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"login",
-								""
-							]
-						}
+						"url": "{{base_url}}/login/"
 					},
 					"response": []
 				},
@@ -109,13 +87,9 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "{{token}}"
+							}
 						},
 						"method": "POST",
 						"header": [],
@@ -128,16 +102,16 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "{{base_url}}/add-remove-address/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"add-remove-address",
-								""
-							]
-						}
+						"url": "{{base_url}}/add-remove-address/"
+					},
+					"response": []
+				},
+				{
+					"name": "all-user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/user/"
 					},
 					"response": []
 				}
@@ -151,26 +125,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "{{token}}"
+							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{base_url}}/banner/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"banner",
-								""
-							]
-						}
+						"url": "{{base_url}}/banner/"
 					},
 					"response": []
 				},
@@ -179,13 +140,9 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "{{token}}"
+							}
 						},
 						"method": "POST",
 						"header": [],
@@ -194,31 +151,27 @@
 							"formdata": [
 								{
 									"key": "title",
-									"value": "COMMERCIAL PVC PIPE",
+									"value": "BLACK 2 LAYERS  WATER TANK",
 									"type": "text"
 								},
 								{
 									"key": "image",
 									"type": "file",
-									"src": []
+									"src": "/home/evenmore/Desktop/AquaFlo/media/2_layer_water_tank.png"
 								},
 								{
 									"key": "description",
-									"value": "Commercial Pvc Pipe",
+									"value": "Black 2 Layers Water Tank",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "33",
 									"type": "text"
 								}
 							]
 						},
-						"url": {
-							"raw": "{{base_url}}/banner/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"banner",
-								""
-							]
-						}
+						"url": "{{base_url}}/banner/"
 					},
 					"response": []
 				},
@@ -227,17 +180,7 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": {
-							"raw": "{{base_url}}/banner/1/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"banner",
-								"1",
-								""
-							]
-						}
+						"url": "{{base_url}}/banner/"
 					},
 					"response": []
 				},
@@ -246,13 +189,9 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "{{token}}"
+							}
 						},
 						"method": "PUT",
 						"header": [],
@@ -281,17 +220,7 @@
 								}
 							]
 						},
-						"url": {
-							"raw": "{{base_url}}/banner/1/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"banner",
-								"1",
-								""
-							]
-						}
+						"url": "{{base_url}}/banner/1"
 					},
 					"response": []
 				}
@@ -305,35 +234,22 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "{{token}}"
+							}
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"order_items\": [\n        {\n            \"item_id\": \"27\",\n            \"quantity\": \"50\"\n        }\n    ],\n    \"address\": {\n        \"company_name\": \"Abc Sales\",\n        \"GST_Number\": \"1234567890\",\n        \"street\": \"456 Patel St\",\n        \"city\": \"Ahmedabad\",\n        \"state\": \"GJ\",\n        \"zip\": \"380001\"\n    },\n    \"address_link\": \"https://www.google.com/maps/place/23%C2%B007'27.6%22N+72%C2%B002'47.0%22E/@23.124334,72.0456591,18z/data=!3m1!4b1!4m7!1m2!7m1!2e1!3m3!8m2!3d23.124334!4d72.046377?entry=ttu&g_ep=EgoyMDI1MDMyNC4wIKXMDSoASAFQAw%3D%3D\"\n}\n\n\n\n// ORDER_STATUS = [\n//         (\"PENDING\", \"Pending\"),\n//         (\"CONFORM\",\"Conform\"),\n//         (\"COMPLETED\", \"Completed\"),\n//         (\"CANCEL\",\"Cancel\")\n//     ]",
+							"raw": "{\n    \"order_items\": [\n        {\n            \"item_id\": \"4\",\n            \"quantity\": \"50\",\n            \"price\":null\n        }\n    ],\n    \"address\": {\n        \"company_name\": \"Abc Sales\",\n        \"GST_Number\": \"1234567890\",\n        \"street\": \"456 Patel St\",\n        \"city\": \"Ahmedabad\",\n        \"state\": \"GJ\",\n        \"zip\": \"380001\"\n    },\n    \"address_link\": \"https://www.google.com/maps/place/23%C2%B007'27.6%22N+72%C2%B002'47.0%22E/@23.124334,72.0456591,18z/data=!3m1!4b1!4m7!1m2!7m1!2e1!3m3!8m2!3d23.124334!4d72.046377?entry=ttu&g_ep=EgoyMDI1MDMyNC4wIKXMDSoASAFQAw%3D%3D\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": {
-							"raw": "{{base_url}}/order/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"order",
-								""
-							]
-						}
+						"url": "{{base_url}}/order/"
 					},
 					"response": []
 				},
@@ -342,26 +258,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "{{token}}"
+							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{base_url}}/order/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"order",
-								""
-							]
-						}
+						"url": "{{base_url}}/order/"
 					},
 					"response": []
 				},
@@ -370,36 +273,22 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "{{token}}"
+							}
 						},
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"order_items\": [\n        {\n            \"item_id\": \"104\",\n            \"quantity\": \"30\",\n            \"price\": \"\"\n        }\n    ],\n    \"address\": {\n        \"company_name\": \"Abc Sales\",\n        \"GST_Number\": \"1234567890\",\n        \"street\": \"456 Patel St\",\n        \"city\": \"Ahmedabad\",\n        \"state\": \"GJ\",\n        \"zip\": \"380001\"\n    },\n    \"address_link\": \"https://www.google.com/maps/place/23%C2%B007'27.6%22N+72%C2%B002'47.0%22E/@23.124334,72.0456591,18z/data=!3m1!4b1!4m7!1m2!7m1!2e1!3m3!8m2!3d23.124334!4d72.046377?entry=ttu&g_ep=EgoyMDI1MDMyNC4wIKXMDSoASAFQAw%3D%3D\"\n}",
+							"raw": "{\n    \"order_items\": [\n        {\n            \"item_id\": \"27\",\n            \"quantity\": \"30\"\n        }\n    ],\n    \"address\": {\n        \"company_name\": \"Abc Sales\",\n        \"GST_Number\": \"1234567890\",\n        \"street\": \"456 Patel St\",\n        \"city\": \"Ahmedabad\",\n        \"state\": \"GJ\",\n        \"zip\": \"380001\"\n    },\n    \"address_link\": \"https://www.google.com/maps/place/23%C2%B007'27.6%22N+72%C2%B002'47.0%22E/@23.124334,72.0456591,18z/data=!3m1!4b1!4m7!1m2!7m1!2e1!3m3!8m2!3d23.124334!4d72.046377?entry=ttu&g_ep=EgoyMDI1MDMyNC4wIKXMDSoASAFQAw%3D%3D\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": {
-							"raw": "{{base_url}}/order/2/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"order",
-								"2",
-								""
-							]
-						}
+						"url": "{{base_url}}/order/1"
 					},
 					"response": []
 				}
@@ -413,16 +302,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{base_url}}/invoice/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"invoice",
-								""
-							]
-						}
+						"url": "{{base_url}}/invoice/"
 					},
 					"response": []
 				},
@@ -431,35 +311,22 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "{{token}}"
+							}
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"order\": \"2\",\n    \"order_items\": [\n        [\n            {\n                \"item_id\": \"27\",\n                \"quantity\": \"50\",\n                \"price\" : \"1000\"\n            }\n        ]\n    ],\n    \"total_amount\": \"50000\",\n    \"tax_amount\": \"9000\",\n    \"discount\": \"4000\",\n    \"final_amount\": \"55000\",\n    \"due_date\": \"2025-04-15\",\n    \"payment_method\": \"\"\n}",
+							"raw": "{\n    \"order\": \"2\",\n    \"total_amount\": \"50000\",\n    \"tax_amount\": \"9000\",\n    \"discount\": \"4000\",\n    \"final_amount\": \"55000\",\n    \"due_date\": \"2025-04-15\",\n    \"payment_method\": \"\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": {
-							"raw": "{{base_url}}/invoice/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"invoice",
-								""
-							]
-						}
+						"url": "{{base_url}}/invoice/"
 					},
 					"response": []
 				},
@@ -468,26 +335,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
+							"bearer": {
+								"token": "{{token}}"
+							}
 						},
 						"method": "PUT",
 						"header": [],
-						"url": {
-							"raw": "{{base_url}}/invoice/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"invoice",
-								""
-							]
-						}
+						"url": "{{base_url}}/invoice/"
 					},
 					"response": []
 				}
@@ -504,16 +358,7 @@
 						},
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "{{base_url}}/pipes/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"pipes",
-								""
-							]
-						}
+						"url": "{{base_url}}/pipes/"
 					},
 					"response": []
 				},
@@ -526,77 +371,21 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\" : \"testssss111111111111111111111\",\n    // \"parent\" : \"22\"\n    \"product\":\"148\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "tessttt111",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/home/evenmore/Downloads/kathiyawadi horse.jpeg"
 								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/pipes/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"pipes",
-								""
 							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "update-pipes",
-					"request": {
-						"auth": {
-							"type": "noauth"
 						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    // \"id\": 1,\n    \"name\": \"PIPS\"\n    // \"sub_categories\": []\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/pipes/1/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"pipes",
-								"1",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "delete-pipes",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/pipes/148/",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"pipes",
-								"148",
-								""
-							]
-						}
+						"url": "{{base_url}}/pipes/"
 					},
 					"response": []
 				}
