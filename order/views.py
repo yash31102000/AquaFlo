@@ -1,4 +1,4 @@
-from django.utils import timezone
+from rest_framework.decorators import action
 from rest_framework import generics
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from AquaFlo.Utils.permissions import IsAdminOrReadOnly
@@ -53,3 +53,32 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
             serializer.save()
             return self.success_response("Order Update successfully")
         return self.error_response("Order Update Faild")
+
+
+class UserOrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = OrderSerializer
+
+    def get(self, request, user_id=None):
+        """
+        Get all orders for a specific user
+        """
+        # If user_id not provided in URL, return error
+        if not user_id:
+            return self.error_response("User ID is required")
+        # Filter orders for this specific user
+        queryset = Order.objects.filter(user_id=user_id)
+        # Serialize the data
+        serializer = OrderSerializer(queryset, many=True)
+        
+        # Process the response data
+        response_data = serializer.data.copy()
+        for data in response_data:
+            for order_items in  data.get("order_items"):
+                sub_item = Pipe.objects.filter(pk=order_items.get("item_id")).values().first()
+                order_items.pop("item_id")
+                order_items["item"] = sub_item
+                base_url = request.build_absolute_uri("/").rstrip("/")
+                order_items["item"]["image"] = base_url + "/media/" + order_items["item"]["image"]
+        
+        return self.success_response(f"Orders for user fetched successfully", serializer.data)

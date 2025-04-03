@@ -36,12 +36,3 @@ class OrderSerializer(serializers.ModelSerializer):
         ret.pop("user", None)
         ret["user_data"] = user_data
         return ret
-
-    # def get_user(self, obj):
-    #     # Only include user data for write operations
-    #     request = self.context.get('request')
-    #     if request and request.method in ['POST', 'PUT', 'PATCH']:
-    #         return obj.user.id  # or whatever user representation you need
-    #     user_data = UserModel.objects.filter(pk = obj.user.id).values().first()
-    #     print(user_data)
-    #     return None

@@ -4,4 +4,5 @@ from .views import *
 urlpatterns = [
     path("order/", OrderViewSet.as_view()),
     path("order/<int:pk>/",OrderViewSet.as_view()),
+    path('order/<str:user_id>/', UserOrderViewSet.as_view())
 ]

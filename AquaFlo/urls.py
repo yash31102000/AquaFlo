@@ -25,7 +25,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("user.urls")),
-    path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("token/refresh/", TokenRefreshView.as_view()),
     path("api/", include("category.urls")),
     path("api/", include("banner.urls")),
     path("api/",include("order.urls")),
