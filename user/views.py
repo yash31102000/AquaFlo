@@ -44,6 +44,16 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
         ).filter(is_deleted= False)
         return self.success_response("Registered successfully", all_user)
     
+    def put(self, request, user_id=None):
+        if user_id is None:
+            return self.error_response("User ID is required")
+        user = UserModel.objects.get(id=user_id,is_deleted = False)
+        serializer = RegisterSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return self.success_response("User Update successfully")
+        return self.error_response("User Update Faild")
+
     def delete(self, request, user_id=None):
         """
         Delete a user by ID
