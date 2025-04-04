@@ -115,7 +115,8 @@ class AddorRemoveAddressAPI(DefaultResponseMixin, generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        user_id = request.user.id
+        user_id = request.data.get("user_id",request.user.id)
+        # user_id = request.user.id
         addresses = request.data.get("addresses")
 
         get_address = UserModel.objects.filter(id=user_id).first()
