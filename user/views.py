@@ -41,7 +41,7 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
     def get(self, request):
         all_user = UserModel.objects.all().values(
             "id", "phone_number", "first_name", "last_name", "email", "addresses"
-        ).filter(is_deleted= False)
+        ).filter(is_deleted= False, is_superuser = False)
         return self.success_response("Registered successfully", all_user)
     
     def put(self, request, user_id=None):
@@ -62,12 +62,16 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
             return self.error_response("User ID is required")
         
         try:
-            user = UserModel.objects.get(id=user_id,is_deleted = False)
-            user.is_deleted = True
-            user.save()
-            return self.success_response("User deleted successfully")
+            user = UserModel.objects.get(id=user_id, is_deleted=False)
         except UserModel.DoesNotExist:
-            return self.error_response("User not found")
+            return self.error_response("User not found.")
+
+        if user.is_superuser:
+            return self.error_response("Admin users cannot be deleted.")
+
+        user.is_deleted = True
+        user.save()
+        return self.success_response("User deleted successfully.")
 
 
 
@@ -96,6 +100,7 @@ class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
                 "first_name": user.first_name,
                 "last_name": user.last_name,
                 "email": user.email,
+                "is_admin":user.is_superuser,
                 "tokens": user.tokens,
                 "addresses": user.addresses,
             }
