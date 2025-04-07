@@ -15,6 +15,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         return super(RegisterSerializer, self).create(validated_data)
 
 
+class UpdateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserModel
+        fields = ["pk", "phone_number", "first_name", "last_name", "password","email","addresses"]
+
 class LoginSerializer(serializers.Serializer):
     phone_number = serializers.CharField(required=True)
     password = serializers.CharField(required=True, write_only=True)

@@ -48,7 +48,7 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
         if user_id is None:
             return self.error_response("User ID is required")
         user = UserModel.objects.get(id=user_id,is_deleted = False)
-        serializer = RegisterSerializer(user, data=request.data, partial=True)
+        serializer = UpdateUserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return self.success_response("User Update successfully")
