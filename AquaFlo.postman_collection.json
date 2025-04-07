@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "b816eac3-f2b8-4e9e-aa27-9c0625477ae4",
+		"_postman_id": "2b860db0-cdba-4b0a-a329-fc67f5a34cb4",
 		"name": "AquaFlo",
 		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "33163402",
-		"_collection_link": "https://develop-7967.postman.co/workspace/My-Workspace~6ab690bf-a9dd-4aae-8ab5-1b3214de0215/collection/33163402-b816eac3-f2b8-4e9e-aa27-9c0625477ae4?action=share&source=collection_link&creator=33163402"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40162854",
+		"_collection_link": "https://develop-7967.postman.co/workspace/develop-Workspace~8780b293-fc38-4b51-8a1a-08547dca5444/collection/40162854-2b860db0-cdba-4b0a-a329-fc67f5a34cb4?action=share&source=collection_link&creator=40162854"
 	},
 	"item": [
 		{
@@ -28,9 +28,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -43,7 +47,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/register/",
+						"url": {
+							"raw": "{{base_url}}/register/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register",
+								""
+							]
+						},
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 					},
 					"response": []
@@ -78,7 +91,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/login/"
+						"url": {
+							"raw": "{{base_url}}/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -87,22 +109,35 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"addresses\": [\n        {\n            \"company_name\": \"Abc Sales\",\n            \"GST_Number\": \"1234567890\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        },\n        {\n            \"company_name\": \"Somnath Sales\",\n            \"GST_Number\": \"1234567890\",\n            \"street\": \"789 Sardar St\",\n            \"city\": \"Surat\",\n            \"state\": \"GJ\",\n            \"zip\": \"395003\"\n        },\n        {\n            \"company_name\": \"Ramnath Sales\",\n            \"GST_Number\": \"1234567890\",\n            \"street\": \"101 Gandhi St\",\n            \"city\": \"Rajkot\",\n            \"state\": \"GJ\",\n            \"zip\": \"360001\"\n        },\n        {\n            \"company_name\": \"Dharmgiri Sales\",\n            \"GST_Number\": \"1234567890\",\n            \"street\": \"202 Nehru Rd\",\n            \"city\": \"Surat\",\n            \"state\": \"GJ\",\n            \"zip\": \"395001\"\n        }\n    ]\n}",
+							"raw": "{\n    \"user_id\" : \"72ebe49f-c3db-4850-b250-5bbb1dfdd415\",\n    \"addresses\": [\n        {\n            \"company_name\": \"Abc Sales\",\n            \"GST_Number\": \"1234567890\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        },\n        {\n            \"company_name\": \"Somnath Sales\",\n            \"GST_Number\": \"1234567890\",\n            \"street\": \"789 Sardar St\",\n            \"city\": \"Surat\",\n            \"state\": \"GJ\",\n            \"zip\": \"395003\"\n        },\n        {\n            \"company_name\": \"Ramnath Sales\",\n            \"GST_Number\": \"1234567890\",\n            \"street\": \"101 Gandhi St\",\n            \"city\": \"Rajkot\",\n            \"state\": \"GJ\",\n            \"zip\": \"360001\"\n        },\n        {\n            \"company_name\": \"Dharmgiri Sales\",\n            \"GST_Number\": \"1234567890\",\n            \"street\": \"202 Nehru Rd\",\n            \"city\": \"Surat\",\n            \"state\": \"GJ\",\n            \"zip\": \"395001\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{base_url}}/add-remove-address/"
+						"url": {
+							"raw": "{{base_url}}/add-remove-address/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"add-remove-address",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -111,22 +146,16 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/user/"
-					},
-					"response": []
-				},
-				{
-					"name": "delete-user",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": "{{base_url}}/user/72ebe49fc3db4850b2505bbb1dfdd415/"
+						"url": {
+							"raw": "{{base_url}}/user/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -135,22 +164,65 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone_number\": \"9998233014\",\n    \"first_name\": \"Yash\",\n    \"last_name\": \"Gathiys\",\n    \"email\": \"yash.sanghani.g10@gmail.com\",\n    \"password\": \"1234\",\n    \"addresses\": [\n        {\n            \"company_name\":\"\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        }\n    ]\n}",
+							"raw": "{\n    \n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{base_url}}/user/72ebe49f-c3db-4850-b250-5bbb1dfdd415/"
+						"url": {
+							"raw": "{{base_url}}/user/72ebe49fc3db4850b2505bbb1dfdd415/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"72ebe49fc3db4850b2505bbb1dfdd415",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/72ebe49fc3db4850b2505bbb1dfdd415/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"72ebe49fc3db4850b2505bbb1dfdd415",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -164,13 +236,26 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/banner/"
+						"url": {
+							"raw": "{{base_url}}/banner/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"banner",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -179,9 +264,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -210,7 +299,16 @@
 								}
 							]
 						},
-						"url": "{{base_url}}/banner/"
+						"url": {
+							"raw": "{{base_url}}/banner/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"banner",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -219,7 +317,16 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{base_url}}/banner/"
+						"url": {
+							"raw": "{{base_url}}/banner/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"banner",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -228,9 +335,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "PUT",
 						"header": [],
@@ -259,7 +370,16 @@
 								}
 							]
 						},
-						"url": "{{base_url}}/banner/1"
+						"url": {
+							"raw": "{{base_url}}/banner/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"banner",
+								"1"
+							]
+						}
 					},
 					"response": []
 				}
@@ -273,9 +393,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -288,7 +412,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/order/"
+						"url": {
+							"raw": "{{base_url}}/order/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -297,13 +430,26 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/order/"
+						"url": {
+							"raw": "{{base_url}}/order/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -312,9 +458,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "PUT",
 						"header": [],
@@ -327,7 +477,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/order/1"
+						"url": {
+							"raw": "{{base_url}}/order/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order",
+								"1"
+							]
+						}
 					},
 					"response": []
 				},
@@ -336,13 +495,27 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/order/f091e57f87c94fe48c397087333fdc59/"
+						"url": {
+							"raw": "{{base_url}}/order/f091e57f87c94fe48c397087333fdc59/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order",
+								"f091e57f87c94fe48c397087333fdc59",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -356,7 +529,16 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/invoice/"
+						"url": {
+							"raw": "{{base_url}}/invoice/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"invoice",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -365,9 +547,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -380,7 +566,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/invoice/"
+						"url": {
+							"raw": "{{base_url}}/invoice/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"invoice",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -389,13 +584,26 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "PUT",
 						"header": [],
-						"url": "{{base_url}}/invoice/"
+						"url": {
+							"raw": "{{base_url}}/invoice/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"invoice",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -412,7 +620,16 @@
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/pipes/"
+						"url": {
+							"raw": "{{base_url}}/pipes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pipes",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -439,7 +656,38 @@
 								}
 							]
 						},
-						"url": "{{base_url}}/pipes/"
+						"url": {
+							"raw": "{{base_url}}/pipes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pipes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-product-list",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/get-product-list/5/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"get-product-list",
+								"5",
+								""
+							]
+						}
 					},
 					"response": []
 				}
