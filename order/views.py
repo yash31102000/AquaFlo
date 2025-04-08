@@ -55,7 +55,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
         serializer = OrderSerializer(order,data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return self.success_response("Order Update successfully",serializer.data)
+            return self.success_response("Order Update successfully")
         return self.error_response("Order Update Faild")
 
 
