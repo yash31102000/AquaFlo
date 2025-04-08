@@ -112,3 +112,43 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
             return self.error_response(f"Pipe {pk} not found")
         except Exception as e:
             return self.error_response(f"Pipe update failed: {str(e)}")
+
+class GetPipeViewset(DefaultResponseMixin, generics.GenericAPIView):
+    def update_image_urls(self, base_url, data):
+        if isinstance(data, list):
+            for item in data:
+                self.update_image_urls(base_url, item)
+        elif isinstance(data, dict):
+            for key, value in data.items():
+                if key == "image" and value:
+                    data[key] = f"{base_url}{value}"
+                elif isinstance(value, (dict, list)):
+                    self.update_image_urls(base_url, value)
+
+    def get(self, request, pk=None):
+        try:
+            main_pip = Pipe.objects.filter(pk=pk).values().first()
+            sub_categories = Pipe.objects.filter(parent = main_pip.get("id")).values()
+            related_product = []
+            sub_categories_name_list = []
+            if sub_categories.exists():
+                for sub_categorie in sub_categories:
+                    sub_categories_name_list.append(sub_categorie.get("name"))
+                    products = Pipe.objects.filter(product = sub_categorie.get("id")).values()
+                    for product in products:
+                        base_url = request.build_absolute_uri("/").rstrip("/") + "/media/"
+                        self.update_image_urls(base_url, product)
+                        product["sub_categorie_name"] = sub_categorie.get("name")
+                        related_product.append(product)
+            products = Pipe.objects.filter(product = main_pip.get("id")).values()
+            for product in products:
+                base_url = request.build_absolute_uri("/").rstrip("/") + "/media/"
+                self.update_image_urls(base_url, product)
+                product["sub_categorie_name"] = ""
+                related_product.append(product)
+            response_data = {"filtter_list":sub_categories_name_list,"related_product_list":related_product}
+            return self.success_response(
+                        "Products List Fatch successfully",response_data
+                    )
+        except Exception as e:
+            return self.error_response("Product List Not Fatch")

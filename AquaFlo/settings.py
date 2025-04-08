@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "Invoice",
     "banner",
     "order",
+    "stocks",
 ]
 
 MIDDLEWARE = [
