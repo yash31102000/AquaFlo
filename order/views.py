@@ -47,11 +47,15 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
             cancellation_reason = request.data.get('cancellation_reason')
             if not cancellation_reason:
                 return self.error_response('Cancellation reason is required when order status is CANCEL.')
-            
+        order_items = request.data.get("order_items")
+        if order_items:
+            for order_item in order_items:
+                if not order_item.get("item_id"):
+                   return self.error_response("item_id missing in order_items")
         serializer = OrderSerializer(order,data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return self.success_response("Order Update successfully")
+            return self.success_response("Order Update successfully",serializer.data)
         return self.error_response("Order Update Faild")
 
 
