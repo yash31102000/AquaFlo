@@ -47,7 +47,6 @@ CORS_ALLOW_HEADERS = [
 ]
 
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -64,7 +63,7 @@ INSTALLED_APPS = [
     "category",
     "Invoice",
     "banner",
-    "order"
+    "order",
 ]
 
 MIDDLEWARE = [

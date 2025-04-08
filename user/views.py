@@ -39,15 +39,19 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
             return self.success_response("Registered successfully", serializer.data)
 
     def get(self, request):
-        all_user = UserModel.objects.all().values(
-            "id", "phone_number", "first_name", "last_name", "email", "addresses"
-        ).filter(is_deleted= False, is_superuser = False)
+        all_user = (
+            UserModel.objects.all()
+            .values(
+                "id", "phone_number", "first_name", "last_name", "email", "addresses"
+            )
+            .filter(is_deleted=False, is_superuser=False)
+        )
         return self.success_response("Registered successfully", all_user)
-    
+
     def put(self, request, user_id=None):
         if user_id is None:
             return self.error_response("User ID is required")
-        user = UserModel.objects.get(id=user_id,is_deleted = False)
+        user = UserModel.objects.get(id=user_id, is_deleted=False)
         serializer = RegisterSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -60,7 +64,7 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
         """
         if user_id is None:
             return self.error_response("User ID is required")
-        
+
         try:
             user = UserModel.objects.get(id=user_id, is_deleted=False)
         except UserModel.DoesNotExist:
@@ -72,7 +76,6 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
         user.is_deleted = True
         user.save()
         return self.success_response("User deleted successfully.")
-
 
 
 class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
@@ -100,7 +103,7 @@ class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
                 "first_name": user.first_name,
                 "last_name": user.last_name,
                 "email": user.email,
-                "is_admin":user.is_superuser,
+                "is_admin": user.is_superuser,
                 "tokens": user.tokens,
                 "addresses": user.addresses,
             }
@@ -115,7 +118,7 @@ class AddorRemoveAddressAPI(DefaultResponseMixin, generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        user_id = request.data.get("user_id",request.user.id)
+        user_id = request.data.get("user_id", request.user.id)
         # user_id = request.user.id
         addresses = request.data.get("addresses")
 

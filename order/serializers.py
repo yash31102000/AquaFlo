@@ -30,7 +30,12 @@ class OrderSerializer(serializers.ModelSerializer):
         # print(ret.get("user"))
         user_data = (
             UserModel.objects.filter(pk=ret.get("user"))
-            .values("phone_number", "first_name", "last_name", "email",)
+            .values(
+                "phone_number",
+                "first_name",
+                "last_name",
+                "email",
+            )
             .first()
         )
         ret.pop("user", None)

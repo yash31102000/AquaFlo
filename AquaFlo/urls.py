@@ -28,8 +28,8 @@ urlpatterns = [
     path("token/refresh/", TokenRefreshView.as_view()),
     path("api/", include("category.urls")),
     path("api/", include("banner.urls")),
-    path("api/",include("order.urls")),
-    path("api/",include("Invoice.urls")),
+    path("api/", include("order.urls")),
+    path("api/", include("Invoice.urls")),
 ]
 
 if settings.DEBUG:
