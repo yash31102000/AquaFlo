@@ -9,10 +9,8 @@ class InvoiceSerializer(serializers.ModelSerializer):
         fields = [
             "invoice_number",
             "order",
-            "total_amount",
             "tax_amount",
             "discount",
-            "final_amount",
             "issue_date",
             "due_date",
             "payment_status",

@@ -1,9 +1,7 @@
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from django.utils import timezone
-from datetime import timedelta
-
+from category.models import Pipe
 from order.models import Order
 from .models import Invoice
 from .serializers import InvoiceSerializer
@@ -57,15 +55,65 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
         Retrieve a list of invoices, optionally filtering by date or other criteria.
         """
         try:
-            invoices = Invoice.objects.all()
+            invoices = Invoice.objects.all().select_related(
+                "order__user"  
+            ) 
             serializer = InvoiceSerializer(
                 invoices, many=True, context={"request": request}
             )
+           
+            base_url = request.build_absolute_uri("/").rstrip("/")
             for invoice in serializer.data:
-                invoice_order = (
-                    Order.objects.filter(pk=invoice.get("order")).values().first()
-                )
-                invoice["order"] = invoice_order
+                print(invoice,"invoice")
+                order = invoice.get("order")
+
+                if isinstance(order, int):
+                    invoice_order = Order.objects.get(id=order)
+   
+                
+                user = {
+                    "phone_number": invoice_order.user.phone_number,  
+                    "first_name": invoice_order.user.first_name,
+                    "last_name": invoice_order.user.last_name,
+                    "email": invoice_order.user.email,
+                }
+
+                order_items = invoice_order.order_items
+                total_amount = 0
+
+                for item in order_items:
+                    pipe_details = (
+                        Pipe.objects.filter(id=item.get("item_id")).values().first()
+                    )
+
+                    base_url = request.build_absolute_uri("/").rstrip("/")
+                    if pipe_details:
+                        item["item"] = pipe_details
+                        item["item"]["image"] = (
+                            base_url + "/media/" + item["item"]["image"]
+                        )
+                        item.pop("item_id", None)
+                    item_total = int(item.get("quantity", 0)) * int(item.get("price", 0))
+                    total_amount += item_total  # Add to the overall total_amoun
+                
+                tax_amount = int(invoice.get("tax_amount"))
+                discount_amount = int(invoice.get("discount"))
+
+                final_amount = total_amount + tax_amount - discount_amount
+
+                invoice["total_amount"] = total_amount
+                invoice["final_amount"] = final_amount
+                
+                invoice["order"] = {
+                    "id": invoice_order.id,
+                    "user": user,
+                    "order_items": order_items,
+                    "created_at":invoice_order.created_at,
+                    "status":invoice_order.status,
+                    "address":invoice_order.address,
+                    "address_link":invoice_order.address_link,
+                    "cancellation_reason":invoice_order.cancellation_reason
+                }
             return self.success_response(
                 "Invoices fetched successfully.", serializer.data
             )
