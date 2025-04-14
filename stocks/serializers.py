@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from stocks.models import StockTransaction
+from .models import StockTransaction
 
 
 class StockTransactionSerializer(serializers.ModelSerializer):

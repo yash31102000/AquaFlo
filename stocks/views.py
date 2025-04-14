@@ -1,13 +1,10 @@
-from requests import Response
-from category.models import Pipe
 from rest_framework import generics
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
-from stocks.models import StockTransaction
-from stocks.serializers import StockTransactionSerializer
-
+from .models import StockTransaction
+from .serializers import StockTransactionSerializer
+from django.db.models import F, ExpressionWrapper, IntegerField, Case, When
 
 # Create your views here.
-# views.py
 
 
 class StockTransactionView(DefaultResponseMixin, generics.GenericAPIView):
@@ -32,12 +29,37 @@ class StockTransactionView(DefaultResponseMixin, generics.GenericAPIView):
             return self.error_response(f"Stock add failed: {str(e)}")
 
     def get(self, request):
+        # queryset = StockTransaction.objects.all()
+        queryset = StockTransaction.objects.annotate(
+            diff=ExpressionWrapper(
+                F("quantity") - F("alert"), output_field=IntegerField()
+            ),
+            priority=Case(
+                When(diff__lte=10, then=0),  # High priority (near alert)
+                default=1,  # Low priority (not near)
+                output_field=IntegerField(),
+            ),
+        ).order_by(
+            "priority", "diff"
+        )  # Show near alert items first
 
-        queryset = StockTransaction.objects.all()
+        queryset = StockTransaction.objects.annotate(
+            diff=ExpressionWrapper(
+                F("quantity") - F("alert"), output_field=IntegerField()
+            ),
+            priority=Case(
+                When(diff__lte=10, then=0),  # High priority (near alert)
+                default=1,  # Low priority (not near)
+                output_field=IntegerField(),
+            ),
+        ).order_by(
+            "priority", "diff"
+        )  # Show near alert items first
+
         serializer = StockTransactionSerializer(queryset, many=True)
         base_url = request.build_absolute_uri("/").rstrip("/")
         for data in serializer.data:
-            data["pipe_image"] = base_url+'/media/'+data.get("pipe_image")
+            data["pipe_image"] = base_url + "/media/" + data.get("pipe_image")
         return self.success_response(
             "Stock detalis feached succesfully", serializer.data
         )
