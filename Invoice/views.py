@@ -55,24 +55,21 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
         Retrieve a list of invoices, optionally filtering by date or other criteria.
         """
         try:
-            invoices = Invoice.objects.all().select_related(
-                "order__user"  
-            ) 
+            invoices = Invoice.objects.all().select_related("order__user")
             serializer = InvoiceSerializer(
                 invoices, many=True, context={"request": request}
             )
-           
+
             base_url = request.build_absolute_uri("/").rstrip("/")
             for invoice in serializer.data:
-                print(invoice,"invoice")
+
                 order = invoice.get("order")
 
                 if isinstance(order, int):
                     invoice_order = Order.objects.get(id=order)
-   
-                
+
                 user = {
-                    "phone_number": invoice_order.user.phone_number,  
+                    "phone_number": invoice_order.user.phone_number,
                     "first_name": invoice_order.user.first_name,
                     "last_name": invoice_order.user.last_name,
                     "email": invoice_order.user.email,
@@ -93,9 +90,13 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             base_url + "/media/" + item["item"]["image"]
                         )
                         item.pop("item_id", None)
-                    item_total = int(item.get("quantity", 0)) * int(item.get("price", 0))
+                    item_total = (
+                        int(item.get("quantity", 0)) * int(item.get("price", 0))
+                        if item.get("price")
+                        else 0
+                    )
                     total_amount += item_total  # Add to the overall total_amoun
-                
+
                 tax_amount = int(invoice.get("tax_amount"))
                 discount_amount = int(invoice.get("discount"))
 
@@ -103,16 +104,16 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
                 invoice["total_amount"] = total_amount
                 invoice["final_amount"] = final_amount
-                
+
                 invoice["order"] = {
                     "id": invoice_order.id,
                     "user": user,
                     "order_items": order_items,
-                    "created_at":invoice_order.created_at,
-                    "status":invoice_order.status,
-                    "address":invoice_order.address,
-                    "address_link":invoice_order.address_link,
-                    "cancellation_reason":invoice_order.cancellation_reason
+                    "created_at": invoice_order.created_at,
+                    "status": invoice_order.status,
+                    "address": invoice_order.address,
+                    "address_link": invoice_order.address_link,
+                    "cancellation_reason": invoice_order.cancellation_reason,
                 }
             return self.success_response(
                 "Invoices fetched successfully.", serializer.data
