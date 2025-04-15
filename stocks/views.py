@@ -3,6 +3,7 @@ from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from .models import StockTransaction
 from .serializers import StockTransactionSerializer
 from django.db.models import F, ExpressionWrapper, IntegerField, Case, When
+from category.models import Pipe
 
 # Create your views here.
 
@@ -81,3 +82,14 @@ class StockTransactionView(DefaultResponseMixin, generics.GenericAPIView):
         stock_id.save()
 
         return self.success_response("Stock Update Successfully")
+
+class StockProductlistView(DefaultResponseMixin, generics.GenericAPIView):
+    def get(self,request):
+        try:
+            stock_product = Pipe.objects.exclude(
+                id__in=StockTransaction.objects.values_list('pipe_id', flat=True)
+            ).filter(product__isnull=False).values()
+
+            return self.success_response("Stock Product List Featched.",stock_product)
+        except Exception as e:
+            return self.error_response("Stock Product List Not Featched")

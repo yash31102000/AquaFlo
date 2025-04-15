@@ -461,13 +461,13 @@
 			"name": "Stockmanagement",
 			"item": [
 				{
-					"name": "in or out stock add",
+					"name": "stock add",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"pipe\": 136,\n  \"transaction_type\": \"IN\",\n  \"quantity\": 150,\n  \"alert\" : \"110\",\n  \"note\": \"In water tank stock\"\n}\n",
+							"raw": "{\n  \"pipe\": 110,\n  \"transaction_type\": \"IN\",\n  \"quantity\": 150,\n  \"alert\" : \"150\",\n  \"note\": \"In water tank stock\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -479,7 +479,7 @@
 					"response": []
 				},
 				{
-					"name": "pipe-stock-summary",
+					"name": "get-stock",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -494,7 +494,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"pipe\": 49,\n  \"transaction_type\": \"IN\",\n  \"quantity\": 5,\n  \"note\": \"In stock\"\n}\n",
+							"raw": "{\n  \"transaction_type\": \"OUT\",\n  \"quantity\": 5,\n  \"note\": \"out stock\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -502,6 +502,15 @@
 							}
 						},
 						"url": "{{base_url}}/stock-update/1"
+					},
+					"response": []
+				},
+				{
+					"name": "stock-product-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/stock-product-list/"
 					},
 					"response": []
 				}
