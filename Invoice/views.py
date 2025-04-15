@@ -90,12 +90,29 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             base_url + "/media/" + item["item"]["image"]
                         )
                         item.pop("item_id", None)
-                    item_total = (
-                        int(item.get("quantity", 0)) * int(item.get("price", 0))
-                        if item.get("price")
-                        else 0
-                    )
-                    total_amount += item_total  # Add to the overall total_amoun
+                    if item.get("discount_type") == "percentage":
+                        per_item_discount = item.get("per_item_discount")
+                        item_total = (
+                            int(item.get("quantity", 0)) * int(item.get("price", 0))
+                            if item.get("price")
+                            else 0
+                        )
+                        discount_amount = item_total * int(per_item_discount) / 100
+                        final_price = int(item_total - discount_amount)
+                    elif item.get("discount_type") == "fixed":
+                        per_item_discount = item.get("per_item_discount")
+                        final_price = (
+                            int(item.get("quantity", 0)) * (int(item.get("price", 0)) - int(per_item_discount))
+                            if item.get("price")
+                            else 0
+                        )
+                    else:
+                        final_price = (
+                            int(item.get("quantity", 0)) * (int(item.get("price", 0)) - int(per_item_discount))
+                            if item.get("price")
+                            else 0
+                        )
+                    total_amount += final_price
 
                 tax_amount = int(invoice.get("tax_amount"))
                 discount_amount = int(invoice.get("discount"))

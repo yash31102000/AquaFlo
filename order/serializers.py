@@ -27,7 +27,6 @@ class OrderSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         ret = super().to_representation(instance)
         # Remove user data from the response
-        # print(ret.get("user"))
         user_data = (
             UserModel.objects.filter(pk=ret.get("user"))
             .values(
