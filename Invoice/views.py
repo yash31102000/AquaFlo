@@ -31,7 +31,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
         Update an existing invoice instance.
         """
         try:
-            invoice = Invoice.objects.get(id=kwargs["pk"])
+            invoice = Invoice.objects.get(invoice_number=kwargs["pk"])
         except Invoice.DoesNotExist:
             return self.error_response("Invoice not found.")
 
@@ -45,7 +45,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 serializer.save()
             )  # This will call the `update` method in the serializer.
             return self.success_response(
-                "Invoice updated successfully.", serializer.data
+                "Invoice updated successfully."
             )
 
         return self.error_response("Failed to update invoice.", serializer.errors)

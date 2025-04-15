@@ -395,7 +395,16 @@
 						},
 						"method": "PUT",
 						"header": [],
-						"url": "{{base_url}}/invoice/"
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order\": \"4\",\n    // \"total_amount\": \"50000\",\n    \"tax_amount\": \"0\",\n    \"discount\": \"0\",\n    // \"final_amount\": \"55000\",\n    // \"due_date\": \"2025-04-15\",\n    \"payment_method\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/invoice/3"
 					},
 					"response": []
 				}
