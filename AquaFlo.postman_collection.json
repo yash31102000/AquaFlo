@@ -409,6 +409,33 @@
 					"response": []
 				},
 				{
+					"name": "get-invoice-by-order",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/order-invoice/3/"
+					},
+					"response": []
+				},
+				{
 					"name": "get-invoice-by-user",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
