@@ -55,7 +55,10 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
         Retrieve a list of invoices, optionally filtering by date or other criteria.
         """
         try:
-            invoices = Invoice.objects.all().select_related("order__user")
+            if kwargs.get("pk",None):
+                invoices = Invoice.objects.filter(order__user = kwargs["pk"]).select_related("order__user")
+            else:
+                invoices = Invoice.objects.all().select_related("order__user")
             serializer = InvoiceSerializer(
                 invoices, many=True, context={"request": request}
             )

@@ -407,6 +407,33 @@
 						"url": "{{base_url}}/invoice/3"
 					},
 					"response": []
+				},
+				{
+					"name": "get-invoice-by-user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/invoice/72ebe49fc3db4850b2505bbb1dfdd415/"
+					},
+					"response": []
 				}
 			]
 		},
