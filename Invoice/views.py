@@ -101,12 +101,18 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         final_price = int(item_total - discount_amount)
                     elif item.get("discount_type") == "fixed":
                         per_item_discount = item.get("per_item_discount")
+                        if per_item_discount == '':
+                            per_item_discount = 0
+                        
                         final_price = (
                             int(item.get("quantity", 0)) * (int(item.get("price", 0)) - int(per_item_discount))
                             if item.get("price")
                             else 0
                         )
                     else:
+                        per_item_discount = item.get("per_item_discount", 0)
+                        if per_item_discount == '':
+                            per_item_discount = 0
                         final_price = (
                             int(item.get("quantity", 0)) * (int(item.get("price", 0)) - int(per_item_discount))
                             if item.get("price")
