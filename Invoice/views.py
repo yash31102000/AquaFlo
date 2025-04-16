@@ -21,7 +21,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
             # Save the invoice after validation
             invoice = serializer.save()
             return self.success_response(
-                "Invoice created successfully.", serializer.data
+                "Invoice created successfully."
             )
 
         return self.error_response("Failed to create invoice.", serializer.errors)

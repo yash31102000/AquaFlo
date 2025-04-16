@@ -21,7 +21,7 @@ class BannerViewSet(DefaultResponseMixin, generics.GenericAPIView):
         serializer = BannerSerializer(data=request.data, context={"request": request})
         if serializer.is_valid():
             serializer.save()
-            return self.success_response("Banner created successfully", serializer.data)
+            return self.success_response("Banner created successfully")
 
         return self.error_response("Failed")
 
