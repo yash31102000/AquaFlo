@@ -137,34 +137,89 @@ class AddorRemoveAddressAPI(DefaultResponseMixin, generics.GenericAPIView):
         )
 
 class FetchGSTDetailsView(DefaultResponseMixin, generics.GenericAPIView):
+    def fetch_gst_details(self, gst_number):
+        # API_URL = f"https://api.example.com/gst/{gst_number}"
+        # API_KEY = "ca391fa0c7430696dc45c9ea9ef065c4"
+        # API_URL = f"http://sheet.gstincheck.co.in/check/{API_KEY}/{gst_number}"
+        # API_URL = f"https://cleartax.in/f/compliance-report/24AAOFM4186F1Z3/"
+        API_URL = (
+            f"https://cleartax.in/f/compliance-report/{gst_number}/?captcha_token=xdgd"
+        )
+        headers = {
+            "accept": "application/json, text/plain, */*",
+            "accept-language": "en-GB,en-US;q=0.9,en;q=0.8,hi;q=0.7,gu;q=0.6",
+            "priority": "u=1, i",
+            "referer": "https://cleartax.in/gst-number-search/",
+            "sec-ch-ua": '"Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "sentry-trace": "afa5cbf9363d4417ae4c4936c3573a7f-99b41ee2c2312368-0",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+            "Cookie": "_ga_4TX14F3R0D=GS1.1.1744867881.1.0.1744867881.60.0.0; _ga=GA1.1.1084580926.1744867881; _ga_C37VX8T52R=GS1.1.1744867881.1.0.1744867885.0.0.0; _gcl_au=1.1.1363496202.1744867887; _uetsid=38ce99c01b4d11f0bd83edccc8d5e54d; _uetvid=38cedd101b4d11f09003d546d16efb34; _clck=1bcde61%7C2%7Cfv5%7C0%7C1933; aI=2847297b-f597-44cc-a9ff-28857838b1de; _clsk=w841wp%7C1744868293629%7C2%7C0%7Cj.clarity.ms%2Fcollect; aI=2847297b-f597-44cc-a9ff-28857838b1de",
+        }
+
+        # headers = {"Authorization": f"Bearer {API_KEY}"}
+        response = requests.get(API_URL, headers=headers)
+        if response.status_code == 200:
+            return json.loads(response.text)
+        return None
+
     def get(self, request, gst_number):
         """Fetch GST details from an external API and return JSON response"""
-        url = f"https://www.knowyourgst.com/developers/gstincall/?gstin={gst_number}"
-        headers = {"passthrough": "MzIxNDU2OTg3MDMyNzY2MzQ2ODA"}
-        response = requests.get(url, headers=headers)
-        raw_data = response.json()
-        if raw_data.get("status_code") == 1:
-            address = raw_data["adress"]
-            street_parts = [
-                address.get("floor", ""),
-                address.get("bno", ""),
-                address.get("bname", ""),
-                address.get("street", ""),
-                address.get("location", ""),
-            ]
-            street = ",".join(part for part in street_parts if part)
-            formatted_response = {
-                "gst_number": raw_data.get("gstin"),
-                "party_name": raw_data.get("legal-name"),
-                "street": street,
-                "city": address.get("city"),
-                "state": address.get("state"),
-                "zip_code": address.get("pincode"),
-                "pan_card": raw_data.get("pan"),
+        try:
+            gst_data = self.fetch_gst_details(gst_number)
+            response_data = {
+                "gst_number": gst_data.get("taxpayerInfo").get("gstin"),
+                "party_name": gst_data.get("taxpayerInfo").get("lgnm"),
+                "street": gst_data.get("taxpayerInfo").get("pradr").get("addr").get("bno")
+                + ","
+                + gst_data.get("taxpayerInfo").get("pradr").get("addr").get("bnm")
+                + ","
+                + gst_data.get("taxpayerInfo").get("pradr").get("addr").get("st")
+                + ","
+                + gst_data.get("taxpayerInfo").get("pradr").get("addr").get("loc"),
+                "city": gst_data.get("taxpayerInfo").get("pradr").get("addr").get("dst"),
+                "state": gst_data.get("taxpayerInfo").get("pradr").get("addr").get("stcd"),
+                "zip_code": gst_data.get("taxpayerInfo")
+                .get("pradr")
+                .get("addr")
+                .get("pncd"),
+                "pan_card": gst_number[2:12],
             }
-            return self.success_response(
-                "GST Data Fetch Successfully", formatted_response
-            )
-        else:
+            return self.success_response("GST Data Fetch Successfully", response_data)
+        except:
+            return self.error_response("Invalid GST number or data not found")
+    # def get(self, request, gst_number):
+    #     """Fetch GST details from an external API and return JSON response"""
+    #     url = f"https://www.knowyourgst.com/developers/gstincall/?gstin={gst_number}"
+    #     headers = {"passthrough": "MzIxNDU2OTg3MDMyNzY2MzQ2ODA"}
+    #     response = requests.get(url, headers=headers)
+    #     raw_data = response.json()
+    #     if raw_data.get("status_code") == 1:
+    #         address = raw_data["adress"]
+    #         street_parts = [
+    #             address.get("floor", ""),
+    #             address.get("bno", ""),
+    #             address.get("bname", ""),
+    #             address.get("street", ""),
+    #             address.get("location", ""),
+    #         ]
+    #         street = ",".join(part for part in street_parts if part)
+    #         formatted_response = {
+    #             "gst_number": raw_data.get("gstin"),
+    #             "party_name": raw_data.get("legal-name"),
+    #             "street": street,
+    #             "city": address.get("city"),
+    #             "state": address.get("state"),
+    #             "zip_code": address.get("pincode"),
+    #             "pan_card": raw_data.get("pan"),
+    #         }
+    #         return self.success_response(
+    #             "GST Data Fetch Successfully", formatted_response
+    #         )
+    #     else:
 
-            return self.error_response("Failed to fetch GST data")
+    #         return self.error_response("Failed to fetch GST data")
