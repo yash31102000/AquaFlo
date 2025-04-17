@@ -190,7 +190,8 @@ class FetchGSTDetailsView(DefaultResponseMixin, generics.GenericAPIView):
                 "pan_card": gst_number[2:12],
             }
             return self.success_response("GST Data Fetch Successfully", response_data)
-        except:
+        except Exception as e:
+            print(e)
             return self.error_response("Invalid GST number or data not found")
     # def get(self, request, gst_number):
     #     """Fetch GST details from an external API and return JSON response"""
