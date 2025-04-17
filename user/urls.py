@@ -7,4 +7,5 @@ urlpatterns = [
     path("add-remove-address/", AddorRemoveAddressAPI.as_view()),
     path("user/", RegisterAPI.as_view()),
     path("user/<str:user_id>/", RegisterAPI.as_view()),
+    path("fetch-gst-details/<str:gst_number>/", FetchGSTDetailsView.as_view()),
 ]
