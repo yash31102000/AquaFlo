@@ -5,7 +5,7 @@ from .models import Banner
 class BannerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Banner
-        fields = ["id", "title", "image", "description", "category"]
+        fields = ["id", "title", "image", "description", "category", "flag"]
 
     def get_image_url(self, obj):
         # This assumes that you are storing images in a static directory

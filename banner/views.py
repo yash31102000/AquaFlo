@@ -32,8 +32,10 @@ class BannerViewSet(DefaultResponseMixin, generics.GenericAPIView):
         """
         if self.request.user.is_deleted:
             return self.error_response("User was not found, please contact Admin")
-
-        banners = Banner.objects.all().filter(flag=True)
+        if self.request.user.is_superuser:
+            banners = Banner.objects.all()
+        else:
+            banners = Banner.objects.all().filter(flag=True)
 
         # Get the current time and filter out banners older than 7 days
         seven_days_ago = timezone.now() - timedelta(days=7)
@@ -50,21 +52,20 @@ class BannerViewSet(DefaultResponseMixin, generics.GenericAPIView):
         serializer = BannerSerializer(banners, many=True, context={"request": request})
         return self.success_response("Banner fetched successfully", serializer.data)
 
-    def delete(self, request,pk):
+    def delete(self, request, pk):
         """
         Delete a banner instance, if the date is older than 7 days.
         """
-  
+
         banner = Banner.objects.filter(id=pk).first()
         if not banner:
             return self.error_response("Banner Not Found")
         if banner.image and os.path.isfile(banner.image.path):
-                os.remove(banner.image.path)
+            os.remove(banner.image.path)
         banner.delete()
         return self.success_response(
             "Deleted successfully.",
         )
-
 
     def put(self, request, pk):
 
