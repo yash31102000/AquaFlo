@@ -74,10 +74,11 @@ class PipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Pipe
-        fields = ["id", "name", "image", "parent", "product", "sub_categories"]
+        fields = ["id", "name", "image", "parent", "product", "sub_categories","marked_as_favorite"]
         extra_kwargs = {
             "parent": {"required": False, "allow_null": True},
             "product": {"required": False, "allow_null": True},
+            "marked_as_favorite": {"required": False, "allow_null": False},
         }
 
     def create(self, validated_data):

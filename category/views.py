@@ -4,7 +4,7 @@ from AquaFlo.Utils.permissions import IsAdminOrReadOnly
 from .serializers import *
 from order.models import Order
 from collections import defaultdict
-
+from django.db.models import Q
 
 class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
     def update_image_urls(self, base_url, data):
@@ -95,19 +95,19 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         try:
             # Retrieve the existing pipe
             pipe = Pipe.objects.get(id=pk)
-
+            
+            if pipe.product is not None and "marked_as_favorite" in request.data:
+                pipe.marked_as_favorite = request.data.get("marked_as_favorite")
+                pipe.save()
             # Use create update serializer for handling update
             serializer = PipeCreateUpdateSerializer(
                 pipe, data=request.data, partial=True
             )
 
             if serializer.is_valid(raise_exception=True):
-                updated_pipe = serializer.save()
-
-                # Use recursive serializer to return full nested structure
-                response_serializer = RecursivePipeSerializer(updated_pipe)
+                serializer.save()
                 return self.success_response(
-                    "Pipe updated successfully", response_serializer.data
+                    "Pipe updated successfully"
                 )
 
         except Pipe.DoesNotExist:
@@ -247,3 +247,14 @@ class GetMainCategoryViewset(DefaultResponseMixin, generics.GenericAPIView):
             )
         except:
             return self.error_response("Main Category Not Fetched")
+    
+class MarkedAsfavoriteViewset(DefaultResponseMixin, generics.GenericAPIView):
+
+    def get(self,request):
+        queryset = Pipe.objects.filter(marked_as_favorite=True).values("id","name","image","marked_as_favorite")
+        if not queryset:
+            return self.error_response("Data Not found")
+        for makasfavoritedata in queryset:
+            base_url = request.build_absolute_uri("/").rstrip("/") + "/media/"
+            makasfavoritedata["image"] = base_url + makasfavoritedata.get("image")
+        return self.success_response("MarkedAsfavorite Featched Succsessfully",queryset)
