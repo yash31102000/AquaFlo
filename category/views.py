@@ -221,3 +221,13 @@ class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
         
         best_seller.delete()
         return self.success_response("BestSeller Delete Successfully")
+    
+class GetMainCategoryViewset(DefaultResponseMixin, generics.GenericAPIView):
+
+    def get(self,request):
+        try:
+            main_category = Pipe.objects.filter(parent__isnull=True, product__isnull=True).values()
+            serializer = PipeSerializer(main_category, many=True)
+            return self.success_response("Main Category Fetched Successfully",serializer.data)
+        except:
+            return self.error_response("Main Category Not Fetched")
