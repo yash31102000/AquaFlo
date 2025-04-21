@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "d803dd6a-dae5-45b0-b871-f7febd9b8668",
+		"_postman_id": "99d32bae-156a-42ce-8ecd-9eca19458ecd",
 		"name": "AquaFlo",
 		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "33163402",
-		"_collection_link": "https://develop-7967.postman.co/workspace/My-Workspace~6ab690bf-a9dd-4aae-8ab5-1b3214de0215/collection/33163402-d803dd6a-dae5-45b0-b871-f7febd9b8668?action=share&source=collection_link&creator=33163402"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40162854",
+		"_collection_link": "https://develop-7967.postman.co/workspace/develop-Workspace~8780b293-fc38-4b51-8a1a-08547dca5444/collection/40162854-99d32bae-156a-42ce-8ecd-9eca19458ecd?action=share&source=collection_link&creator=40162854"
 	},
 	"item": [
 		{
@@ -28,9 +28,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -43,7 +47,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/register/",
+						"url": {
+							"raw": "{{base_url}}/register/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register",
+								""
+							]
+						},
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 					},
 					"response": []
@@ -78,7 +91,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/login/"
+						"url": {
+							"raw": "{{base_url}}/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -87,9 +109,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -102,7 +128,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/add-remove-address/"
+						"url": {
+							"raw": "{{base_url}}/add-remove-address/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"add-remove-address",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -111,7 +146,16 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/user/"
+						"url": {
+							"raw": "{{base_url}}/user/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -120,9 +164,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "PUT",
 						"header": [],
@@ -135,7 +183,17 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/user/72ebe49f-c3db-4850-b250-5bbb1dfdd415/"
+						"url": {
+							"raw": "{{base_url}}/user/72ebe49f-c3db-4850-b250-5bbb1dfdd415/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"72ebe49f-c3db-4850-b250-5bbb1dfdd415",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -144,13 +202,27 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "DELETE",
 						"header": [],
-						"url": "{{base_url}}/user/72ebe49fc3db4850b2505bbb1dfdd415/"
+						"url": {
+							"raw": "{{base_url}}/user/72ebe49fc3db4850b2505bbb1dfdd415/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"72ebe49fc3db4850b2505bbb1dfdd415",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -162,7 +234,17 @@
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/fetch-gst-details/24AAXFT2733Q1ZB/"
+						"url": {
+							"raw": "{{base_url}}/fetch-gst-details/24AAXFT2733Q1ZB/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"fetch-gst-details",
+								"24AAXFT2733Q1ZB",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -176,13 +258,26 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/banner/"
+						"url": {
+							"raw": "{{base_url}}/banner/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"banner",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -191,9 +286,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -222,7 +321,16 @@
 								}
 							]
 						},
-						"url": "{{base_url}}/banner/"
+						"url": {
+							"raw": "{{base_url}}/banner/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"banner",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -231,7 +339,16 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{base_url}}/banner/"
+						"url": {
+							"raw": "{{base_url}}/banner/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"banner",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -240,9 +357,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "PUT",
 						"header": [],
@@ -271,7 +392,16 @@
 								}
 							]
 						},
-						"url": "{{base_url}}/banner/1"
+						"url": {
+							"raw": "{{base_url}}/banner/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"banner",
+								"1"
+							]
+						}
 					},
 					"response": []
 				}
@@ -285,9 +415,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -300,7 +434,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/order/"
+						"url": {
+							"raw": "{{base_url}}/order/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -309,13 +452,26 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/order/"
+						"url": {
+							"raw": "{{base_url}}/order/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -324,9 +480,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "PUT",
 						"header": [],
@@ -339,7 +499,17 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/order/7/"
+						"url": {
+							"raw": "{{base_url}}/order/7/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order",
+								"7",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -348,13 +518,27 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/order/f091e57f87c94fe48c397087333fdc59/"
+						"url": {
+							"raw": "{{base_url}}/order/f091e57f87c94fe48c397087333fdc59/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order",
+								"f091e57f87c94fe48c397087333fdc59",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -368,7 +552,16 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/invoice/"
+						"url": {
+							"raw": "{{base_url}}/invoice/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"invoice",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -377,9 +570,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -392,7 +589,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/invoice/"
+						"url": {
+							"raw": "{{base_url}}/invoice/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"invoice",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -401,9 +607,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "PUT",
 						"header": [],
@@ -416,7 +626,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/invoice/4"
+						"url": {
+							"raw": "{{base_url}}/invoice/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"invoice",
+								"4"
+							]
+						}
 					},
 					"response": []
 				},
@@ -428,9 +647,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
@@ -443,7 +666,17 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/order-invoice/3/"
+						"url": {
+							"raw": "{{base_url}}/order-invoice/3/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order-invoice",
+								"3",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -455,9 +688,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
@@ -470,7 +707,17 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/invoice/72ebe49fc3db4850b2505bbb1dfdd415/"
+						"url": {
+							"raw": "{{base_url}}/invoice/72ebe49fc3db4850b2505bbb1dfdd415/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"invoice",
+								"72ebe49fc3db4850b2505bbb1dfdd415",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -487,7 +734,16 @@
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/pipes/"
+						"url": {
+							"raw": "{{base_url}}/pipes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pipes",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -504,17 +760,27 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "tessttt111",
+									"value": "Sanitary Ware",
 									"type": "text"
 								},
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/home/evenmore/Downloads/kathiyawadi horse.jpeg"
+									"src": [],
+									"disabled": true
 								}
 							]
 						},
-						"url": "{{base_url}}/pipes/"
+						"url": {
+							"raw": "{{base_url}}/pipes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pipes",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -526,7 +792,38 @@
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/get-product-list/5/"
+						"url": {
+							"raw": "{{base_url}}/get-product-list/5/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"get-product-list",
+								"5",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "main-category",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/main-category/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"main-category",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -549,7 +846,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/stock-transaction/"
+						"url": {
+							"raw": "{{base_url}}/stock-transaction/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stock-transaction",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -558,7 +864,16 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/stock-transaction/"
+						"url": {
+							"raw": "{{base_url}}/stock-transaction/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stock-transaction",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -576,7 +891,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/stock-update/1"
+						"url": {
+							"raw": "{{base_url}}/stock-update/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stock-update",
+								"1"
+							]
+						}
 					},
 					"response": []
 				},
@@ -585,7 +909,16 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/stock-product-list/"
+						"url": {
+							"raw": "{{base_url}}/stock-product-list/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stock-product-list",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -608,7 +941,17 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/bestseller/1/"
+						"url": {
+							"raw": "{{base_url}}/bestseller/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bestseller",
+								"1",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -619,14 +962,23 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"quantity\":20\n}",
+							"raw": "{\n    \"quantity\":10\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{base_url}}/bestseller/"
+						"url": {
+							"raw": "{{base_url}}/bestseller/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bestseller",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -635,7 +987,16 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/bestseller/"
+						"url": {
+							"raw": "{{base_url}}/bestseller/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bestseller",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -644,7 +1005,16 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{base_url}}/bestseller/1"
+						"url": {
+							"raw": "{{base_url}}/bestseller/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bestseller",
+								"1"
+							]
+						}
 					},
 					"response": []
 				}
