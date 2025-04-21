@@ -32,3 +32,9 @@ class Pipe(models.Model):
 
     class Meta:
         verbose_name_plural = "Pipes"
+
+
+class BestSeller(models.Model):
+
+    toggel =  models.BooleanField(default=True)
+    quantity = models.PositiveIntegerField()

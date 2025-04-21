@@ -144,3 +144,10 @@ class PipeCreateUpdateSerializer(serializers.ModelSerializer):
             # Recursively create nested sub-categories
             if nested_sub_categories:
                 self._create_sub_categories(sub_pipe, nested_sub_categories)
+
+
+class BestSellerSerializer(serializers.ModelSerializer):
+    toggel =  serializers.BooleanField(required=False)
+    class Meta:
+        model = BestSeller
+        fields = ["toggel", "quantity"]

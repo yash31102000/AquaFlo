@@ -2,6 +2,8 @@ from rest_framework import generics
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from AquaFlo.Utils.permissions import IsAdminOrReadOnly
 from .serializers import *
+from order.models import Order
+from collections import defaultdict
 
 
 class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
@@ -152,3 +154,70 @@ class GetPipeViewset(DefaultResponseMixin, generics.GenericAPIView):
                     )
         except Exception as e:
             return self.error_response("Product List Not Fatch")
+        
+
+class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
+
+    def post(self,request):
+        serializer = BestSellerSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return self.success_response("BestSeller Placed successfully")
+        return self.error_response("BestSeller Placed Faild")
+    
+
+    def put(self,request,pk):
+        queryset = BestSeller.objects.filter(id=pk).first()
+        if not queryset:
+            return self.error_response("BestSeller Not Found")
+        serializer = BestSellerSerializer(queryset,data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return self.success_response("BestSeller Update successfully")
+        return self.error_response("BestSeller Update Faild")
+
+
+    def get(self, request):
+        # Step 1: Aggregate quantities from order_items
+        best_seller = BestSeller.objects.all().first()
+        if best_seller.toggel:
+            product_quantities = defaultdict(int)
+            orders = Order.objects.exclude(status="CANCEL")
+            for order in orders:
+                items = order.order_items or []
+                for item in items:
+                    product_id = item.get("item_id")
+                    quantity = item.get("quantity", 0)
+                    if product_id:
+                        product_quantities[product_id] += int(quantity)
+
+            # Step 2: Match with BestSeller and prepare response
+
+            best_sellers_product = Pipe.objects.filter(id__in=product_quantities.keys())
+            for bs in best_sellers_product:
+                bs.total_order_quantity = product_quantities.get(bs.id, 0)
+
+            # Step 3: Sort by total quantity
+            sort_best_sellers = sorted(best_sellers_product, key=lambda x: x.total_order_quantity, reverse=True)
+
+            # Step 4: Limit to BestSeller.quantity
+            top_n = best_seller.quantity # default to 5 if not set
+            sorted_best_sellers = sort_best_sellers[:top_n]
+            
+            base_url = request.build_absolute_uri("/").rstrip("/")
+            
+            # Step 5: Serialize and return
+            serializer = PipeSerializer(sorted_best_sellers, many=True)
+            for serializer_data in serializer.data:
+                serializer_data["image"] = base_url + serializer_data.get("image")
+            return self.success_response("BestSeller Fetched Successfully",serializer.data)
+        return self.success_response("BestSeller Fetched Successfully")
+    
+
+    def delete(self,request,pk):
+        best_seller = BestSeller.objects.filter(id=pk).filter()
+        if not best_seller:
+            return self.error_response("BestSeller Not Found")
+        
+        best_seller.delete()
+        return self.success_response("BestSeller Delete Successfully")

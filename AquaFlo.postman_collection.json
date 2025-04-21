@@ -590,6 +590,65 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "BestSeller",
+			"item": [
+				{
+					"name": "update-best-seller",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"toggel\":true,\n    \"quantity\":21\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/bestseller/1/"
+					},
+					"response": []
+				},
+				{
+					"name": "create-best-seller",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\":20\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/bestseller/"
+					},
+					"response": []
+				},
+				{
+					"name": "get-best-seller",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/bestseller/"
+					},
+					"response": []
+				},
+				{
+					"name": "delete-best-seller",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{base_url}}/bestseller/1"
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
