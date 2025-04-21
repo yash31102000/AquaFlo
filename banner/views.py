@@ -8,6 +8,7 @@ from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from datetime import timedelta
 from django.utils import timezone
 from django.core.files.storage import default_storage
+import os
 
 
 class BannerViewSet(DefaultResponseMixin, generics.GenericAPIView):
@@ -49,32 +50,21 @@ class BannerViewSet(DefaultResponseMixin, generics.GenericAPIView):
         serializer = BannerSerializer(banners, many=True, context={"request": request})
         return self.success_response("Banner fetched successfully", serializer.data)
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request,pk):
         """
         Delete a banner instance, if the date is older than 7 days.
         """
-        try:
-            banner = Banner.objects.get(id=kwargs["pk"])
-        except Banner.DoesNotExist:
-            return self.error_response("Banner Not found.")
-
-        # Check if the banner's date is older than 7 days
-        if timezone.now() - banner.date > timedelta(days=7):
-            # Check if the image exists and delete it manually
-            if banner.image:
-                image_path = banner.image.path
-                if default_storage.exists(image_path):
-                    default_storage.delete(image_path)
-
-            # Delete the banner
-            banner.delete()
-            return self.success_response(
-                "Deleted successfully.",
-            )
-
-        return self.error_response(
-            "Banner is not older than 7 days and cannot be deleted."
+  
+        banner = Banner.objects.filter(id=pk).first()
+        if not banner:
+            return self.error_response("Banner Not Found")
+        if banner.image and os.path.isfile(banner.image.path):
+                os.remove(banner.image.path)
+        banner.delete()
+        return self.success_response(
+            "Deleted successfully.",
         )
+
 
     def put(self, request, pk):
 
