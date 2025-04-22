@@ -24,7 +24,7 @@ class BannerViewSet(DefaultResponseMixin, generics.GenericAPIView):
             serializer.save()
             return self.success_response("Banner created successfully")
 
-        return self.error_response("Failed")
+        return self.error_response(f"{serializer.errors}")
 
     def get(self, request, *args, **kwargs):
         """
@@ -68,19 +68,21 @@ class BannerViewSet(DefaultResponseMixin, generics.GenericAPIView):
         )
 
     def put(self, request, pk):
-
+        data = request.data.copy()
+        banner_image = data.get("image")
         banner = Banner.objects.filter(id=pk).first()
-
+        if not banner_image:
+            data["image"] = banner.image
         if not banner:
             return self.error_response("Banner not found.")
 
-        flag = request.data.get("flag")
+        flag = data.get("flag")
         if flag:
             banner.flag = flag
             banner.save()
             # return self.success_response("Banner Update successfully.")
 
-        serializer = BannerSerializer(banner, data=request.data, partial=True)
+        serializer = BannerSerializer(banner, data=data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return self.success_response("Banner Update successfully.")
