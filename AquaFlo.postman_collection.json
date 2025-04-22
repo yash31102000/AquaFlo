@@ -717,7 +717,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"discount_percent\": 10,\n    \"category\" : 22\n    // \"product\": 36\n}",
+							"raw": "{\n    \"discount_percent\": 10,\n    \"discount_type\":\"fixed\",\n    \"category\" : 23\n    // \"product\": 36\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -762,14 +762,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"discount_percent\": 22\n}",
+							"raw": "{\n    \"discount_percent\": 22,\n    \"discount_type\":\"percentage\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{base_url}}/user-discount/5/"
+						"url": "{{base_url}}/user-discount/7/"
 					},
 					"response": []
 				}
