@@ -28,15 +28,13 @@ SECRET_KEY = "django-insecure-0zj@&&5(kh63ql4$@_dn7q5&c5pm3z_y!c%8i87a5vz2ru3u*_
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-CORS_URLS_REGEX = r'^/media/.*$'
 
 # Allow specific origins
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173","http://*"
+    "http://localhost:5173",
 ]
 CORS_ALLOW_ALL_ORIGINS = True
-# For media files specifically
-CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
+
 # Allow specific HTTP methods
 CORS_ALLOW_METHODS = [
     "*",
