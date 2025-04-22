@@ -32,7 +32,7 @@ CORS_URLS_REGEX = r'^/media/.*$'
 
 # Allow specific origins
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173","*"
+    "http://localhost:5173","http://*"
 ]
 CORS_ALLOW_ALL_ORIGINS = True
 # For media files specifically
