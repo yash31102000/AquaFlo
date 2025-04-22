@@ -36,7 +36,7 @@ class UserDiscountSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserDiscount
         fields = ['id', 'user', 'category', 'product', 'discount_percent', 
-                  'is_active', 'created_at', 'updated_at']
+                  'is_active', 'created_at', 'updated_at','discount_type']
         read_only_fields = ['created_at', 'updated_at']
 
     def validate(self, data):
