@@ -78,7 +78,7 @@ class BannerViewSet(DefaultResponseMixin, generics.GenericAPIView):
         if flag:
             banner.flag = flag
             banner.save()
-            return self.success_response("Banner Update successfully.")
+            # return self.success_response("Banner Update successfully.")
 
         serializer = BannerSerializer(banner, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
