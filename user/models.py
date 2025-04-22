@@ -59,44 +59,22 @@ class UserModel(AbstractUser):
     class Meta:
         db_table = "user"
 
+
 class UserDiscount(models.Model):
     """
-    Model to handle user-specific discounts for different categories and products.
+    Model to store all discounts for a user in a JSON structure
     """
-    user = models.ForeignKey(
-        UserModel,
-        on_delete=models.CASCADE,
-        related_name='discounts'
-    )
-    
-    # Can be applied to a category (any level in the hierarchy)
-    category = models.ForeignKey(
-        Pipe,
-        on_delete=models.CASCADE,
-        related_name='category_discounts',
-        blank=True,
-        null=True,
-        help_text="If specified, discount applies to this category and all its subcategories"
-    )
-    
-    # Or can be applied to a specific product
-    product = models.ForeignKey(
-        Pipe,
-        on_delete=models.CASCADE,
-        related_name='product_discounts',
-        blank=True,
-        null=True,
-        help_text="If specified, discount applies only to this specific product"
-    )
-    
-    discount_percent = models.PositiveIntegerField(
-        help_text="Discount percentage (e.g., 10 for 10%)"
+
+    user = models.OneToOneField(
+        UserModel, on_delete=models.CASCADE, related_name="discounts"
     )
 
-    discount_type = models.CharField(
-        max_length=20,blank=True,null=True)
-    
+    discount_data = models.JSONField(
+        default=dict,
+        help_text="JSON structure containing all category and product discounts",
+    )
+
     is_active = models.BooleanField(default=True)
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

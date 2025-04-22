@@ -136,13 +136,12 @@ class AddorRemoveAddressAPI(DefaultResponseMixin, generics.GenericAPIView):
         )
 
 class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
-
+    # permission_classes = [CustomAPIPermissions]
+    # public_methods = ["GET"]
+    # admin_only_methods = ["POST", "PUT", "DELETE"]
     def post(self, request):
         data = request.data.copy()
         data["user"] = request.user.id
-        user_discount = UserDiscount.objects.filter(category=data.get("category"), product=data.get("product"),user=request.user.id).first()
-        if user_discount:
-            return self.error_response("UserDiscount Already Placed")
         serializer = UserDiscountSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -158,9 +157,6 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
         user = UserDiscount.objects.filter(id=pk).first()
         if not user:
             return self.error_response("UserDiscount Not Found")
-        
-        data["category"] = user.category.id if user.category else None
-        data["product"] = user.product.id if user.product else None
         
         serializer = UserDiscountSerializer(user, data=data, partial=True)
         if serializer.is_valid(raise_exception=True):
