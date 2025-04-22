@@ -1,6 +1,6 @@
 from rest_framework import generics
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
-from AquaFlo.Utils.permissions import IsAdminOrReadOnly
+from AquaFlo.Utils.permissions import CustomAPIPermissions
 from .serializers import *
 from order.models import Order
 from collections import defaultdict

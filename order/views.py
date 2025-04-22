@@ -1,16 +1,15 @@
 from rest_framework.decorators import action
 from rest_framework import generics
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
-from AquaFlo.Utils.permissions import IsAdminOrReadOnly
+from AquaFlo.Utils.permissions import CustomAPIPermissions
 from .models import *
 from category.models import Pipe
 from .serializers import *
-from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
 class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     serializer_class = OrderSerializer  # Use OrderSerializer to handle order creation
 
     def post(self, request):
@@ -66,7 +65,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
 
 class UserOrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     serializer_class = OrderSerializer
 
     def get(self, request, user_id=None):

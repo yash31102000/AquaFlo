@@ -2,7 +2,7 @@ from requests import Response
 from rest_framework import generics
 from .models import Banner
 from .serializers import BannerSerializer
-from AquaFlo.Utils.permissions import IsAdminOrReadOnly
+from AquaFlo.Utils.permissions import CustomAPIPermissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from datetime import timedelta
@@ -13,7 +13,9 @@ import os
 
 class BannerViewSet(DefaultResponseMixin, generics.GenericAPIView):
     serializer_class = BannerSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [CustomAPIPermissions]
+    public_methods = ["GET"]
+    admin_only_methods = ["POST", "PUT", "PATCH", "DELETE"]
 
     def post(self, request, *args, **kwargs):
         """

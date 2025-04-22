@@ -1,6 +1,5 @@
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from category.models import Pipe
 from order.models import Order
 from .models import Invoice
@@ -9,7 +8,7 @@ from .serializers import InvoiceSerializer
 
 class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
     serializer_class = InvoiceSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
 
     def post(self, request, *args, **kwargs):
         """
@@ -149,3 +148,69 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
         except Exception as e:
             return self.error_response(f"Failed to retrieve invoices : {e}")
+
+class TotalTransactionViewSet(DefaultResponseMixin, generics.GenericAPIView):
+    def get(self, request):
+        invoices = Invoice.objects.all()
+        pending_amount = 0
+        paid_amount = 0
+        base_url = request.build_absolute_uri("/").rstrip("/")
+
+        for invoice in invoices:
+            total_amount = self._calculate_invoice_amount(invoice, base_url)
+            
+            if invoice.payment_status == "PENDING":
+                pending_amount += total_amount
+            elif invoice.payment_status == "PAID":
+                paid_amount += total_amount
+        
+        return self.error_response(
+            "Transaction Fetch successfully", 
+            {"PENDING_AMOUNT": pending_amount, "PAID_AMOUNT": paid_amount}
+        )
+        
+    def _calculate_invoice_amount(self, invoice, base_url):
+        """Calculate the total amount for an invoice including tax and discounts."""
+        total = 0
+        
+        for item in invoice.order.order_items:
+            self._enrich_item_with_details(item, base_url)
+            total += self._calculate_item_final_price(item)
+            
+        # Add tax and subtract invoice discount
+        total += invoice.tax_amount
+        total -= invoice.discount
+        
+        return total
+    
+    def _enrich_item_with_details(self, item, base_url):
+        """Add pipe details to the item if available."""
+        pipe_details = Pipe.objects.filter(id=item.get("item_id")).values().first()
+        
+        if pipe_details:
+            item["item"] = pipe_details
+            item["item"]["image"] = base_url + "/media/" + item["item"]["image"]
+            item.pop("item_id", None)
+    
+    def _calculate_item_final_price(self, item):
+        """Calculate the final price for an item based on quantity, price and discount."""
+        quantity = int(item.get("quantity", 0))
+        price = int(item.get("price", 0)) if item.get("price") else 0
+        per_item_discount = item.get("per_item_discount", 0)
+        
+        # Handle empty discount
+        if per_item_discount == '':
+            per_item_discount = 0
+        else:
+            per_item_discount = int(per_item_discount)
+            
+        discount_type = item.get("discount_type")
+        
+        if discount_type == "percentage":
+            item_total = quantity * price
+            discount_amount = item_total * per_item_discount / 100
+            return int(item_total - discount_amount)
+        elif discount_type == "fixed" or discount_type is None:
+            return quantity * (price - per_item_discount)
+        
+        return 0
