@@ -149,8 +149,12 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
         return self.error_response("UserDiscount Placed Faild")
     
     def get(self, request):
-        all_user = UserDiscount.objects.all().values()
-        return self.success_response("User Discount List Fatch successfully", all_user)
+        user =request.user
+        if user.is_superuser:
+            discounts = UserDiscount.objects.all().values()
+        else:
+            discounts = UserDiscount.objects.filter(user=user).values()
+        return self.success_response("User Discount List Fatch successfully", discounts)
     
     def put(self, request, pk):
         data = request.data.copy()
