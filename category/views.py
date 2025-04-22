@@ -57,7 +57,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
     def get(self, request):
         user_discount = UserDiscount.objects.filter(user_id=request.user.id).values().first()
-        discount_data = user_discount.get("discount_data")
+        discount_data = user_discount.get("discount_data") if user_discount else {}
         # Fetch only top-level pipes (no parent)
         queryset = Pipe.objects.filter(parent__isnull=True, product__isnull=True)
         # Optional: Add support for filtering
