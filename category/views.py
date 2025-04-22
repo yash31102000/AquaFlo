@@ -1,6 +1,7 @@
 from rest_framework import generics
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from AquaFlo.Utils.permissions import CustomAPIPermissions
+from user.models import UserDiscount
 from .serializers import *
 from order.models import Order
 from collections import defaultdict
@@ -55,6 +56,8 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
             return self.error_response(f"Pipe creation failed: {str(e)}")
 
     def get(self, request):
+        user_discount = UserDiscount.objects.filter(user_id=request.user.id).values().first()
+        discount_data = user_discount.get("discount_data")
         # Fetch only top-level pipes (no parent)
         queryset = Pipe.objects.filter(parent__isnull=True, product__isnull=True)
         # Optional: Add support for filtering
@@ -67,6 +70,13 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         base_url = request.build_absolute_uri("/").rstrip("/")
         updated_data = serializer.data
         self.update_image_urls(base_url, updated_data)
+        for category in updated_data:
+            for subcategory in category["sub_categories"]:
+                subcategory_id = str(subcategory["id"])
+                if subcategory_id in discount_data:
+                    discount_info = discount_data[subcategory_id]
+                    subcategory["discount_percent"] = discount_info["discount_percent"]
+                    subcategory["discount_type"] = discount_info["discount_type"]
         return self.success_response("Pipe list fetched successfully", serializer.data)
 
     def delete(self, request, pk=None):
