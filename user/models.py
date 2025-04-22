@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 import uuid
 from rest_framework_simplejwt.tokens import RefreshToken
+from category.models import Pipe
 
 
 class UserManager(BaseUserManager):
@@ -57,3 +58,42 @@ class UserModel(AbstractUser):
 
     class Meta:
         db_table = "user"
+
+class UserDiscount(models.Model):
+    """
+    Model to handle user-specific discounts for different categories and products.
+    """
+    user = models.ForeignKey(
+        UserModel,
+        on_delete=models.CASCADE,
+        related_name='discounts'
+    )
+    
+    # Can be applied to a category (any level in the hierarchy)
+    category = models.ForeignKey(
+        Pipe,
+        on_delete=models.CASCADE,
+        related_name='category_discounts',
+        blank=True,
+        null=True,
+        help_text="If specified, discount applies to this category and all its subcategories"
+    )
+    
+    # Or can be applied to a specific product
+    product = models.ForeignKey(
+        Pipe,
+        on_delete=models.CASCADE,
+        related_name='product_discounts',
+        blank=True,
+        null=True,
+        help_text="If specified, discount applies only to this specific product"
+    )
+    
+    discount_percent = models.PositiveIntegerField(
+        help_text="Discount percentage (e.g., 10 for 10%)"
+    )
+    
+    is_active = models.BooleanField(default=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
