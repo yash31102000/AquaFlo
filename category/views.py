@@ -7,6 +7,11 @@ from collections import defaultdict
 from django.db.models import Q
 
 class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
+    serializer_class = PipeCreateUpdateSerializer
+    permission_classes = [CustomAPIPermissions]
+    public_methods = ["GET"]
+    admin_only_methods = ["POST", "PUT", "DELETE"]
+
     def update_image_urls(self, base_url, data):
         if isinstance(data, list):
             for item in data:
@@ -18,7 +23,6 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 elif isinstance(value, (dict, list)):
                     self.update_image_urls(base_url, value)
 
-    serializer_class = PipeCreateUpdateSerializer
 
     def post(self, request, *args, **kwargs):
         # Check if the pipe with the same name already exists at the same level
@@ -117,6 +121,8 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
 
 class GetPipeViewset(DefaultResponseMixin, generics.GenericAPIView):
+    permission_classes = [CustomAPIPermissions]
+    public_methods = ["GET", "POST", "PUT", "DELETE"]
     def update_image_urls(self, base_url, data):
         if isinstance(data, list):
             for item in data:
@@ -165,7 +171,9 @@ class GetPipeViewset(DefaultResponseMixin, generics.GenericAPIView):
 
 
 class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
-
+    permission_classes = [CustomAPIPermissions]
+    public_methods = ["GET"]
+    admin_only_methods = ["POST", "PUT", "DELETE"]
     def post(self, request):
         serializer = BestSellerSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -233,7 +241,8 @@ class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
 
 
 class GetMainCategoryViewset(DefaultResponseMixin, generics.GenericAPIView):
-
+    permission_classes = [CustomAPIPermissions]
+    public_methods = ["GET", "POST", "PUT", "DELETE"]
     def get(self, request):
         try:
             main_category = Pipe.objects.filter(
@@ -249,7 +258,8 @@ class GetMainCategoryViewset(DefaultResponseMixin, generics.GenericAPIView):
             return self.error_response("Main Category Not Fetched")
     
 class MarkedAsfavoriteViewset(DefaultResponseMixin, generics.GenericAPIView):
-
+    permission_classes = [CustomAPIPermissions]
+    public_methods = ["GET", "POST", "PUT", "DELETE"]
     def get(self,request):
         queryset = Pipe.objects.filter(marked_as_favorite=True).values("id","name","image","marked_as_favorite")
         if not queryset:
