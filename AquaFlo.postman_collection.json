@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "d803dd6a-dae5-45b0-b871-f7febd9b8668",
+		"_postman_id": "99d32bae-156a-42ce-8ecd-9eca19458ecd",
 		"name": "AquaFlo",
 		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "33163402",
-		"_collection_link": "https://develop-7967.postman.co/workspace/My-Workspace~6ab690bf-a9dd-4aae-8ab5-1b3214de0215/collection/33163402-d803dd6a-dae5-45b0-b871-f7febd9b8668?action=share&source=collection_link&creator=33163402"
+		"_exporter_id": "40162854",
+		"_collection_link": "https://develop-7967.postman.co/workspace/develop-Workspace~8780b293-fc38-4b51-8a1a-08547dca5444/collection/40162854-99d32bae-156a-42ce-8ecd-9eca19458ecd?action=share&source=collection_link&creator=40162854"
 	},
 	"item": [
 		{
@@ -71,7 +71,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone_number\":\"9998533015\",\n    \"password\":\"1234\"\n}",
+							"raw": "{\n    \"phone_number\":\"9998533013\",\n    \"password\":\"1234\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -202,22 +202,27 @@
 							"formdata": [
 								{
 									"key": "title",
-									"value": "BLACK 2 LAYERS  WATER TANK",
+									"value": "test11111111",
 									"type": "text"
 								},
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/home/evenmore/Desktop/AquaFlo/media/2_layer_water_tank.png"
+									"src": "/home/evenmore/Downloads/image.png"
 								},
 								{
 									"key": "description",
-									"value": "Black 2 Layers Water Tank",
+									"value": "qqqqqqqqqqq",
 									"type": "text"
 								},
 								{
 									"key": "category",
 									"value": "33",
+									"type": "text"
+								},
+								{
+									"key": "flag",
+									"value": "false",
 									"type": "text"
 								}
 							]
@@ -229,15 +234,9 @@
 				{
 					"name": "delete-banner",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
-						},
 						"method": "DELETE",
 						"header": [],
-						"url": "{{base_url}}/banner/6/"
+						"url": "{{base_url}}/banner/"
 					},
 					"response": []
 				},
@@ -257,13 +256,14 @@
 							"formdata": [
 								{
 									"key": "title",
-									"value": "COMMERCIAL PVC PIPE",
+									"value": "test1",
 									"type": "text"
 								},
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/home/evenmore/Pictures/Screenshots/COMMERCIAL-WHITE-PIPE.png"
+									"src": "/home/evenmore/Pictures/Screenshots/COMMERCIAL-WHITE-PIPE.png",
+									"disabled": true
 								},
 								{
 									"key": "description",
@@ -277,7 +277,7 @@
 								}
 							]
 						},
-						"url": "{{base_url}}/banner/1/"
+						"url": "{{base_url}}/banner/4/"
 					},
 					"response": []
 				}
@@ -510,13 +510,14 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "tessttt111",
+									"value": "Sanitary Ware",
 									"type": "text"
 								},
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/home/evenmore/Downloads/kathiyawadi horse.jpeg"
+									"src": [],
+									"disabled": true
 								}
 							]
 						},
@@ -537,17 +538,23 @@
 					"response": []
 				},
 				{
-					"name": "markasfavorite",
+					"name": "main-category",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/markasfavorite/"
+						"url": "{{base_url}}/main-category/"
 					},
 					"response": []
 				},
 				{
 					"name": "update-pipes",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "PUT",
 						"header": [],
 						"body": {
@@ -663,7 +670,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"quantity\":20\n}",
+							"raw": "{\n    \"quantity\":10\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -688,7 +695,81 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{base_url}}/bestseller/1/"
+						"url": "{{base_url}}/bestseller/1"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UserDiscount",
+			"item": [
+				{
+					"name": "create-user-discount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"discount_percent\": 10,\n    \"category\" : 22\n    // \"product\": 36\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/user-discount/"
+					},
+					"response": []
+				},
+				{
+					"name": "get-user-discount",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/user-discount/"
+					},
+					"response": []
+				},
+				{
+					"name": "delete-discount",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{base_url}}/user-discount/2/"
+					},
+					"response": []
+				},
+				{
+					"name": "update-discount",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"discount_percent\": 22\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/user-discount/5/"
 					},
 					"response": []
 				}
