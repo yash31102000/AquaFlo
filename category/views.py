@@ -76,6 +76,10 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         self.update_image_urls(base_url, updated_data)
         for category in updated_data:
             for subcategory in category["sub_categories"]:
+                for sub_sub in subcategory["sub_categories"]:
+                    for sub_sub_sub in sub_sub["sub_categories"]:
+                        for sub_sub_sub_sub in sub_sub_sub['product']:
+                            sub_sub_sub_sub['image'] = sub_sub_sub['image']
                 subcategory_id = str(subcategory["id"])
                 if subcategory_id in discount_data:
                     discount_info = discount_data[subcategory_id]
