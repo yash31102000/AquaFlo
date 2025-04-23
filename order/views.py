@@ -30,14 +30,22 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
             data['created_at'] = datetime.fromisoformat(data['created_at'].replace("Z", "")).date()
             for order_items in data.get("order_items"):
                 sub_item = (
-                    Pipe.objects.filter(pk=order_items.get("item_id")).values().first()
+                    Pipe.objects.filter(pk=order_items.get("item_id")).select_related("product").first()
                 )
-                order_items.pop("item_id")
-                order_items["item"] = sub_item
-                base_url = request.build_absolute_uri("/").rstrip("/")
-                order_items["item"]["image"] = (
-                    base_url + "/media/" + order_items["item"]["image"]
-                )
+                if sub_item:
+                    base_url = request.build_absolute_uri("/").rstrip("/")
+                    image_url = str(sub_item.image) if sub_item.image else None
+                    order_items.pop("item_id")
+                    order_items["item"] = {
+                        "id": sub_item.id,
+                        "name": sub_item.name,
+                        "image":  base_url + "/media/" + image_url,
+                        "parent_id": sub_item.parent.id if sub_item.parent else None,
+                        "product_id":  sub_item.product.id if sub_item.product else None,
+                        "marked_as_favorite": sub_item.marked_as_favorite,
+                        "product_name": sub_item.product.name if sub_item.product else None,
+                    }
+                 
         return self.success_response("Order list fetched successfully", serializer.data)
 
     def put(self, request, pk):
