@@ -84,15 +84,21 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
                 for item in order_items:
                     pipe_details = (
-                        Pipe.objects.filter(id=item.get("item_id")).values().first()
+                        Pipe.objects.filter(id=item.get("item_id")).select_related("product").first()
                     )
 
                     base_url = request.build_absolute_uri("/").rstrip("/")
+                    image_url = str(pipe_details.product.image) if pipe_details.product else None
                     if pipe_details:
-                        item["item"] = pipe_details
-                        item["item"]["image"] = (
-                            base_url + "/media/" + item["item"]["image"]
-                        )
+                        item["item"] = {
+                            "id": pipe_details.id,
+                            "name": pipe_details.name,
+                            "image":  base_url + "/media/" + image_url,
+                            "parent_id": pipe_details.parent.id if pipe_details.parent else None,
+                            "product_id":  pipe_details.product.id if pipe_details.product else None,
+                            "marked_as_favorite": pipe_details.marked_as_favorite,
+                            "product_name": pipe_details.product.name if pipe_details.product else None,
+                        }
                         item.pop("item_id", None)
                     if item.get("discount_type") == "percentage":
                         per_item_discount = item.get("per_item_discount")
