@@ -5,6 +5,7 @@ from AquaFlo.Utils.permissions import CustomAPIPermissions
 from .models import *
 from category.models import Pipe
 from .serializers import *
+from datetime import datetime
 
 
 # Create your views here.
@@ -26,6 +27,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
         serializer = OrderSerializer(queryset, many=True)
         response_data = serializer.data.copy()
         for data in response_data:
+            data['created_at'] = datetime.fromisoformat(data['created_at'].replace("Z", "")).date()
             for order_items in data.get("order_items"):
                 sub_item = (
                     Pipe.objects.filter(pk=order_items.get("item_id")).values().first()

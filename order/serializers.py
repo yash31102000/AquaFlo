@@ -15,6 +15,7 @@ class OrderSerializer(serializers.ModelSerializer):
             "address_link",
             "status",
             "cancellation_reason",
+            "created_at"
         ]
 
     def create(self, validated_data):
