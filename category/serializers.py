@@ -74,7 +74,19 @@ class PipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Pipe
-        fields = ["id", "name", "image", "parent", "product", "sub_categories","marked_as_favorite"]
+        fields = [
+            "id",
+            "name",
+            "image",
+            "parent",
+            "product",
+            "sub_categories",
+            "marked_as_favorite",
+            "large_bag",
+            "Size",
+            "MM",
+            "Packing",
+        ]
         extra_kwargs = {
             "parent": {"required": False, "allow_null": True},
             "product": {"required": False, "allow_null": True},
@@ -86,6 +98,7 @@ class PipeCreateUpdateSerializer(serializers.ModelSerializer):
         Custom create method to handle nested sub-categories.
         """
         # Extract sub-categories if provided
+        print(validated_data)
         sub_categories = validated_data.pop("sub_categories", [])
 
         # Create the parent pipe
@@ -148,7 +161,8 @@ class PipeCreateUpdateSerializer(serializers.ModelSerializer):
 
 
 class BestSellerSerializer(serializers.ModelSerializer):
-    toggel =  serializers.BooleanField(required=False)
+    toggel = serializers.BooleanField(required=False)
+
     class Meta:
         model = BestSeller
         fields = ["toggel", "quantity"]

@@ -26,7 +26,12 @@ class Pipe(models.Model):
         blank=True,
         null=True,
     )
+    Size = models.CharField(max_length=255, null=True, blank=True)
+    MM = models.CharField(max_length=255, null=True, blank=True)
+    Packing = models.CharField(max_length=255, null=True, blank=True)
+    large_bag = models.CharField(max_length=255, null=True, blank=True)
     marked_as_favorite = models.BooleanField(default=False)
+
     def __str__(self):
         return self.name
 
@@ -36,5 +41,5 @@ class Pipe(models.Model):
 
 class BestSeller(models.Model):
 
-    toggel =  models.BooleanField(default=True)
+    toggel = models.BooleanField(default=True)
     quantity = models.PositiveIntegerField()

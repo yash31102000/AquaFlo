@@ -29,11 +29,15 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         # Check if the pipe with the same name already exists at the same level
         parent_id = request.data.get("parent")
         name = request.data.get("name")
+        product = request.data.get("product")
 
         # Check for existing pipe with the same name under the same parent
         existing_pipe_query = Pipe.objects.filter(name=name)
         if parent_id:
             existing_pipe_query = existing_pipe_query.filter(parent_id=parent_id)
+        
+        if product:
+            existing_pipe_query = existing_pipe_query.filter(product_id=product)
 
         if existing_pipe_query.exists():
             return self.error_response(
