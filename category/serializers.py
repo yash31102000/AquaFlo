@@ -9,7 +9,15 @@ class SimpleProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Pipe
-        fields = ["id", "name", "image"]
+        fields = [
+            "id",
+            "name",
+            "image",
+            "large_bag",
+            "Size",
+            "MM",
+            "Packing",
+        ]
 
 
 class RecursivePipeSerializer(serializers.ModelSerializer):
