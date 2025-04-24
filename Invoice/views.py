@@ -93,7 +93,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         item["item"] = {
                             "id": pipe_details.id,
                             "name": pipe_details.name,
-                            "image":  base_url + "/media/" + image_url,
+                            "image":  base_url + "/media/" + image_url if image_url else None,
                             "parent_id": pipe_details.parent.id if pipe_details.parent else None,
                             "product_id":  pipe_details.product.id if pipe_details.product else None,
                             "marked_as_favorite": pipe_details.marked_as_favorite,

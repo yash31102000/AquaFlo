@@ -39,7 +39,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     order_items["item"] = {
                         "id": sub_item.id,
                         "name": sub_item.name,
-                        "image":  base_url + "/media/" + image_url,
+                        "image":  base_url + "/media/" + image_url if image_url else None,
                         "parent_id": sub_item.parent.id if sub_item.parent else None,
                         "product_id":  sub_item.product.id if sub_item.product else None,
                         "marked_as_favorite": sub_item.marked_as_favorite,
