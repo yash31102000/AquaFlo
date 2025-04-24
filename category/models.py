@@ -26,10 +26,6 @@ class Pipe(models.Model):
         blank=True,
         null=True,
     )
-    Size = models.CharField(max_length=255, null=True, blank=True)
-    MM = models.CharField(max_length=255, null=True, blank=True)
-    Packing = models.CharField(max_length=255, null=True, blank=True)
-    large_bag = models.CharField(max_length=255, null=True, blank=True)
     marked_as_favorite = models.BooleanField(default=False)
 
     def __str__(self):
@@ -39,7 +35,11 @@ class Pipe(models.Model):
         verbose_name_plural = "Pipes"
 
 
-class BestSeller(models.Model):
+class PipeDetail(models.Model):
+    pipe = models.ForeignKey(Pipe, on_delete=models.CASCADE, related_name="details")
+    basic_data = models.JSONField(default=list, null=False, blank=False)
 
+
+class BestSeller(models.Model):
     toggel = models.BooleanField(default=True)
     quantity = models.PositiveIntegerField()
