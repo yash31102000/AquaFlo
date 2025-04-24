@@ -141,16 +141,6 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
 class GetPipeViewset(DefaultResponseMixin, generics.GenericAPIView):
     permission_classes = [CustomAPIPermissions]
     public_methods = ["GET", "POST", "PUT", "DELETE"]
-    def update_image_urls(self, base_url, data):
-        if isinstance(data, list):
-            for item in data:
-                self.update_image_urls(base_url, item)
-        elif isinstance(data, dict):
-            for key, value in data.items():
-                if key == "image" and value:
-                    data[key] = f"{base_url}{value}"
-                elif isinstance(value, (dict, list)):
-                    self.update_image_urls(base_url, value)
 
     def get(self, request, pk=None):
         try:
@@ -165,16 +155,20 @@ class GetPipeViewset(DefaultResponseMixin, generics.GenericAPIView):
                         product=sub_categorie.get("id")
                     ).values()
                     for product in products:
+                        product_obj = Pipe.objects.filter(id=product.get("product_id")).first()
+                        image = str(product_obj.product.image) if product_obj.product else (str(product_obj.image) if product_obj.id else "")
                         base_url = (
                             request.build_absolute_uri("/").rstrip("/") + "/media/"
                         )
-                        self.update_image_urls(base_url, product)
+                        product['image'] = base_url + image
                         product["sub_categorie_name"] = sub_categorie.get("name")
                         related_product.append(product)
             products = Pipe.objects.filter(product=main_pip.get("id")).values()
             for product in products:
+                product_obj = Pipe.objects.filter(id=product.get("product_id")).first()
+                image = str(product_obj.product.image) if product_obj.product else (str(product_obj.image) if product_obj.id else "")
                 base_url = request.build_absolute_uri("/").rstrip("/") + "/media/"
-                self.update_image_urls(base_url, product)
+                product['image'] = base_url + image
                 product["sub_categorie_name"] = ""
                 related_product.append(product)
             response_data = {
@@ -242,8 +236,11 @@ class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
 
             # Step 5: Serialize and return
             serializer = PipeSerializer(sorted_best_sellers, many=True)
-            for serializer_data in serializer.data:
-                serializer_data["image"] = base_url + serializer_data.get("image")
+            serialized_data = serializer.data
+            for i, bs in enumerate(sorted_best_sellers):
+                image_url = getattr(bs.product.image, 'url', '') if bs.product else (getattr(bs.image, 'url', '') if bs.id else "")
+                
+                serialized_data[i]["image"] = base_url + image_url
             return self.success_response(
                 "BestSeller Fetched Successfully", serializer.data
             )

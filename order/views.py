@@ -34,7 +34,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 )
                 if sub_item:
                     base_url = request.build_absolute_uri("/").rstrip("/")
-                    image_url = str(sub_item.product.image) if sub_item.product else ""
+                    image_url = str(sub_item.product.image) if sub_item.product else (str(sub_item.image) if sub_item.id else "")
                     order_items.pop("item_id")
                     order_items["item"] = {
                         "id": sub_item.id,
@@ -43,7 +43,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         "parent_id": sub_item.parent.id if sub_item.parent else None,
                         "product_id":  sub_item.product.id if sub_item.product else None,
                         "marked_as_favorite": sub_item.marked_as_favorite,
-                        "product_name": sub_item.product.name if sub_item.product else None,
+                        "product_name": sub_item.product.name if sub_item.product else (sub_item.name if sub_item.id else None),
                     }
                  
         return self.success_response("Order list fetched successfully", serializer.data)

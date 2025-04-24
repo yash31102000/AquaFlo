@@ -88,7 +88,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     )
 
                     base_url = request.build_absolute_uri("/").rstrip("/")
-                    image_url = str(pipe_details.product.image) if pipe_details.product else None
+                    image_url = str(pipe_details.product.image) if pipe_details.product else (str(pipe_details.image) if pipe_details.id else "")
                     if pipe_details:
                         item["item"] = {
                             "id": pipe_details.id,
@@ -97,7 +97,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             "parent_id": pipe_details.parent.id if pipe_details.parent else None,
                             "product_id":  pipe_details.product.id if pipe_details.product else None,
                             "marked_as_favorite": pipe_details.marked_as_favorite,
-                            "product_name": pipe_details.product.name if pipe_details.product else None,
+                            "product_name": pipe_details.product.name if pipe_details.product else (pipe_details.name if pipe_details.id else None),
                         }
                         item.pop("item_id", None)
                     if item.get("discount_type") == "percentage":
