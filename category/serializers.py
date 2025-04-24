@@ -13,10 +13,6 @@ class SimpleProductSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "image",
-            "large_bag",
-            "Size",
-            "MM",
-            "Packing",
         ]
 
 
@@ -90,10 +86,6 @@ class PipeCreateUpdateSerializer(serializers.ModelSerializer):
             "product",
             "sub_categories",
             "marked_as_favorite",
-            "large_bag",
-            "Size",
-            "MM",
-            "Packing",
         ]
         extra_kwargs = {
             "parent": {"required": False, "allow_null": True},
