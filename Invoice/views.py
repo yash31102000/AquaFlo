@@ -88,7 +88,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     )
 
                     base_url = request.build_absolute_uri("/").rstrip("/")
-                    image_url = str(pipe_details.product.image) if pipe_details.product else (str(pipe_details.image) if pipe_details.id else "")
+                    image_url = str(pipe_details.image) if pipe_details.id else ""
                     if pipe_details:
                         item["item"] = {
                             "id": pipe_details.id,
