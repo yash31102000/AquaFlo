@@ -34,7 +34,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 )
                 if sub_item:
                     base_url = request.build_absolute_uri("/").rstrip("/")
-                    image_url = str(sub_item.product.image) if sub_item.product else (str(sub_item.image) if sub_item.id else "")
+                    image_url = str(sub_item.image) if sub_item.id else None
                     order_items.pop("item_id")
                     order_items["item"] = {
                         "id": sub_item.id,
