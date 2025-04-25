@@ -283,3 +283,18 @@ class MarkedAsfavoriteViewset(DefaultResponseMixin, generics.GenericAPIView):
             base_url = request.build_absolute_uri("/").rstrip("/") + "/media/"
             makasfavoritedata["image"] = base_url + makasfavoritedata.get("image")
         return self.success_response("MarkedAsfavorite Featched Succsessfully",queryset)
+
+class PipeDetailViewset(DefaultResponseMixin, generics.GenericAPIView):
+    def post(self, request, *args, **kwargs):
+        # Use create update serializer for handling nested creation
+        serializer = PipeDetailSerializer(data=request.data)
+
+        try:
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                # Use recursive serializer to return full nested structure
+                return self.success_response(
+                    "Pipe Detail successfully",
+                )
+        except Exception as e:
+            return self.error_response(f"Pipe creation failed: {str(e)}")

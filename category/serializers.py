@@ -166,3 +166,8 @@ class BestSellerSerializer(serializers.ModelSerializer):
     class Meta:
         model = BestSeller
         fields = ["toggel", "quantity"]
+
+class PipeDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PipeDetail
+        fields = ['id', 'pipe', 'basic_data']
