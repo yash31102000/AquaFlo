@@ -49,7 +49,7 @@ class StockTransactionView(DefaultResponseMixin, generics.GenericAPIView):
         base_url = request.build_absolute_uri("/").rstrip("/")
         for data in serializer.data:
             product_image = Pipe.objects.filter(id=data.get("pipe")).first()
-            image = str(product_image.product.image) if product_image.product else (str(product_image.image) if product_image.id else "")
+            image = str(product_image.image) if product_image.id else None
             data["pipe_image"] = base_url + "/media/" + image
         return self.success_response(
             "Stock detalis feached succesfully", serializer.data
