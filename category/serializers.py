@@ -51,9 +51,24 @@ class RecursivePipeSerializer(serializers.ModelSerializer):
 
         if not related_products:
             return []
+        
+        # Create a list to store serialized products with basic_data
+        serialized_products = []
+        
+        # Process each product individually to add basic_data
+        for product in related_products:
+            # Serialize the product first
+            serialized_product = SimpleProductSerializer(product).data
+            
+            # Get basic_data for this product and add it to the serialized data
+            basic_data_obj = PipeDetail.objects.filter(pipe=product.id).values("basic_data").first()
+            if basic_data_obj:
+                serialized_product["basic_data"] = basic_data_obj.get("basic_data")
+            
+            serialized_products.append(serialized_product)
+        
+        return serialized_products
 
-        # Use a simple serializer to avoid infinite recursion
-        return SimpleProductSerializer(related_products, many=True).data
 
 
 class PipeSerializer(serializers.ModelSerializer):
