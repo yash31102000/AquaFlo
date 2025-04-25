@@ -238,7 +238,7 @@ class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
             serializer = PipeSerializer(sorted_best_sellers, many=True)
             serialized_data = serializer.data
             for i, bs in enumerate(sorted_best_sellers):
-                image_url = getattr(bs.product.image, 'url', '') if bs.product else (getattr(bs.image, 'url', '') if bs.id else "")
+                image_url = getattr(bs.image, 'url', '') if bs.id else ""
                 
                 serialized_data[i]["image"] = base_url + image_url
             return self.success_response(
