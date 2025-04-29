@@ -206,6 +206,8 @@ class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
     def get(self, request):
         # Step 1: Aggregate quantities from order_items
         best_seller = BestSeller.objects.all().first()
+        if not best_seller:
+            return self.error_response("BestSeller Data Not Found")
         if best_seller.toggel:
             product_quantities = defaultdict(int)
             orders = Order.objects.exclude(status="CANCEL")
