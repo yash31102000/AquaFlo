@@ -743,7 +743,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"code\": \"A\",\r\n    \"size\": \"1/2\",\r\n    \"mm\": \"15\",\r\n    \"packing\": \"100\",\r\n    \"large_bag\": \"500\"\r\n}",
+									"raw": "{\r\n    \"basic_data\": [\r\n        {\r\n            \"code\": \"A\",\r\n            \"size\": \"1/2\",\r\n            \"mm\": \"15\",\r\n            \"packing\": \"100\",\r\n            \"large_bag\": \"500\"\r\n        },\r\n        {\r\n            \"code\": \"B\",\r\n            \"size\": \"3/4\",\r\n            \"mm\": \"20\",\r\n            \"packing\": \"50\",\r\n            \"large_bag\": \"350\"\r\n        },\r\n        {\r\n            \"code\": \"C\",\r\n            \"size\": \"1\",\r\n            \"mm\": \"25\",\r\n            \"packing\": \"40\",\r\n            \"large_bag\": \"200\"\r\n        },\r\n        {\r\n            \"code\": \"D\",\r\n            \"size\": \"1 1/4\",\r\n            \"mm\": \"32\",\r\n            \"packing\": \"20\",\r\n            \"large_bag\": \"120\"\r\n        },\r\n        {\r\n            \"code\": \"E\",\r\n            \"size\": \"1 1/2\",\r\n            \"mm\": \"40\",\r\n            \"packing\": \"15\",\r\n            \"large_bag\": \"90\"\r\n        },\r\n        {\r\n            \"code\": \"F\",\r\n            \"size\": \"2\",\r\n            \"mm\": \"50\",\r\n            \"packing\": \"10\",\r\n            \"large_bag\": \"40\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"

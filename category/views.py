@@ -305,12 +305,11 @@ class PipeDetailViewset(DefaultResponseMixin, generics.GenericAPIView):
         if not querytset:
             return self.error_response("Pipe Details Not Found")
 
-        for basic_datas in querytset.basic_data:
-            if basic_datas.get("code") == request.data.get("code"):
-                for key,val in basic_datas.items():
-                    basic_datas[key] = request.data.get(key)
-            querytset.save()
-        return self.success_response("PipeDetails Update Sucessfully.")
+        serializer = PipeDetailSerializer(querytset,data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return self.success_response("Pipe Detail Update successfully")
+        return self.error_response("PipeDetail Update Faild")
     
     
 # class WeightListViewset(DefaultResponseMixin, generics.GenericAPIView):
