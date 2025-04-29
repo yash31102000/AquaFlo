@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "99d32bae-156a-42ce-8ecd-9eca19458ecd",
+		"_postman_id": "646eba9c-3dff-46cd-afa1-03a3b78c2db3",
 		"name": "AquaFlo",
 		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "40162854",
-		"_collection_link": "https://develop-7967.postman.co/workspace/develop-Workspace~8780b293-fc38-4b51-8a1a-08547dca5444/collection/40162854-99d32bae-156a-42ce-8ecd-9eca19458ecd?action=share&source=collection_link&creator=40162854"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33163402",
+		"_collection_link": "https://develop-7967.postman.co/workspace/My-Workspace~6ab690bf-a9dd-4aae-8ab5-1b3214de0215/collection/33163402-646eba9c-3dff-46cd-afa1-03a3b78c2db3?action=share&source=collection_link&creator=33163402"
 	},
 	"item": [
 		{
@@ -28,22 +28,35 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone_number\": \"9998233017\",\n    \"first_name\": \"Raj\",\n    \"last_name\": \"Patel\",\n    \"email\": \"\",\n    \"password\": \"1234\",\n    \"addresses\": [\n        // {\n        //     \"company_name\":\"\",\n        //     \"street\": \"456 Patel St\",\n        //     \"city\": \"Ahmedabad\",\n        //     \"state\": \"GJ\",\n        //     \"zip\": \"380001\"\n        // }\n    ]\n}",
+							"raw": "{\n    \"phone_number\": \"9998233017\",\n    \"first_name\": \"Raj\",\n    \"last_name\": \"Patel\",\n    \"email\": \"\",\n    \"password\": \"1234\",\n    \"addresses\": [\n        {\n            \"company_name\":\"\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{base_url}}/register/",
+						"url": {
+							"raw": "{{base_url}}/register/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register",
+								""
+							]
+						},
 						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
 					},
 					"response": []
@@ -71,14 +84,23 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone_number\":\"9998533013\",\n    \"password\":\"1234\"\n}",
+							"raw": "{\n    \"phone_number\":\"9998867024\",\n    \"password\":\"1234\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{base_url}}/login/"
+						"url": {
+							"raw": "{{base_url}}/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -87,9 +109,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -102,7 +128,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/add-remove-address/"
+						"url": {
+							"raw": "{{base_url}}/add-remove-address/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"add-remove-address",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -111,7 +146,16 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/user/"
+						"url": {
+							"raw": "{{base_url}}/user/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -120,9 +164,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "PUT",
 						"header": [],
@@ -135,7 +183,17 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/user/72ebe49f-c3db-4850-b250-5bbb1dfdd415/"
+						"url": {
+							"raw": "{{base_url}}/user/72ebe49f-c3db-4850-b250-5bbb1dfdd415/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"72ebe49f-c3db-4850-b250-5bbb1dfdd415",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -144,13 +202,27 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "DELETE",
 						"header": [],
-						"url": "{{base_url}}/user/72ebe49fc3db4850b2505bbb1dfdd415/"
+						"url": {
+							"raw": "{{base_url}}/user/72ebe49fc3db4850b2505bbb1dfdd415/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"72ebe49fc3db4850b2505bbb1dfdd415",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -162,7 +234,17 @@
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/fetch-gst-details/24AAXFT2733Q1ZB/"
+						"url": {
+							"raw": "{{base_url}}/fetch-gst-details/24AAXFT2733Q1ZB/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"fetch-gst-details",
+								"24AAXFT2733Q1ZB",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -176,13 +258,26 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/banner/"
+						"url": {
+							"raw": "{{base_url}}/banner/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"banner",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -191,9 +286,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -227,7 +326,16 @@
 								}
 							]
 						},
-						"url": "{{base_url}}/banner/"
+						"url": {
+							"raw": "{{base_url}}/banner/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"banner",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -236,7 +344,16 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{base_url}}/banner/"
+						"url": {
+							"raw": "{{base_url}}/banner/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"banner",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -245,9 +362,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "PUT",
 						"header": [],
@@ -277,7 +398,17 @@
 								}
 							]
 						},
-						"url": "{{base_url}}/banner/4/"
+						"url": {
+							"raw": "{{base_url}}/banner/4/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"banner",
+								"4",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -291,22 +422,35 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"order_items\": [\n        {\n            \"item_id\": \"60\",\n            \"quantity\": \"100\",\n            \"price\": null\n        },\n        {\n            \"item_id\": \"79\",\n            \"quantity\": \"50\",\n            \"price\": null\n        },\n        {\n            \"item_id\": \"72\",\n            \"quantity\": \"60\",\n            \"price\": null\n        },\n        {\n            \"item_id\": \"68\",\n            \"quantity\": \"100\",\n            \"price\": null\n        },\n        {\n            \"item_id\": \"66\",\n            \"quantity\": \"100\",\n            \"price\": null\n        },\n        {\n            \"item_id\": \"111\",\n            \"quantity\": \"50\",\n            \"price\": null\n        },\n        {\n            \"item_id\": \"112\",\n            \"quantity\": \"60\",\n            \"price\": null\n        },\n        {\n            \"item_id\": \"115\",\n            \"quantity\": \"5\",\n            \"price\": null\n        }\n    ],\n    \"address\": {\n        \"company_name\": \"Abc Sales\",\n        \"GST_Number\": \"1234567890\",\n        \"street\": \"456 Patel St\",\n        \"city\": \"Ahmedabad\",\n        \"state\": \"GJ\",\n        \"zip\": \"380001\"\n    },\n    \"address_link\": \"https://www.google.com/maps/place/23%C2%B007'27.6%22N+72%C2%B002'47.0%22E/@23.124334,72.0456591,18z/data=!3m1!4b1!4m7!1m2!7m1!2e1!3m3!8m2!3d23.124334!4d72.046377?entry=ttu&g_ep=EgoyMDI1MDMyNC4wIKXMDSoASAFQAw%3D%3D\"\n}",
+							"raw": "{\n    \"order_items\": [\n        {\n            \"item_id\": \"17\",\n            \"code\":\"A\",\n            \"size\":\"1/2\",\n            \"mm\":\"15\",\n            \"packing\":\"100*5\",\n            \"large_bag\":\"500\",\n            \"quantity\": \"100\",\n            \"price\": null\n        },\n        {\n            \"item_id\": \"20\",\n            \"code\":\"A\",\n            \"size\":\"1/2\",\n            \"mm\":\"15\",\n            \"packing\":\"100*7\",\n            \"large_bag\":\"700\",\n            \"quantity\": \"100\",\n            \"price\": null\n        }\n    ],\n    \"address\": {\n        \"company_name\": \"Abc Sales\",\n        \"GST_Number\": \"1234567890\",\n        \"street\": \"456 Patel St\",\n        \"city\": \"Ahmedabad\",\n        \"state\": \"GJ\",\n        \"zip\": \"380001\"\n    },\n    \"address_link\": \"https://www.google.com/maps/place/23%C2%B007'27.6%22N+72%C2%B002'47.0%22E/@23.124334,72.0456591,18z/data=!3m1!4b1!4m7!1m2!7m1!2e1!3m3!8m2!3d23.124334!4d72.046377?entry=ttu&g_ep=EgoyMDI1MDMyNC4wIKXMDSoASAFQAw%3D%3D\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{base_url}}/order/"
+						"url": {
+							"raw": "{{base_url}}/order/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -315,13 +459,26 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/order/"
+						"url": {
+							"raw": "{{base_url}}/order/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -330,9 +487,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "PUT",
 						"header": [],
@@ -345,7 +506,17 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/order/7/"
+						"url": {
+							"raw": "{{base_url}}/order/7/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order",
+								"7",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -354,13 +525,27 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/order/f091e57f87c94fe48c397087333fdc59/"
+						"url": {
+							"raw": "{{base_url}}/order/f091e57f87c94fe48c397087333fdc59/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order",
+								"f091e57f87c94fe48c397087333fdc59",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -374,7 +559,16 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/invoice/"
+						"url": {
+							"raw": "{{base_url}}/invoice/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"invoice",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -383,22 +577,35 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"order\": \"4\",\n    // \"total_amount\": \"50000\",\n    \"tax_amount\": \"0\",\n    \"discount\": \"0\",\n    // \"final_amount\": \"55000\",\n    // \"due_date\": \"2025-04-15\",\n    \"payment_method\": \"\"\n}",
+							"raw": "{\n    \"order\": \"1\",\n    // \"total_amount\": \"50000\",\n    \"tax_amount\": \"0\",\n    \"discount\": \"0\",\n    // \"final_amount\": \"55000\",\n    // \"due_date\": \"2025-04-15\",\n    \"payment_method\": \"\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{base_url}}/invoice/"
+						"url": {
+							"raw": "{{base_url}}/invoice/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"invoice",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -407,9 +614,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "PUT",
 						"header": [],
@@ -422,7 +633,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/invoice/4"
+						"url": {
+							"raw": "{{base_url}}/invoice/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"invoice",
+								"4"
+							]
+						}
 					},
 					"response": []
 				},
@@ -434,9 +654,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
@@ -449,7 +673,17 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/order-invoice/3/"
+						"url": {
+							"raw": "{{base_url}}/order-invoice/3/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"order-invoice",
+								"3",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -461,9 +695,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
@@ -476,7 +714,17 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/invoice/72ebe49fc3db4850b2505bbb1dfdd415/"
+						"url": {
+							"raw": "{{base_url}}/user-invoice/72ebe49fc3db4850b2505bbb1dfdd415/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-invoice",
+								"72ebe49fc3db4850b2505bbb1dfdd415",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -486,6 +734,89 @@
 			"name": "Pipes",
 			"item": [
 				{
+					"name": "PipeDetails",
+					"item": [
+						{
+							"name": "Update-PipeDtails",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"code\": \"A\",\r\n    \"size\": \"1/2\",\r\n    \"mm\": \"15\",\r\n    \"packing\": \"100\",\r\n    \"large_bag\": \"500\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/pipe-detail/17/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"pipe-detail",
+										"17",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create-pipe-details",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"pipe\": \"17\",\r\n    \"basic_data\": [\r\n        {\r\n            \"code\": \"A\",\r\n            \"size\": \"1/2\",\r\n            \"mm\": \"15\",\r\n            \"packing\": \"100\",\r\n            \"large_bag\": \"500\"\r\n        },\r\n        {\r\n            \"code\": \"B\",\r\n            \"size\": \"3/4\",\r\n            \"mm\": \"20\",\r\n            \"packing\": \"50\",\r\n            \"large_bag\": \"350\"\r\n        },\r\n        {\r\n            \"code\": \"C\",\r\n            \"size\": \"1\",\r\n            \"mm\": \"25\",\r\n            \"packing\": \"40\",\r\n            \"large_bag\": \"200\"\r\n        },\r\n        {\r\n            \"code\": \"D\",\r\n            \"size\": \"1 1/4\",\r\n            \"mm\": \"32\",\r\n            \"packing\": \"20\",\r\n            \"large_bag\": \"120\"\r\n        },\r\n        {\r\n            \"code\": \"E\",\r\n            \"size\": \"1 1/2\",\r\n            \"mm\": \"40\",\r\n            \"packing\": \"15\",\r\n            \"large_bag\": \"90\"\r\n        },\r\n        {\r\n            \"code\": \"F\",\r\n            \"size\": \"2\",\r\n            \"mm\": \"50\",\r\n            \"packing\": \"10\",\r\n            \"large_bag\": \"40\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/pipe-detail/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"pipe-detail",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "WeightList",
+					"item": [
+						{
+							"name": "New Request",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/weightlist/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"weightlist",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "pipes",
 					"request": {
 						"auth": {
@@ -493,7 +824,16 @@
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/pipes/"
+						"url": {
+							"raw": "{{base_url}}/pipes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pipes",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -521,7 +861,16 @@
 								}
 							]
 						},
-						"url": "{{base_url}}/pipes/"
+						"url": {
+							"raw": "{{base_url}}/pipes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pipes",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -533,7 +882,17 @@
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/get-product-list/5/"
+						"url": {
+							"raw": "{{base_url}}/get-product-list/200/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"get-product-list",
+								"200",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -545,7 +904,16 @@
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/main-category/"
+						"url": {
+							"raw": "{{base_url}}/main-category/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"main-category",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -577,7 +945,17 @@
 								}
 							]
 						},
-						"url": "{{base_url}}/pipes/120/"
+						"url": {
+							"raw": "{{base_url}}/pipes/120/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pipes",
+								"120",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -589,18 +967,37 @@
 				{
 					"name": "stock add",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"pipe\": 110,\n  \"transaction_type\": \"IN\",\n  \"quantity\": 150,\n  \"alert\" : \"150\",\n  \"note\": \"In water tank stock\"\n}\n",
+							"raw": "{\n  \"pipe\": 60,\n  \"transaction_type\": \"IN\",\n  \"quantity\": 150,\n  \"alert\" : \"150\",\n  \"note\": \"In water tank stock\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{base_url}}/stock-transaction/"
+						"url": {
+							"raw": "{{base_url}}/stock-transaction/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stock-transaction",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -609,7 +1006,16 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/stock-transaction/"
+						"url": {
+							"raw": "{{base_url}}/stock-transaction/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stock-transaction",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -627,7 +1033,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/stock-update/1"
+						"url": {
+							"raw": "{{base_url}}/stock-update/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stock-update",
+								"1"
+							]
+						}
 					},
 					"response": []
 				},
@@ -636,7 +1051,16 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/stock-product-list/"
+						"url": {
+							"raw": "{{base_url}}/stock-product-list/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stock-product-list",
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -648,6 +1072,16 @@
 				{
 					"name": "update-best-seller",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [],
 						"body": {
@@ -659,13 +1093,33 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/bestseller/1/"
+						"url": {
+							"raw": "{{base_url}}/bestseller/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bestseller",
+								"1",
+								""
+							]
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "create-best-seller",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -677,7 +1131,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/bestseller/"
+						"url": {
+							"raw": "{{base_url}}/bestseller/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bestseller",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -686,7 +1149,16 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/bestseller/"
+						"url": {
+							"raw": "{{base_url}}/bestseller/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bestseller",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -695,7 +1167,16 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{base_url}}/bestseller/1"
+						"url": {
+							"raw": "{{base_url}}/bestseller/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bestseller",
+								"1"
+							]
+						}
 					},
 					"response": []
 				}
@@ -709,9 +1190,13 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "POST",
 						"header": [],
@@ -724,7 +1209,16 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/user-discount/"
+						"url": {
+							"raw": "{{base_url}}/user-discount/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-discount",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -733,13 +1227,26 @@
 					"request": {
 						"auth": {
 							"type": "bearer",
-							"bearer": {
-								"token": "{{token}}"
-							}
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "GET",
 						"header": [],
-						"url": "{{base_url}}/user-discount/"
+						"url": {
+							"raw": "{{base_url}}/user-discount/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-discount",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -751,7 +1258,17 @@
 						},
 						"method": "DELETE",
 						"header": [],
-						"url": "{{base_url}}/user-discount/2/"
+						"url": {
+							"raw": "{{base_url}}/user-discount/2/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-discount",
+								"2",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -772,7 +1289,17 @@
 								}
 							}
 						},
-						"url": "{{base_url}}/user-discount/3/"
+						"url": {
+							"raw": "{{base_url}}/user-discount/3/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-discount",
+								"3",
+								""
+							]
+						}
 					},
 					"response": []
 				}
