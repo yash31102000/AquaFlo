@@ -298,3 +298,45 @@ class PipeDetailViewset(DefaultResponseMixin, generics.GenericAPIView):
                 )
         except Exception as e:
             return self.error_response(f"Pipe creation failed: {str(e)}")
+
+    def put(self,request,pk):
+        
+        querytset = PipeDetail.objects.get(pipe__id=pk)
+        if not querytset:
+            return self.error_response("Pipe Details Not Found")
+
+        for basic_datas in querytset.basic_data:
+            if basic_datas.get("code") == request.data.get("code"):
+                for key,val in basic_datas.items():
+                    basic_datas[key] = request.data.get(key)
+            querytset.save()
+        return self.success_response("PipeDetails Update Sucessfully.")
+    
+    
+# class WeightListViewset(DefaultResponseMixin, generics.GenericAPIView):
+     
+#     def post(self,request):
+         
+#         serializer = WeightListSerializer(data=request.data)
+#         try:
+#             if serializer.is_valid(raise_exception=True):
+#                 serializer.save()
+#                 # Use recursive serializer to return full nested structure
+#                 return self.success_response(
+#                     "Weight List Placed Successfully",
+#                 )
+#         except Exception as e:
+#             return self.error_response(f"WeightList creation failed: {str(e)}") 
+        
+#     def put(self,request,pk):
+        
+#         queryset = WeightList.objects.filter(id=pk).first()
+#         if not queryset:
+#             return self.error_response("WeightList Not Found")
+        
+#         serializer = WeightListSerializer(queryset,data=request.data,partial=True)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return self.success_response("Weight List Updated Successfully")
+        
+#         return self.error_response("WeightList Update Faild")

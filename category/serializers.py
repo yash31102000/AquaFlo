@@ -186,3 +186,8 @@ class PipeDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = PipeDetail
         fields = ['id', 'pipe', 'basic_data']
+
+# class WeightListSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = WeightList
+#         fields = ["pipe","keys"]
