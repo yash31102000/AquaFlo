@@ -63,7 +63,12 @@ class RecursivePipeSerializer(serializers.ModelSerializer):
             # Get basic_data for this product and add it to the serialized data
             basic_data_obj = PipeDetail.objects.filter(pipe=product.id).values("basic_data").first()
             if basic_data_obj:
-                serialized_product["basic_data"] = basic_data_obj.get("basic_data")
+                basic_data_list = basic_data_obj["basic_data"]
+                for item in basic_data_list:
+                    for key, value in item.items():
+                        if value == 'None':
+                            item[key] = None
+                serialized_product["basic_data"] = basic_data_list
             
             serialized_products.append(serialized_product)
         
