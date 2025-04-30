@@ -66,8 +66,8 @@ class RecursivePipeSerializer(serializers.ModelSerializer):
                 basic_data_list = basic_data_obj["basic_data"]
                 for item in basic_data_list:
                     for key, value in item.items():
-                        if value == 'None':
-                            item[key] = None
+                        if value in ['None',None]:
+                            item[key] = "-"
                 serialized_product["basic_data"] = basic_data_list
             
             serialized_products.append(serialized_product)
