@@ -12,7 +12,7 @@ class StockTransactionView(DefaultResponseMixin, generics.GenericAPIView):
     serializer_class = StockTransactionSerializer
 
     def post(self, request):
-        print(request.data,"?"*10)
+
         pipe_id = StockTransaction.objects.filter(pipe=request.data.get("pipe")).first()
         if pipe_id:
             return self.error_response("Stock already exit")
