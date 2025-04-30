@@ -155,20 +155,16 @@ class GetPipeViewset(DefaultResponseMixin, generics.GenericAPIView):
                         product=sub_categorie.get("id")
                     ).values()
                     for product in products:
-                        product_obj = Pipe.objects.filter(id=product.get("product_id")).first()
-                        image = str(product_obj.product.image) if product_obj.product else (str(product_obj.image) if product_obj.id else "")
                         base_url = (
                             request.build_absolute_uri("/").rstrip("/") + "/media/"
                         )
-                        product['image'] = base_url + image
+                        product['image'] = base_url + product.get("image")
                         product["sub_categorie_name"] = sub_categorie.get("name")
                         related_product.append(product)
             products = Pipe.objects.filter(product=main_pip.get("id")).values()
             for product in products:
-                product_obj = Pipe.objects.filter(id=product.get("product_id")).first()
-                image = str(product_obj.product.image) if product_obj.product else (str(product_obj.image) if product_obj.id else "")
                 base_url = request.build_absolute_uri("/").rstrip("/") + "/media/"
-                product['image'] = base_url + image
+                product['image'] = base_url + product.get("image")
                 product["sub_categorie_name"] = ""
                 related_product.append(product)
             response_data = {
