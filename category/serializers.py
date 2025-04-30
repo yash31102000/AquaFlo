@@ -118,7 +118,7 @@ class PipeCreateUpdateSerializer(serializers.ModelSerializer):
         Custom create method to handle nested sub-categories.
         """
         # Extract sub-categories if provided
-        print(validated_data)
+
         sub_categories = validated_data.pop("sub_categories", [])
 
         # Create the parent pipe
