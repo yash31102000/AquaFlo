@@ -108,8 +108,8 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
     def get(self, request):
         user_discount = UserDiscount.objects.filter(user_id=request.user.id).values().first()
         self.discount_data = user_discount.get("discount_data", {}) if user_discount else {}
-        queryset = Pipe.objects.filter(parent__isnull=True, product__isnull=True)
-        
+        queryset = Pipe.objects.filter(parent__isnull=True, product__isnull=True,name="Water Tank")
+        print(queryset)
         name_filter = request.query_params.get("name")
         if name_filter:
             queryset = queryset.filter(name__icontains=name_filter)
