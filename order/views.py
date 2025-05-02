@@ -8,6 +8,7 @@ from django.db.models.expressions import RawSQL
 from .serializers import *
 from datetime import datetime
 
+keys_to_remove = ["quantity", "mm", "code", "price"]
 
 # Create your views here.
 class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
@@ -28,9 +29,11 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
         serializer = OrderSerializer(queryset, many=True)
         response_data = serializer.data.copy()
         for data in response_data:
-            data["created_at"] = datetime.fromisoformat(
-                data["created_at"].replace("Z", "")
-            ).date().strftime("%d-%m-%Y")
+            data["created_at"] = (
+                datetime.fromisoformat(data["created_at"].replace("Z", ""))
+                .date()
+                .strftime("%d-%m-%Y")
+            )
             for order_items in data.get("order_items"):
                 sub_item = (
                     Pipe.objects.filter(pk=order_items.get("item_id"))
@@ -47,8 +50,14 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         "mm"
                     ) == basic.get("mm"):
                         item_basic_data = basic
-                        value = (int((int(basic.get("packing")) * int(order_items.get("quantity"))) / int(basic.get("large_bag"))))
-                        if value != 0 :
+                        value = int(
+                            (
+                                int(basic.get("packing"))
+                                * int(order_items.get("quantity"))
+                            )
+                            / int(basic.get("large_bag"))
+                        )
+                        if value != 0:
                             order_items["quantity"] = ""
                             order_items["large_bag_quantity"] = str(value)
                         else:
@@ -140,5 +149,31 @@ class UserOrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
         )
 
 
-#  YYYY-MM-DD
-#  DD-MM-YYYY
+class OrderSplitViewSet(DefaultResponseMixin, generics.GenericAPIView):
+    def post(
+        self,
+        request,
+    ):
+        order_split_list = []
+        data = request.data
+        old_order = Order.objects.get(pk=data.get("old_order"))
+        for order_item in old_order.order_items:
+            if order_item.get("item_id") == data.get("item_id"):
+                new_order_item = order_item.copy()
+                order_split_list.append(new_order_item)
+                order_item["message"] = (
+                    "This items are currently out of stock. We've created a new order for them. Once restocked, we'll fulfill it faithfully."
+                )
+                for key in keys_to_remove:
+                    order_item.pop(
+                        key, None
+                    )
+
+        __, __ = Order.objects.update_or_create(
+            order_items=order_split_list,
+            user=old_order.user,
+            address=old_order.address,
+            address_link=old_order.address_link,
+        )
+        old_order.save()
+        return self.success_response("Order Split Successfully")
