@@ -132,7 +132,7 @@ class AddorRemoveAddressAPI(DefaultResponseMixin, generics.GenericAPIView):
 
         get_address.save()
         return self.success_response(
-            "Address Update or Delete Successfully", get_address.addresses
+            "Address Update or Delete Successfully", 
         )
 
 class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
