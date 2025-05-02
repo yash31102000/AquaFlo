@@ -40,7 +40,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone_number\": \"9998233017\",\n    \"first_name\": \"Raj\",\n    \"last_name\": \"Patel\",\n    \"email\": \"\",\n    \"password\": \"1234\",\n    \"addresses\": [\n        {\n            \"company_name\":\"\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        }\n    ]\n}",
+							"raw": "{\n    \"phone_number\": \"9998233016\",\n    \"first_name\": \"Jenish\",\n    \"last_name\": \"Patel\",\n    \"email\": \"\",\n    \"password\": \"1234\",\n    \"addresses\": [\n        {\n            \"company_name\":\"\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -84,7 +84,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone_number\":\"9998867024\",\n    \"password\":\"1234\"\n}",
+							"raw": "{\n    \"phone_number\":\"9998233016\",\n    \"password\":\"1234\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -301,22 +301,22 @@
 							"formdata": [
 								{
 									"key": "title",
-									"value": "test11111111",
+									"value": "AGRICULTURE",
 									"type": "text"
 								},
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/home/evenmore/Downloads/image.png"
+									"src": "/C:/Users/Admin/Desktop/Image/Image/Banner/2agriculture-water-supply-solutions.jpg"
 								},
 								{
 									"key": "description",
-									"value": "qqqqqqqqqqq",
+									"value": "agriculture-water-supply-solutions",
 									"type": "text"
 								},
 								{
 									"key": "category",
-									"value": "33",
+									"value": "5",
 									"type": "text"
 								},
 								{
@@ -377,7 +377,7 @@
 							"formdata": [
 								{
 									"key": "title",
-									"value": "test1",
+									"value": "WATER TANK",
 									"type": "text"
 								},
 								{
@@ -388,24 +388,24 @@
 								},
 								{
 									"key": "description",
-									"value": "Commercial Pvc Pipe",
+									"value": "water storage solutions",
 									"type": "text"
 								},
 								{
 									"key": "flag",
-									"value": "True",
+									"value": "False",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{base_url}}/banner/4/",
+							"raw": "{{base_url}}/banner/2/",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"banner",
-								"4",
+								"2",
 								""
 							]
 						}
@@ -434,7 +434,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"order_items\": [\n        {\n            \"item_id\": \"17\",\n            \"code\":\"A\",\n            \"size\":\"1/2\",\n            \"mm\":\"15\",\n            \"packing\":\"100*5\",\n            \"large_bag\":\"500\",\n            \"quantity\": \"100\",\n            \"price\": null\n        },\n        {\n            \"item_id\": \"20\",\n            \"code\":\"A\",\n            \"size\":\"1/2\",\n            \"mm\":\"15\",\n            \"packing\":\"100*7\",\n            \"large_bag\":\"700\",\n            \"quantity\": \"100\",\n            \"price\": null\n        }\n    ],\n    \"address\": {\n        \"company_name\": \"Abc Sales\",\n        \"GST_Number\": \"1234567890\",\n        \"street\": \"456 Patel St\",\n        \"city\": \"Ahmedabad\",\n        \"state\": \"GJ\",\n        \"zip\": \"380001\"\n    },\n    \"address_link\": \"https://www.google.com/maps/place/23%C2%B007'27.6%22N+72%C2%B002'47.0%22E/@23.124334,72.0456591,18z/data=!3m1!4b1!4m7!1m2!7m1!2e1!3m3!8m2!3d23.124334!4d72.046377?entry=ttu&g_ep=EgoyMDI1MDMyNC4wIKXMDSoASAFQAw%3D%3D\"\n}",
+							"raw": "{\n    \"order_items\": [\n        {\n            \"item_id\": \"161\",\n            \"code\":\"C\",\n            \"mm\":\"25\",\n            \"quantity\": \"50\",\n            \"price\": null\n        },\n        {\n            \"item_id\": \"172\",\n            \"code\":\"A\",\n            \"mm\":\"75\",\n            \"quantity\": \"100\",\n            \"price\": null\n        },\n                {\n            \"item_id\": \"125\",\n            \"code\":\"B\",\n            \"mm\":\"110\",\n            \"quantity\": \"100\",\n            \"price\": null\n        },\n                {\n            \"item_id\": \"120\",\n            \"code\":\"B\",\n            \"mm\":\"110\",\n            \"quantity\": \"50\",\n            \"price\": null\n        }\n    ],\n    \"address\": {\n        \"company_name\": \"Abc Sales\",\n        \"GST_Number\": \"1234567890\",\n        \"street\": \"456 Patel St\",\n        \"city\": \"Ahmedabad\",\n        \"state\": \"GJ\",\n        \"zip\": \"380001\"\n    },\n    \"address_link\": \"https://www.google.com/maps/place/23%C2%B007'27.6%22N+72%C2%B002'47.0%22E/@23.124334,72.0456591,18z/data=!3m1!4b1!4m7!1m2!7m1!2e1!3m3!8m2!3d23.124334!4d72.046377?entry=ttu&g_ep=EgoyMDI1MDMyNC4wIKXMDSoASAFQAw%3D%3D\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -536,13 +536,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/order/f091e57f87c94fe48c397087333fdc59/",
+							"raw": "{{base_url}}/order/4380aa3d1a9941a3adc1df0b9ae37d7b/",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"order",
-								"f091e57f87c94fe48c397087333fdc59",
+								"4380aa3d1a9941a3adc1df0b9ae37d7b",
 								""
 							]
 						}
@@ -674,13 +674,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/order-invoice/3/",
+							"raw": "{{base_url}}/order-invoice/1/",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"order-invoice",
-								"3",
+								"1",
 								""
 							]
 						}
@@ -737,7 +737,7 @@
 					"name": "PipeDetails",
 					"item": [
 						{
-							"name": "Update-PipeDtails",
+							"name": "update-pipe-details",
 							"request": {
 								"method": "PUT",
 								"header": [],
@@ -797,10 +797,19 @@
 					"name": "WeightList",
 					"item": [
 						{
-							"name": "New Request",
+							"name": "create-weightlist",
 							"request": {
 								"method": "POST",
 								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"keys\": [\r\n        \"code\",\r\n        \"size\",\r\n        \"mm\",\r\n        \"packing\",\r\n        \"large_bag\"\r\n    ]\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
 								"url": {
 									"raw": "{{base_url}}/weightlist/",
 									"host": [
@@ -883,13 +892,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/get-product-list/200/",
+							"raw": "{{base_url}}/get-product-list/2/",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"get-product-list",
-								"200",
+								"2",
 								""
 							]
 						}
