@@ -95,12 +95,10 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
         try:
             if serializer.is_valid(raise_exception=True):
-                pipe = serializer.save()
+                serializer.save()
                 # Use recursive serializer to return full nested structure
-                response_serializer = RecursivePipeSerializer(pipe)
                 return self.success_response(
                     "Pipe created successfully",
-                    response_serializer.data,
                 )
         except Exception as e:
             return self.error_response(f"Pipe creation failed: {str(e)}")
