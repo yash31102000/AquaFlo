@@ -1,9 +1,11 @@
+from collections import defaultdict
 from rest_framework.decorators import action
 from rest_framework import generics
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from AquaFlo.Utils.permissions import CustomAPIPermissions
 from .models import *
-from category.models import Pipe
+from category.models import Pipe, PipeDetail
+from django.db.models.expressions import RawSQL
 from .serializers import *
 from datetime import datetime
 
@@ -23,30 +25,67 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
         return self.error_response("Order Placed Faild")
 
     def get(self, request):
-        queryset = Order.objects.all().order_by("created_at")
-        serializer = OrderSerializer(queryset, many=True)
-        response_data = serializer.data.copy()
-        for data in response_data:
-            data['created_at'] = datetime.fromisoformat(data['created_at'].replace("Z", "")).date()
-            for order_items in data.get("order_items"):
-                sub_item = (
-                    Pipe.objects.filter(pk=order_items.get("item_id")).select_related("product").first()
-                )
-                if sub_item:
-                    base_url = request.build_absolute_uri("/").rstrip("/")
-                    image_url = str(sub_item.image) if sub_item.id else None
-                    order_items.pop("item_id")
-                    order_items["item"] = {
-                        "id": sub_item.id,
-                        "name": sub_item.name,
-                        "image":  base_url + "/media/" + image_url if image_url else None,
-                        "parent_id": sub_item.parent.id if sub_item.parent else None,
-                        "product_id":  sub_item.product.id if sub_item.product else None,
-                        "marked_as_favorite": sub_item.marked_as_favorite,
-                        "product_name": sub_item.product.name if sub_item.product else (sub_item.name if sub_item.id else None),
+        orders = Order.objects.prefetch_related("order_items").order_by("created_at")
+        serializer = OrderSerializer(orders, many=True)
+        response_data = []
+
+        # Prefetch all necessary Pipes and PipeDetails
+        pipe_ids = {
+            item["item_id"]
+            for order in serializer.data
+            for item in order.get("order_items", [])
+        }
+        pipes = Pipe.objects.filter(id__in=pipe_ids).select_related("product", "parent")
+        pipe_map = {pipe.id: pipe for pipe in pipes}
+
+        pipe_details = PipeDetail.objects.filter(pipe_id__in=pipe_ids).values("pipe_id", "basic_data")
+        basic_data_map = defaultdict(list)
+        for detail in pipe_details:
+            basic_data_map[detail["pipe_id"]] = detail["basic_data"]
+
+        base_url = request.build_absolute_uri("/").rstrip("/")
+
+        for order in serializer.data:
+            order["created_at"] = datetime.fromisoformat(order["created_at"].replace("Z", "")).strftime("%d-%m-%Y")
+            for item in order.get("order_items", []):
+                pipe = pipe_map.get(item["item_id"])
+                basic_data_list = basic_data_map.get(item["item_id"], [])
+
+                # Match correct basic data
+                item_basic_data = None
+                for basic in basic_data_list:
+                    if item.get("code") == basic.get("code") and item.get("mm") == basic.get("mm"):
+                        item_basic_data = basic
+                        packing = int(basic.get("packing", 1))
+                        large_bag = int(basic.get("large_bag", 1))
+                        quantity = int(item.get("quantity", 0))
+                        large_bag_quantity = (packing * quantity) // large_bag
+                        item["large_bag_quantity"] = str(large_bag_quantity)
+                        item["quantity"] = "" if large_bag_quantity else str(quantity)
+                        break
+
+                # Replace item_id with detailed item info
+                if pipe:
+                    image_url = f"{base_url}/media/{pipe.image}" if pipe.image else None
+                    item["item"] = {
+                        "id": pipe.id,
+                        "name": pipe.name,
+                        "image": image_url,
+                        "parent_id": pipe.parent.id if pipe.parent else None,
+                        "product_id": pipe.product.id if pipe.product else None,
+                        "marked_as_favorite": pipe.marked_as_favorite,
+                        "product_name": pipe.product.name if pipe.product else pipe.name,
+                        "basic_data": item_basic_data,
                     }
-                 
-        return self.success_response("Order list fetched successfully", serializer.data)
+
+                # Clean up unused fields
+                item.pop("item_id", None)
+                item.pop("code", None)
+                item.pop("mm", None)
+
+            response_data.append(order)
+
+        return self.success_response("Order list fetched successfully", response_data)
 
     def put(self, request, pk):
 
@@ -114,3 +153,7 @@ class UserOrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
         return self.success_response(
             f"Orders for user fetched successfully", serializer.data
         )
+
+
+#  YYYY-MM-DD
+#  DD-MM-YYYY
