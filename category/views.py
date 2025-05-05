@@ -62,6 +62,9 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         if discount_info:
                             node["discount_percent"] = discount_info["discount_percent"]
                             node["discount_type"] = discount_info["discount_type"]
+                        else:
+                            node["discount_percent"] = ""
+                            node["discount_type"] = ""
 
                                         
             elif isinstance(node, list):
