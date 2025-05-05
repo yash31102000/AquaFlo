@@ -1,6 +1,6 @@
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from rest_framework import generics
-from category.models import Pipe
+from category.models import Pipe, PipeDetail
 from order.models import Order
 from .models import Invoice
 from .serializers import InvoiceSerializer
@@ -86,7 +86,17 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     pipe_details = (
                         Pipe.objects.filter(id=item.get("item_id")).select_related("product").first()
                     )
-
+                    category_value_name =   f"{pipe_details.product.parent.name} >> {pipe_details.product.name}"
+                    basic_data = (
+                        PipeDetail.objects.filter(pipe_id=item.get("item_id"))
+                        .values("basic_data")
+                        .first()
+                     )
+                    for basic in basic_data.get("basic_data"):
+                        if item.get("code") == basic.get("code") and item.get(
+                        "mm"
+                        ) == basic.get("mm"):
+                            item_basic_data = basic
                     base_url = request.build_absolute_uri("/").rstrip("/")
                     image_url = str(pipe_details.image) if pipe_details.id else ""
                     if pipe_details:
@@ -97,7 +107,8 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             "parent_id": pipe_details.parent.id if pipe_details.parent else None,
                             "product_id":  pipe_details.product.id if pipe_details.product else None,
                             "marked_as_favorite": pipe_details.marked_as_favorite,
-                            "product_name": pipe_details.product.name if pipe_details.product else (pipe_details.name if pipe_details.id else None),
+                            "category": category_value_name,
+                            "basic_data": item_basic_data,
                         }
                         item.pop("item_id", None)
                     if item.get("discount_type") == "percentage":
