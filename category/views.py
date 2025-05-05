@@ -54,13 +54,16 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             process_node(value, path_segments)
                             
                 # Apply discount data if this is a subcategory
-                if "id" in node and self.discount_data and path_segments:
-                    subcategory_id = str(node["id"])
-                    if subcategory_id in self.discount_data:
-                        discount_info = self.discount_data[subcategory_id]
-                        node["discount_percent"] = discount_info["discount_percent"]
-                        node["discount_type"] = discount_info["discount_type"]
-                        
+                if isinstance(node, dict):
+                    # Apply discount if ID matches
+                    node_id = node.get("id")
+                    if node_id and isinstance(node_id, int):
+                        discount_info = self.discount_data.get(node_id)
+                        if discount_info:
+                            node["discount_percent"] = discount_info["discount_percent"]
+                            node["discount_type"] = discount_info["discount_type"]
+
+                                        
             elif isinstance(node, list):
                 for item in node:
                     # For list items, we need to pass a copy of path_segments to avoid cross-contamination
@@ -105,7 +108,12 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
     def get(self, request):
         user_discount = UserDiscount.objects.filter(user_id=request.user.id).values().first()
-        self.discount_data = user_discount.get("discount_data", {}) if user_discount else {}
+        if user_discount:
+            discount_list = user_discount.get("discount_data", [])
+            self.discount_data = {int(item["id"]): item for item in discount_list if "id" in item}
+        else:
+            self.discount_data = {}
+
         queryset = Pipe.objects.filter(parent__isnull=True, product__isnull=True)
 
         name_filter = request.query_params.get("name")
