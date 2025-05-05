@@ -98,8 +98,8 @@ class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
             )
         user = authenticate(request, phone_number=phone_number, password=password)
         if user:
-
             response_data = {
+                "id":user.id,
                 "phone_number": user.phone_number,
                 "first_name": user.first_name,
                 "last_name": user.last_name,

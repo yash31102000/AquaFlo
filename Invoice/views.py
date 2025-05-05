@@ -56,7 +56,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
         try:
             if kwargs.get("pk",None):
                 invoices = Invoice.objects.filter(order__user = kwargs.get("pk")).select_related("order__user")
-            if kwargs.get("order_id",None):
+            elif kwargs.get("order_id",None):
                 invoices = Invoice.objects.filter(order= kwargs.get("order_id")).select_related("order__user")
             else:
                 invoices = Invoice.objects.all().select_related("order__user")
