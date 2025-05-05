@@ -119,31 +119,73 @@ class UserOrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
         """
         Get all orders for a specific user
         """
-        # If user_id not provided in URL, return error
         if not user_id:
             return self.error_response("User ID is required")
-        # Filter orders for this specific user
-        queryset = Order.objects.filter(user_id=user_id)
-        # Serialize the data
-        serializer = OrderSerializer(queryset, many=True)
 
-        # Process the response data
+        queryset = Order.objects.filter(user_id=user_id).order_by("created_at")
+        serializer = OrderSerializer(queryset, many=True)
         response_data = serializer.data.copy()
+
         for data in response_data:
+            data["created_at"] = (
+                datetime.fromisoformat(data["created_at"].replace("Z", ""))
+                .date()
+                .strftime("%d-%m-%Y")
+            )
             for order_items in data.get("order_items"):
                 sub_item = (
-                    Pipe.objects.filter(pk=order_items.get("item_id")).values().first()
+                    Pipe.objects.filter(pk=order_items.get("item_id"))
+                    .select_related("product")
+                    .first()
                 )
-                order_items.pop("item_id")
-                order_items["item"] = sub_item
-                base_url = request.build_absolute_uri("/").rstrip("/")
-                order_items["item"]["image"] = (
-                    base_url + "/media/" + order_items["item"]["image"]
+                basic_data = (
+                    PipeDetail.objects.filter(pipe=order_items.get("item_id"))
+                    .values("basic_data")
+                    .first()
                 )
+                item_basic_data = {}
+                if basic_data:
+                    for basic in basic_data.get("basic_data"):
+                        if order_items.get("code") == basic.get("code") and order_items.get("mm") == basic.get("mm"):
+                            item_basic_data = basic
+                            value = int(
+                                (
+                                    int(basic.get("packing"))
+                                    * int(order_items.get("quantity"))
+                                )
+                                / int(basic.get("large_bag"))
+                            )
+                            if value != 0:
+                                order_items["quantity"] = ""
+                                order_items["large_bag_quantity"] = str(value)
+                            else:
+                                order_items["large_bag_quantity"] = str(value)
+                            order_items.pop("code")
+                            order_items.pop("mm")
+                            break
+
+                if sub_item:
+                    category_value_name = f"{sub_item.product.parent.name} >> {sub_item.product.name}"
+                    base_url = request.build_absolute_uri("/").rstrip("/")
+                    image_url = str(sub_item.image) if sub_item.id else None
+                    order_items.pop("item_id")
+                    order_items["item"] = {
+                        "id": sub_item.id,
+                        "name": sub_item.name,
+                        "image": (
+                            base_url + "/media/" + image_url if image_url else None
+                        ),
+                        "parent_id": sub_item.parent.id if sub_item.parent else None,
+                        "product_id": sub_item.product.id if sub_item.product else None,
+                        "marked_as_favorite": sub_item.marked_as_favorite,
+                        "category": category_value_name,
+                        "basic_data": item_basic_data,
+                    }
 
         return self.success_response(
-            f"Orders for user fetched successfully", serializer.data
+            f"Orders for user fetched successfully", response_data
         )
+
 
 
 class OrderSplitViewSet(DefaultResponseMixin, generics.GenericAPIView):
@@ -174,3 +216,7 @@ class OrderSplitViewSet(DefaultResponseMixin, generics.GenericAPIView):
         )
         old_order.save()
         return self.success_response("Order Split Successfully")
+
+
+
+# [{"id": 3, "discount_percent": 10, "discount_type": "fixed"}, {"id": 171, "discount_percent": 10, "discount_type": "fixed"}]
