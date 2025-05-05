@@ -31,6 +31,7 @@ class OrderSerializer(serializers.ModelSerializer):
         user_data = (
             UserModel.objects.filter(pk=ret.get("user"))
             .values(
+                "id",
                 "phone_number",
                 "first_name",
                 "last_name",

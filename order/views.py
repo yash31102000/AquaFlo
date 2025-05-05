@@ -2,6 +2,7 @@ from rest_framework.decorators import action
 from rest_framework import generics
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from AquaFlo.Utils.permissions import CustomAPIPermissions
+from user.models import UserDiscount
 from .models import *
 from category.models import Pipe, PipeDetail
 from django.db.models.expressions import RawSQL
@@ -29,7 +30,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
         Fetch all orders or orders for a specific user (if user_id is provided).
         """
         user_id = request.query_params.get("user_id", None)
-        print(user_id,'user_id')
+
         if user_id:
             queryset = Order.objects.filter(user_id=user_id)
         else:
@@ -101,6 +102,16 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         "category": category_value_name,
                         "basic_data": item_basic_data,
                     }
+
+                    try:
+                        user_discount = UserDiscount.objects.get(user = data.get("user_data").get("id"))
+                    except:
+                        user_discount = None
+                    if user_discount:
+                        for discount_data in user_discount.discount_data:
+                            if discount_data.get("id") == str(sub_item.product.id):
+                                order_items['discount_percent'] = discount_data.get("discount_percent")
+                                order_items['discount_type'] = discount_data.get("discount_type")
 
         label = "user" if user_id else "all"
         return self.success_response(f"Orders for {label} fetched successfully", response_data)
