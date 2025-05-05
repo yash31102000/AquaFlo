@@ -84,7 +84,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone_number\":\"9998533013\",\n    \"password\":\"1234\"\n}",
+							"raw": "{\n    \"phone_number\":\"9998233017\",\n    \"password\":\"1234\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -536,14 +536,19 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/order/f091e57f87c94fe48c397087333fdc59/",
+							"raw": "{{base_url}}/order/?user_id=4380aa3d1a9941a3adc1df0b9ae37d7b",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"order",
-								"f091e57f87c94fe48c397087333fdc59",
 								""
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "4380aa3d1a9941a3adc1df0b9ae37d7b"
+								}
 							]
 						}
 					},
@@ -1331,13 +1336,20 @@
 					"name": "update-discount",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
 						},
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"discount_data\": {\n        \"20\": {\n            \"discount_percent\": 10,\n            \"discount_type\": \"percentage\"\n        },\n        \"23\": {\n            \"discount_percent\": 500,\n            \"discount_type\": \"fixed\"\n        },\n        \"26\": {\n            \"discount_percent\": 10,\n            \"discount_type\": \"percentage\"\n        },\n        \"27\": {\n            \"discount_percent\": 500,\n            \"discount_type\": \"fixed\"\n        }\n    }\n}",
+							"raw": "{\n    \"discount_data\": [\n        {\n            \"id\": 171,\n            \"discount_percent\": 10,\n            \"discount_type\": \"fixed\"\n        },\n        {\n            \"id\": 3,\n            \"discount_percent\": 10,\n            \"discount_type\": \"fixed\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
