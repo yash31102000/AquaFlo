@@ -157,16 +157,36 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
         return self.success_response("User Discount List Fatch successfully", discounts)
     
     def put(self, request, pk):
-        data = request.data.copy()
-        user = UserDiscount.objects.filter(id=pk).first()
-        if not user:
+        new_discounts = request.data.get('discount_data', [])
+        try:
+            user_discount = UserDiscount.objects.get(pk=pk,user= request.user)
+        except UserDiscount.DoesNotExist:
             return self.error_response("UserDiscount Not Found")
-        
-        serializer = UserDiscountSerializer(user, data=data, partial=True)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return self.success_response("UserDiscount Update successfully")
-        return self.error_response("UserDiscount Update Faild")
+
+        # Ensure it's a list
+        if not isinstance(user_discount.discount_data, list):
+            user_discount.discount_data = []
+
+        # Convert existing data to dict with ID as key for fast lookup
+        existing_discounts = {
+            item['id']: item for item in user_discount.discount_data if 'id' in item
+        }
+
+        for new_item in new_discounts:
+            item_id = new_item.get('id')
+            if item_id in existing_discounts:
+                # Update existing item
+                existing_discounts[item_id].update(new_item)
+            else:
+                # Append new item
+                existing_discounts[item_id] = new_item
+
+        # Save back as list
+        user_discount.discount_data = list(existing_discounts.values())
+        user_discount.save()
+
+        return self.success_response("UserDiscount Update successfully")
+
     
     def delete(self, request, pk):
         user = UserDiscount.objects.filter(id=pk).first()
