@@ -1,8 +1,10 @@
 import base64
+from datetime import date
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from rest_framework import generics
 from category.models import Pipe, PipeDetail
 from order.models import Order
+from user.models import UserDiscount
 from .models import Invoice
 from .serializers import InvoiceSerializer
 
@@ -132,31 +134,48 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             "basic_data": item_basic_data,
                         }
                         order_item.pop("item_id", None)
+                    try:
+                        user_discount = UserDiscount.objects.get(user = invoice_order.user.id)
+                    except:
+                        user_discount = None
+                    if user_discount:
+                        for discount_data in user_discount.discount_data:
+                            if pipe_details.product.parent:
+                                if discount_data.get("id") == str(pipe_details.product.parent.id):
+                                    order_item['discount_percent'] = discount_data.get("discount_percent")
+                                    order_item['discount_type'] = discount_data.get("discount_type")
+                                if pipe_details.product.parent.parent:
+                                    if discount_data.get("id") == str(pipe_details.product.parent.parent.id):
+                                        order_item['discount_percent'] = discount_data.get("discount_percent")
+                                        order_item['discount_type'] = discount_data.get("discount_type")
+                            if discount_data.get("id") == str(pipe_details.product.id):
+                                order_item['discount_percent'] = discount_data.get("discount_percent")
+                                order_item['discount_type'] = discount_data.get("discount_type")
                     if order_item.get("discount_type") == "percentage":
-                        per_item_discount = order_item.get("per_item_discount")
+                        discount_percent = order_item.get("discount_percent")
                         item_total = (
                             int(order_item.get("quantity", 0)) * int(order_item.get("price", 0))
                             if order_item.get("price")
                             else 0
                         )
-                        discount_amount = item_total * int(per_item_discount) / 100
+                        discount_amount = item_total * int(discount_percent) / 100
                         final_price = int(item_total - discount_amount)
-                    elif order_item.get("discount_type") == "fixed":
-                        per_item_discount = order_item.get("per_item_discount")
-                        if per_item_discount == '':
-                            per_item_discount = 0
+                    elif order_item.get("discount_type") == "Fix":
+                        discount_percent = order_item.get("discount_percent")
+                        if discount_percent == '':
+                            discount_percent = 0
                         
                         final_price = (
-                            int(order_item.get("quantity", 0)) * (int(order_item.get("price", 0)) - int(per_item_discount))
+                            int(order_item.get("quantity", 0)) * (int(order_item.get("price", 0)) - int(discount_percent))
                             if order_item.get("price")
                             else 0
                         )
                     else:
-                        per_item_discount = order_item.get("per_item_discount", 0)
-                        if per_item_discount == '':
-                            per_item_discount = 0
+                        discount_percent = order_item.get("discount_percent", 0)
+                        if discount_percent == '':
+                            discount_percent = 0
                         final_price = (
-                            int(order_item.get("quantity", 0)) * (int(order_item.get("price", 0)) - int(per_item_discount))
+                            int(order_item.get("quantity", 0)) * (int(order_item.get("price", 0)) - int(discount_percent))
                             if order_item.get("price")
                             else 0
                         )
@@ -234,21 +253,21 @@ class TotalTransactionViewSet(DefaultResponseMixin, generics.GenericAPIView):
         """Calculate the final price for an item based on quantity, price and discount."""
         quantity = int(item.get("quantity", 0))
         price = int(item.get("price", 0)) if item.get("price") else 0
-        per_item_discount = item.get("per_item_discount", 0)
+        discount_percent = item.get("discount_percent", 0)
         
         # Handle empty discount
-        if per_item_discount == '':
-            per_item_discount = 0
+        if discount_percent == '':
+            discount_percent = 0
         else:
-            per_item_discount = int(per_item_discount)
+            discount_percent = int(discount_percent)
             
         discount_type = item.get("discount_type")
         
         if discount_type == "percentage":
             item_total = quantity * price
-            discount_amount = item_total * per_item_discount / 100
+            discount_amount = item_total * discount_percent / 100
             return int(item_total - discount_amount)
         elif discount_type == "fixed" or discount_type is None:
-            return quantity * (price - per_item_discount)
+            return quantity * (price - discount_percent)
         
         return 0
