@@ -98,20 +98,20 @@ class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
             )
         user = authenticate(request, phone_number=phone_number, password=password)
         if user:
-            addresses = [
-                {
-                    **addr,
-                    "company_name": addr.get("company_name") or "-",
-                    "GST_Number":addr.get("GST_Number") or "-",
-                    "street": addr.get("street") or "-",
-                    "city": addr.get("city") or "-",
-                    "state": addr.get("state") or "-",
-                    "zip": addr.get("zip") or "-"
+            # addresses = [
+            #     {
+            #         **addr,
+            #         "company_name": addr.get("company_name") or "-",
+            #         "GST_Number":addr.get("GST_Number") or "-",
+            #         "street": addr.get("street") or "-",
+            #         "city": addr.get("city") or "-",
+            #         "state": addr.get("state") or "-",
+            #         "zip": addr.get("zip") or "-"
                     
-                }
-                for addr in user.addresses
-            ]
-            
+            #     }
+            #     for addr in user.addresses
+            # ]
+
             response_data = {
                 "id":user.id,
                 "phone_number": user.phone_number,
@@ -120,7 +120,7 @@ class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
                 "email": user.email,
                 "is_admin": user.is_superuser,
                 "tokens": user.tokens,
-                "addresses":addresses,
+                "addresses":user.addresses,
             }
             return self.success_response("Login successfully", response_data)
         else:
