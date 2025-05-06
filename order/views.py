@@ -77,8 +77,8 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                 if value != 0:
                                     order_items["quantity"] = ""
                                     order_items["large_bag_quantity"] = str(value)
-                                else:
-                                    order_items["large_bag_quantity"] = ""
+                                # else:
+                                #     order_items["large_bag_quantity"] = ""
                                 order_items.pop("basic_data_id")
                                 # order_items.pop("mm")
                                 break
