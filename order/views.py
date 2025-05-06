@@ -65,8 +65,8 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 if basic_datas:
                     for basic_data in basic_datas.get("basic_data"):
                         if order_items.get("basic_data_id") == basic_data.get("id"):
+                            item_basic_data = basic_data
                             if basic_data.get("packing") and basic_data.get("large_bag"):
-                                item_basic_data = basic_data
                                 value = int(
                                     (
                                         int(basic_data.get("packing"))
