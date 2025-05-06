@@ -56,31 +56,31 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     .first()
                 )
 
-                basic_data = (
+                basic_datas = (
                     PipeDetail.objects.filter(pipe=item_id)
                     .values("basic_data")
                     .first()
                 )
                 item_basic_data = {}
-                if basic_data:
-                    for basic in basic_data.get("basic_data"):
-                        if order_items.get("mm") and order_items.get("mm"):
-                            if order_items.get("code") == basic.get("code") and order_items.get("mm") == basic.get("mm"):
-                                item_basic_data = basic
+                if basic_datas:
+                    for basic_data in basic_datas.get("basic_data"):
+                        if order_items.get("basic_data_id") == basic_data.get("id"):
+                            if basic_data.get("packing") and basic_data.get("large_bag"):
+                                item_basic_data = basic_data
                                 value = int(
                                     (
-                                        int(basic.get("packing"))
+                                        int(basic_data.get("packing"))
                                         * int(order_items.get("quantity"))
                                     )
-                                    / int(basic.get("large_bag"))
+                                    / int(basic_data.get("large_bag"))
                                 )
                                 if value != 0:
                                     order_items["quantity"] = ""
                                     order_items["large_bag_quantity"] = str(value)
                                 else:
                                     order_items["large_bag_quantity"] = str(value)
-                                order_items.pop("code")
-                                order_items.pop("mm")
+                                order_items.pop("basic_data_id")
+                                # order_items.pop("mm")
                                 break
 
                 if sub_item:
