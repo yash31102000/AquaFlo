@@ -55,6 +55,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
         # Retrieve a list of invoices, optionally filtering by date or other criteria.
         # """
         # try:
+            admin = request.user.is_superuser
             if kwargs.get("pk",None):
                 invoices = Invoice.objects.filter(order__user = kwargs.get("pk")).select_related("order__user")
             elif kwargs.get("order_id",None):
@@ -97,7 +98,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         for basic_data in basic_datas.get("basic_data"):
                             if order_items.get("basic_data_id") == basic_data.get("id"):
                                 item_basic_data = basic_data
-                                if not kwargs.get("order_id",None):
+                                if not admin:
                                     if basic_data.get("packing") and basic_data.get("large_bag"):
                                         value = int(
                                             (
