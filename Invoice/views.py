@@ -124,9 +124,6 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             "name": pipe_details.name,
                             "image":  base_url + "/media/" + image_url if image_url else None,
                             "image_base64" : image_base64,
-                            "parent_id": pipe_details.parent.id if pipe_details.parent else None,
-                            "product_id":  pipe_details.product.id if pipe_details.product else None,
-                            "marked_as_favorite": pipe_details.marked_as_favorite,
                             "category": category_value_name,
                             "basic_data": item_basic_data,
                         }
