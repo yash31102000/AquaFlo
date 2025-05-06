@@ -1,3 +1,4 @@
+import base64
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from rest_framework import generics
 from category.models import Pipe, PipeDetail
@@ -98,12 +99,18 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         ) == basic.get("mm"):
                             item_basic_data = basic
                     base_url = request.build_absolute_uri("/").rstrip("/")
+                    if pipe_details.image and hasattr(pipe_details.image, 'path'):
+                        with open(pipe_details.image.path, 'rb') as image_file:
+                            image_base64 = base64.b64encode(image_file.read()).decode('utf-8')
+
+                    print(pipe_details.image,'pipe_details.image')
                     image_url = str(pipe_details.image) if pipe_details.id else ""
                     if pipe_details:
                         item["item"] = {
                             "id": pipe_details.id,
                             "name": pipe_details.name,
                             "image":  base_url + "/media/" + image_url if image_url else None,
+                            "image_base64" : image_base64,
                             "parent_id": pipe_details.parent.id if pipe_details.parent else None,
                             "product_id":  pipe_details.product.id if pipe_details.product else None,
                             "marked_as_favorite": pipe_details.marked_as_favorite,
