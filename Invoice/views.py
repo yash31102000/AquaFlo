@@ -51,10 +51,10 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
         return self.error_response("Failed to update invoice.", serializer.errors)
 
     def get(self, request, *args, **kwargs):
-        # """
-        # Retrieve a list of invoices, optionally filtering by date or other criteria.
-        # """
-        # try:
+        """
+        Retrieve a list of invoices, optionally filtering by date or other criteria.
+        """
+        try:
             admin = request.user.is_superuser
             if kwargs.get("pk",None):
                 invoices = Invoice.objects.filter(order__user = kwargs.get("pk")).select_related("order__user")
@@ -184,8 +184,8 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 "Invoices fetched successfully.", serializer.data
             )
 
-        # except Exception as e:
-        #     return self.error_response(f"Failed to retrieve invoices : {e}")
+        except Exception as e:
+            return self.error_response(f"Failed to retrieve invoices : {e}")
 
 class TotalTransactionViewSet(DefaultResponseMixin, generics.GenericAPIView):
     def get(self, request):
