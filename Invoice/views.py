@@ -51,10 +51,10 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
         return self.error_response("Failed to update invoice.", serializer.errors)
 
     def get(self, request, *args, **kwargs):
-        """
-        Retrieve a list of invoices, optionally filtering by date or other criteria.
-        """
-        try:
+        # """
+        # Retrieve a list of invoices, optionally filtering by date or other criteria.
+        # """
+        # try:
             if kwargs.get("pk",None):
                 invoices = Invoice.objects.filter(order__user = kwargs.get("pk")).select_related("order__user")
             elif kwargs.get("order_id",None):
@@ -94,10 +94,23 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         .first()
                      )
                     for basic in basic_data.get("basic_data"):
-                        if item.get("code") == basic.get("code") and item.get(
-                        "mm"
-                        ) == basic.get("mm"):
+                        if basic.get("id") == item.get("basic_data_id"):
                             item_basic_data = basic
+                            if basic.get("packing") and basic.get("large_bag"):
+                                value = int(
+                                    (
+                                        int(basic.get("packing"))
+                                        * int(item.get("quantity"))
+                                    )
+                                    / int(basic.get("large_bag"))
+                                )
+                                if value != 0:
+                                    item["quantity"] = ""
+                                    item["large_bag_quantity"] = str(value)
+                                else:
+                                    item["large_bag_quantity"] = str(value)
+                                item.pop("basic_data_id")
+                                break
                     base_url = request.build_absolute_uri("/").rstrip("/")
                     if pipe_details.image and hasattr(pipe_details.image, 'path'):
                         with open(pipe_details.image.path, 'rb') as image_file:
@@ -170,8 +183,8 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 "Invoices fetched successfully.", serializer.data
             )
 
-        except Exception as e:
-            return self.error_response(f"Failed to retrieve invoices : {e}")
+        # except Exception as e:
+        #     return self.error_response(f"Failed to retrieve invoices : {e}")
 
 class TotalTransactionViewSet(DefaultResponseMixin, generics.GenericAPIView):
     def get(self, request):
