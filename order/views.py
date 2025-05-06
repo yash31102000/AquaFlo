@@ -64,23 +64,24 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 item_basic_data = {}
                 if basic_data:
                     for basic in basic_data.get("basic_data"):
-                        if order_items.get("code") == basic.get("code") and order_items.get("mm") == basic.get("mm"):
-                            item_basic_data = basic
-                            value = int(
-                                (
-                                    int(basic.get("packing"))
-                                    * int(order_items.get("quantity"))
+                        if order_items.get("mm") and order_items.get("mm"):
+                            if order_items.get("code") == basic.get("code") and order_items.get("mm") == basic.get("mm"):
+                                item_basic_data = basic
+                                value = int(
+                                    (
+                                        int(basic.get("packing"))
+                                        * int(order_items.get("quantity"))
+                                    )
+                                    / int(basic.get("large_bag"))
                                 )
-                                / int(basic.get("large_bag"))
-                            )
-                            if value != 0:
-                                order_items["quantity"] = ""
-                                order_items["large_bag_quantity"] = str(value)
-                            else:
-                                order_items["large_bag_quantity"] = str(value)
-                            order_items.pop("code")
-                            order_items.pop("mm")
-                            break
+                                if value != 0:
+                                    order_items["quantity"] = ""
+                                    order_items["large_bag_quantity"] = str(value)
+                                else:
+                                    order_items["large_bag_quantity"] = str(value)
+                                order_items.pop("code")
+                                order_items.pop("mm")
+                                break
 
                 if sub_item:
                     base_url = request.build_absolute_uri("/").rstrip("/")
