@@ -51,10 +51,10 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
         return self.error_response("Failed to update invoice.", serializer.errors)
 
     def get(self, request, *args, **kwargs):
-        """
-        Retrieve a list of invoices, optionally filtering by date or other criteria.
-        """
-        try:
+        # """
+        # Retrieve a list of invoices, optionally filtering by date or other criteria.
+        # """
+        # try:
             admin = request.user.is_superuser
             if kwargs.get("pk",None):
                 invoices = Invoice.objects.filter(order__user = kwargs.get("pk")).select_related("order__user")
@@ -84,36 +84,36 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 order_items = invoice_order.order_items
                 total_amount = 0
 
-                for item in order_items:
+                for order_item in order_items:
                     pipe_details = (
-                        Pipe.objects.filter(id=item.get("item_id")).select_related("product").first()
+                        Pipe.objects.filter(id=order_item.get("item_id")).select_related("product").first()
                     )
                     category_value_name =   f"{pipe_details.product.parent.name}  -->  {pipe_details.product.name}"
                     basic_datas = (
-                        PipeDetail.objects.filter(pipe_id=item.get("item_id"))
+                        PipeDetail.objects.filter(pipe_id=order_item.get("item_id"))
                         .values("basic_data")
                         .first()
                      )
                     if basic_datas:
                         for basic_data in basic_datas.get("basic_data"):
-                            if order_items.get("basic_data_id") == basic_data.get("id"):
+                            if order_item.get("basic_data_id") == basic_data.get("id"):
                                 item_basic_data = basic_data
                                 if not admin:
                                     if basic_data.get("packing") and basic_data.get("large_bag"):
                                         value = int(
                                             (
                                                 int(basic_data.get("packing"))
-                                                * int(order_items.get("quantity"))
+                                                * int(order_item.get("quantity"))
                                             )
                                             / int(basic_data.get("large_bag"))
                                         )
                                         if value != 0:
                                             # order_items["quantity"] = ""
-                                            order_items["large_bag_quantity"] = str(value)
-                                            order_items.pop("quantity")
+                                            order_item["large_bag_quantity"] = str(value)
+                                            order_item.pop("quantity")
                                         # else:
                                         #     order_items["large_bag_quantity"] = ""
-                                        order_items.pop("basic_data_id")
+                                        order_item.pop("basic_data_id")
                                         # order_items.pop("mm")
                                         break
                     base_url = request.build_absolute_uri("/").rstrip("/")
@@ -123,7 +123,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
                     image_url = str(pipe_details.image) if pipe_details.id else ""
                     if pipe_details:
-                        item["item"] = {
+                        order_item["item"] = {
                             "id": pipe_details.id,
                             "name": pipe_details.name,
                             "image":  base_url + "/media/" + image_url if image_url else None,
@@ -131,33 +131,33 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             "category": category_value_name,
                             "basic_data": item_basic_data,
                         }
-                        item.pop("item_id", None)
-                    if item.get("discount_type") == "percentage":
-                        per_item_discount = item.get("per_item_discount")
+                        order_item.pop("item_id", None)
+                    if order_item.get("discount_type") == "percentage":
+                        per_item_discount = order_item.get("per_item_discount")
                         item_total = (
-                            int(item.get("quantity", 0)) * int(item.get("price", 0))
-                            if item.get("price")
+                            int(order_item.get("quantity", 0)) * int(order_item.get("price", 0))
+                            if order_item.get("price")
                             else 0
                         )
                         discount_amount = item_total * int(per_item_discount) / 100
                         final_price = int(item_total - discount_amount)
-                    elif item.get("discount_type") == "fixed":
-                        per_item_discount = item.get("per_item_discount")
+                    elif order_item.get("discount_type") == "fixed":
+                        per_item_discount = order_item.get("per_item_discount")
                         if per_item_discount == '':
                             per_item_discount = 0
                         
                         final_price = (
-                            int(item.get("quantity", 0)) * (int(item.get("price", 0)) - int(per_item_discount))
-                            if item.get("price")
+                            int(order_item.get("quantity", 0)) * (int(order_item.get("price", 0)) - int(per_item_discount))
+                            if order_item.get("price")
                             else 0
                         )
                     else:
-                        per_item_discount = item.get("per_item_discount", 0)
+                        per_item_discount = order_item.get("per_item_discount", 0)
                         if per_item_discount == '':
                             per_item_discount = 0
                         final_price = (
-                            int(item.get("quantity", 0)) * (int(item.get("price", 0)) - int(per_item_discount))
-                            if item.get("price")
+                            int(order_item.get("quantity", 0)) * (int(order_item.get("price", 0)) - int(per_item_discount))
+                            if order_item.get("price")
                             else 0
                         )
                     total_amount += final_price
@@ -184,8 +184,8 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 "Invoices fetched successfully.", serializer.data
             )
 
-        except Exception as e:
-            return self.error_response(f"Failed to retrieve invoices : {e}")
+        # except Exception as e:
+        #     return self.error_response(f"Failed to retrieve invoices : {e}")
 
 class TotalTransactionViewSet(DefaultResponseMixin, generics.GenericAPIView):
     def get(self, request):
