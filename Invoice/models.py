@@ -25,6 +25,8 @@ class Invoice(models.Model):
         default="PENDING",
     )
     payment_method = models.CharField(max_length=50, null=True, blank=True)
+    tax_percentage = models.CharField(max_length=50, null=True, blank=True)
+    discount_type =  models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return f"Invoice {self.invoice_number} for Order {self.order.id}"

@@ -4,6 +4,9 @@ from decimal import Decimal
 
 
 class InvoiceSerializer(serializers.ModelSerializer):
+    tax_percentage = serializers.CharField(required=False)
+    discount_type = serializers.CharField(required=False)
+
     class Meta:
         model = Invoice
         fields = [
@@ -15,4 +18,6 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "due_date",
             "payment_status",
             "payment_method",
+            "tax_percentage",
+            "discount_type"
         ]
