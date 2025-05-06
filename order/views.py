@@ -62,11 +62,11 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     .first()
                 )
                 item_basic_data = {}
-                if not user_id:
-                    if basic_datas:
-                        for basic_data in basic_datas.get("basic_data"):
-                            if order_items.get("basic_data_id") == basic_data.get("id"):
-                                item_basic_data = basic_data
+                if basic_datas:
+                    for basic_data in basic_datas.get("basic_data"):
+                        if order_items.get("basic_data_id") == basic_data.get("id"):
+                            item_basic_data = basic_data
+                            if not user_id:
                                 if basic_data.get("packing") and basic_data.get("large_bag"):
                                     value = int(
                                         (

@@ -93,11 +93,11 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         .values("basic_data")
                         .first()
                      )
-                    if not kwargs.get("order_id",None):
-                        if basic_datas:
-                            for basic_data in basic_datas.get("basic_data"):
-                                if order_items.get("basic_data_id") == basic_data.get("id"):
-                                    item_basic_data = basic_data
+                    if basic_datas:
+                        for basic_data in basic_datas.get("basic_data"):
+                            if order_items.get("basic_data_id") == basic_data.get("id"):
+                                item_basic_data = basic_data
+                                if not kwargs.get("order_id",None):
                                     if basic_data.get("packing") and basic_data.get("large_bag"):
                                         value = int(
                                             (
@@ -115,7 +115,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                         order_items.pop("basic_data_id")
                                         # order_items.pop("mm")
                                         break
-                        base_url = request.build_absolute_uri("/").rstrip("/")
+                    base_url = request.build_absolute_uri("/").rstrip("/")
                     if pipe_details.image and hasattr(pipe_details.image, 'path'):
                         with open(pipe_details.image.path, 'rb') as image_file:
                             image_base64 = base64.b64encode(image_file.read()).decode('utf-8')
