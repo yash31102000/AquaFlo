@@ -87,7 +87,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     base_url = request.build_absolute_uri("/").rstrip("/")
                     image_url = str(sub_item.image) if sub_item.image else None
                     category_value_name = (
-                        f"{sub_item.product.parent.name}  >  {sub_item.product.name}"
+                        f"{sub_item.product.parent.name}  -->  {sub_item.product.name}"
                         if sub_item.product and sub_item.product.parent else ""
                     )
                     order_items.pop("item_id", None)
