@@ -116,7 +116,6 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         with open(pipe_details.image.path, 'rb') as image_file:
                             image_base64 = base64.b64encode(image_file.read()).decode('utf-8')
 
-                    print(pipe_details.image,'pipe_details.image')
                     image_url = str(pipe_details.image) if pipe_details.id else ""
                     if pipe_details:
                         item["item"] = {

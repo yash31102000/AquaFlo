@@ -102,7 +102,6 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     }
 
                     try:
-                        print(data.get("user_data").get("id"))
                         user_discount = UserDiscount.objects.get(user = data.get("user_data").get("id"))
                     except:
                         user_discount = None
