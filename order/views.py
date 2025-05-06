@@ -75,10 +75,11 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                     / int(basic_data.get("large_bag"))
                                 )
                                 if value != 0:
-                                    order_items["quantity"] = ""
+                                    # order_items["quantity"] = ""
                                     order_items["large_bag_quantity"] = str(value)
-                                else:
-                                    order_items["large_bag_quantity"] = str(value)
+                                    order_items.pop("quantity")
+                                # else:
+                                #     order_items["large_bag_quantity"] = ""
                                 order_items.pop("basic_data_id")
                                 # order_items.pop("mm")
                                 break
@@ -97,20 +98,24 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         "image": (
                             base_url + "/media/" + image_url if image_url else None
                         ),
-                        "parent_id": sub_item.parent.id if sub_item.parent else None,
-                        "product_id": sub_item.product.id if sub_item.product else None,
-                        "marked_as_favorite": sub_item.marked_as_favorite,
                         "category": category_value_name,
                         "basic_data": item_basic_data,
                     }
 
                     try:
-                        print(data.get("user_data").get("id"))
                         user_discount = UserDiscount.objects.get(user = data.get("user_data").get("id"))
                     except:
                         user_discount = None
                     if user_discount:
                         for discount_data in user_discount.discount_data:
+                            if sub_item.product.parent:
+                                if discount_data.get("id") == str(sub_item.product.parent.id):
+                                    order_items['discount_percent'] = discount_data.get("discount_percent")
+                                    order_items['discount_type'] = discount_data.get("discount_type")
+                                if sub_item.product.parent.parent:
+                                    if discount_data.get("id") == str(sub_item.product.parent.parent.id):
+                                        order_items['discount_percent'] = discount_data.get("discount_percent")
+                                        order_items['discount_type'] = discount_data.get("discount_type")
                             if discount_data.get("id") == str(sub_item.product.id):
                                 order_items['discount_percent'] = discount_data.get("discount_percent")
                                 order_items['discount_type'] = discount_data.get("discount_type")

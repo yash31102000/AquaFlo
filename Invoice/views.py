@@ -88,35 +88,37 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         Pipe.objects.filter(id=item.get("item_id")).select_related("product").first()
                     )
                     category_value_name =   f"{pipe_details.product.parent.name}  -->  {pipe_details.product.name}"
-                    basic_data = (
+                    basic_datas = (
                         PipeDetail.objects.filter(pipe_id=item.get("item_id"))
                         .values("basic_data")
                         .first()
                      )
-                    for basic in basic_data.get("basic_data"):
-                        if basic.get("id") == item.get("basic_data_id"):
-                            item_basic_data = basic
-                            if basic.get("packing") and basic.get("large_bag"):
-                                value = int(
-                                    (
-                                        int(basic.get("packing"))
-                                        * int(item.get("quantity"))
+                    if basic_datas:
+                        for basic_data in basic_datas.get("basic_data"):
+                            if order_items.get("basic_data_id") == basic_data.get("id"):
+                                item_basic_data = basic_data
+                                if basic_data.get("packing") and basic_data.get("large_bag"):
+                                    value = int(
+                                        (
+                                            int(basic_data.get("packing"))
+                                            * int(order_items.get("quantity"))
+                                        )
+                                        / int(basic_data.get("large_bag"))
                                     )
-                                    / int(basic.get("large_bag"))
-                                )
-                                if value != 0:
-                                    item["quantity"] = ""
-                                    item["large_bag_quantity"] = str(value)
-                                else:
-                                    item["large_bag_quantity"] = str(value)
-                                item.pop("basic_data_id")
-                                break
+                                    if value != 0:
+                                        # order_items["quantity"] = ""
+                                        order_items["large_bag_quantity"] = str(value)
+                                        order_items.pop("quantity")
+                                    # else:
+                                    #     order_items["large_bag_quantity"] = ""
+                                    order_items.pop("basic_data_id")
+                                    # order_items.pop("mm")
+                                    break
                     base_url = request.build_absolute_uri("/").rstrip("/")
                     if pipe_details.image and hasattr(pipe_details.image, 'path'):
                         with open(pipe_details.image.path, 'rb') as image_file:
                             image_base64 = base64.b64encode(image_file.read()).decode('utf-8')
 
-                    print(pipe_details.image,'pipe_details.image')
                     image_url = str(pipe_details.image) if pipe_details.id else ""
                     if pipe_details:
                         item["item"] = {
@@ -124,9 +126,6 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             "name": pipe_details.name,
                             "image":  base_url + "/media/" + image_url if image_url else None,
                             "image_base64" : image_base64,
-                            "parent_id": pipe_details.parent.id if pipe_details.parent else None,
-                            "product_id":  pipe_details.product.id if pipe_details.product else None,
-                            "marked_as_favorite": pipe_details.marked_as_favorite,
                             "category": category_value_name,
                             "basic_data": item_basic_data,
                         }
