@@ -36,7 +36,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
         else:
             queryset = Order.objects.all()
 
-        queryset = queryset.order_by("created_at")
+        queryset = queryset.order_by("-created_at")
         serializer = OrderSerializer(queryset, many=True)
         response_data = serializer.data.copy()
 
@@ -105,6 +105,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     }
 
                     try:
+                        print(data.get("user_data").get("id"))
                         user_discount = UserDiscount.objects.get(user = data.get("user_data").get("id"))
                     except:
                         user_discount = None
