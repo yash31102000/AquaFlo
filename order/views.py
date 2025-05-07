@@ -11,10 +11,17 @@ from datetime import datetime
 
 keys_to_remove = ["quantity", "mm", "code", "price"]
 
+
 # Create your views here.
 class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
     # permission_classes = [IsAuthenticated]
     serializer_class = OrderSerializer  # Use OrderSerializer to handle order creation
+
+    def is_accepted(self, value):
+        # Check if the value is a whole number (either integer or float ending with .0)
+        if value == int(value):  # Checks if the value is effectively an integer (e.g., 20.0 or 20)
+            return True
+        return False
 
     def post(self, request):
         # Create the Order with valid order_items (IDs of SubItems)
@@ -57,9 +64,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 )
 
                 basic_datas = (
-                    PipeDetail.objects.filter(pipe=item_id)
-                    .values("basic_data")
-                    .first()
+                    PipeDetail.objects.filter(pipe=item_id).values("basic_data").first()
                 )
                 item_basic_data = {}
                 if basic_datas:
@@ -67,18 +72,20 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         if order_items.get("basic_data_id") == basic_data.get("id"):
                             item_basic_data = basic_data
                             if not user_id:
-                                if basic_data.get("packing") and basic_data.get("large_bag"):
-                                    value = int(
-                                        (
-                                            int(basic_data.get("packing"))
-                                            * int(order_items.get("quantity"))
-                                        )
-                                        / int(basic_data.get("large_bag"))
-                                    )
-                                    if value != 0:
-                                        # order_items["quantity"] = ""
-                                        order_items["large_bag_quantity"] = str(value)
+                                if basic_data.get("packing") and basic_data.get(
+                                    "large_bag"
+                                ):
+                                    value = (
+                                        int(basic_data.get("packing"))
+                                        * int(order_items.get("quantity"))
+                                    ) / int(basic_data.get("large_bag"))
+                                    if self.is_accepted(value):
+                                        order_items["large_bag_quantity"] = str(int(value))
                                         order_items.pop("quantity")
+                                    # if value != 0:
+                                    #     # order_items["quantity"] = ""
+                                    #     order_items["large_bag_quantity"] = str(value)
+                                    #     order_items.pop("quantity")
                                     # else:
                                     #     order_items["large_bag_quantity"] = ""
                                     order_items.pop("basic_data_id")
@@ -90,7 +97,8 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     image_url = str(sub_item.image) if sub_item.image else None
                     category_value_name = (
                         f"{sub_item.product.parent.name}  -->  {sub_item.product.name}"
-                        if sub_item.product and sub_item.product.parent else ""
+                        if sub_item.product and sub_item.product.parent
+                        else ""
                     )
                     order_items.pop("item_id", None)
                     order_items["item"] = {
@@ -104,26 +112,45 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     }
 
                     try:
-                        user_discount = UserDiscount.objects.get(user = data.get("user_data").get("id"))
+                        user_discount = UserDiscount.objects.get(
+                            user=data.get("user_data").get("id")
+                        )
                     except:
                         user_discount = None
                     if user_discount:
                         for discount_data in user_discount.discount_data:
                             if sub_item.product.parent:
-                                if discount_data.get("id") == str(sub_item.product.parent.id):
-                                    order_items['discount_percent'] = discount_data.get("discount_percent")
-                                    order_items['discount_type'] = discount_data.get("discount_type")
+                                if discount_data.get("id") == str(
+                                    sub_item.product.parent.id
+                                ):
+                                    order_items["discount_percent"] = discount_data.get(
+                                        "discount_percent"
+                                    )
+                                    order_items["discount_type"] = discount_data.get(
+                                        "discount_type"
+                                    )
                                 if sub_item.product.parent.parent:
-                                    if discount_data.get("id") == str(sub_item.product.parent.parent.id):
-                                        order_items['discount_percent'] = discount_data.get("discount_percent")
-                                        order_items['discount_type'] = discount_data.get("discount_type")
+                                    if discount_data.get("id") == str(
+                                        sub_item.product.parent.parent.id
+                                    ):
+                                        order_items["discount_percent"] = (
+                                            discount_data.get("discount_percent")
+                                        )
+                                        order_items["discount_type"] = (
+                                            discount_data.get("discount_type")
+                                        )
                             if discount_data.get("id") == str(sub_item.product.id):
-                                order_items['discount_percent'] = discount_data.get("discount_percent")
-                                order_items['discount_type'] = discount_data.get("discount_type")
+                                order_items["discount_percent"] = discount_data.get(
+                                    "discount_percent"
+                                )
+                                order_items["discount_type"] = discount_data.get(
+                                    "discount_type"
+                                )
 
         label = "user" if user_id else "all"
-        return self.success_response(f"Orders for {label} fetched successfully", response_data)
-
+        return self.success_response(
+            f"Orders for {label} fetched successfully", response_data
+        )
 
     def put(self, request, pk):
 
@@ -144,9 +171,29 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
             for order_item in order_items:
                 if not order_item.get("item_id"):
                     return self.error_response("item_id missing in order_items")
+                if not order_item.get("quantity") and order_item.get(
+                    "large_bag_quantity"
+                ):
+                    basic_datas = (
+                        PipeDetail.objects.filter(pipe=order_item.get("item_id"))
+                        .values("basic_data")
+                        .first()
+                    )
+                    for basic_data in basic_datas.get("basic_data"):
+                        if basic_data.get("id") == order_item.get("basic_data_id"):
+                            quantity = int(
+                                    (
+                                        int(order_item.get("large_bag_quantity"))
+                                        * int(basic_data.get("large_bag"))
+                                    )
+                                    / int(basic_data.get("packing"))
+                                )
+                            order_item['quantity'] = str(quantity)
+                            order_item.pop("large_bag_quantity")
+            print(order_items)
         serializer = OrderSerializer(order, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            # serializer.save()
             return self.success_response("Order Update successfully")
         return self.error_response("Order Update Faild")
 
@@ -167,9 +214,7 @@ class OrderSplitViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     "This items are currently out of stock. We've created a new order for them. Once restocked, we'll fulfill it faithfully."
                 )
                 for key in keys_to_remove:
-                    order_item.pop(
-                        key, None
-                    )
+                    order_item.pop(key, None)
 
         __, __ = Order.objects.update_or_create(
             order_items=order_split_list,
@@ -179,4 +224,3 @@ class OrderSplitViewSet(DefaultResponseMixin, generics.GenericAPIView):
         )
         old_order.save()
         return self.success_response("Order Split Successfully")
-
