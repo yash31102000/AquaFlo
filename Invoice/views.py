@@ -53,10 +53,10 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
         return self.error_response("Failed to update invoice.", serializer.errors)
 
     def get(self, request, *args, **kwargs):
-        """
-        Retrieve a list of invoices, optionally filtering by date or other criteria.
-        """
-        try:
+        # """
+        # Retrieve a list of invoices, optionally filtering by date or other criteria.
+        # """
+        # try:
             admin = request.user.is_superuser
             if kwargs.get("pk",None):
                 invoices = Invoice.objects.filter(order__user = kwargs.get("pk")).select_related("order__user")
@@ -151,7 +151,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             if discount_data.get("id") == str(pipe_details.product.id):
                                 order_item['discount_percent'] = discount_data.get("discount_percent")
                                 order_item['discount_type'] = discount_data.get("discount_type")
-                    if order_item.get("discount_type") == "percentage":
+                    if order_item.get("discount_type") == "%":
                         discount_percent = order_item.get("discount_percent")
                         item_total = (
                             int(order_item.get("quantity", 0)) * int(order_item.get("price", 0))
@@ -160,7 +160,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         )
                         discount_amount = item_total * int(discount_percent) / 100
                         final_price = int(item_total - discount_amount)
-                    elif order_item.get("discount_type") == "Fix":
+                    elif order_item.get("discount_type") == "₹":
                         discount_percent = order_item.get("discount_percent")
                         if discount_percent == '':
                             discount_percent = 0
@@ -203,8 +203,8 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 "Invoices fetched successfully.", serializer.data
             )
 
-        except Exception as e:
-            return self.error_response(f"Failed to retrieve invoices : {e}")
+        # except Exception as e:
+        #     return self.error_response(f"Failed to retrieve invoices : {e}")
 
 class TotalTransactionViewSet(DefaultResponseMixin, generics.GenericAPIView):
     def get(self, request):
@@ -263,11 +263,11 @@ class TotalTransactionViewSet(DefaultResponseMixin, generics.GenericAPIView):
             
         discount_type = item.get("discount_type")
         
-        if discount_type == "percentage":
+        if discount_type == "%":
             item_total = quantity * price
             discount_amount = item_total * discount_percent / 100
             return int(item_total - discount_amount)
-        elif discount_type == "fixed" or discount_type is None:
+        elif discount_type == "₹" or discount_type is None:
             return quantity * (price - discount_percent)
         
         return 0

@@ -180,6 +180,3 @@ class OrderSplitViewSet(DefaultResponseMixin, generics.GenericAPIView):
         old_order.save()
         return self.success_response("Order Split Successfully")
 
-
-
-# [{"id": 3, "discount_percent": 10, "discount_type": "fixed"}, {"id": 171, "discount_percent": 10, "discount_type": "fixed"}]
