@@ -191,12 +191,8 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         discount_percent = order_item.get("discount_percent")
                         if discount_percent == '':
                             discount_percent = 0
-                        
-                        final_price = (
-                            int(order_item.get("quantity", 0)) * (int(order_item.get("price", 0)) - int(discount_percent))
-                            if order_item.get("price")
-                            else 0
-                        )
+                        price = int(order_item.get("number_of_pic", 0)) * int(order_item.get("price", 0))
+                        final_price = price - int(discount_percent)
                     else:
                         discount_percent = order_item.get("discount_percent", 0)
                         if discount_percent == '':
@@ -208,11 +204,17 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         )
                     total_amount += final_price
 
-                tax_amount = int(invoice.get("tax_amount"))
+                tax_percentage = int(invoice.get("tax_percentage"))
                 discount_amount = int(invoice.get("discount"))
+                tax_amount = total_amount * (tax_percentage / 100)
+                total_taxed_amount = total_amount + tax_amount
+                if invoice.get("discount_type") == "%":
+                    discounted_amount = total_taxed_amount * (discount_amount / 100)
+                    final_amount = total_taxed_amount - discounted_amount
+                elif invoice.get("discount_type") == "₹":
+                    final_amount = total_taxed_amount - discount_amount
 
-                final_amount = total_amount + tax_amount - discount_amount
-
+                invoice['tax_amount'] = tax_amount
                 invoice["total_amount"] = total_amount
                 invoice["final_amount"] = final_amount
 
