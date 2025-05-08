@@ -109,7 +109,29 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         except Exception as e:
             return self.error_response(f"Pipe creation failed: {str(e)}")
 
-    def get(self, request):
+    # def get(self, request, pk=None):
+    #     user_discount = UserDiscount.objects.filter(user_id=request.user.id).values().first()
+    #     if user_discount:
+    #         discount_list = user_discount.get("discount_data", [])
+    #         self.discount_data = {int(item["id"]): item for item in discount_list if "id" in item}
+    #     else:
+    #         self.discount_data = {}
+
+    #     queryset = Pipe.objects.filter(parent__isnull=True, product__isnull=True)
+
+    #     name_filter = request.query_params.get("name")
+    #     if name_filter:
+    #         queryset = queryset.filter(name__icontains=name_filter)
+
+    #     serializer = RecursivePipeSerializer(queryset, many=True)
+    #     result_data = serializer.data
+
+    #     base_url = request.build_absolute_uri("/").rstrip("/")
+    #     processed_data = self.update_image_urls_recursively(base_url, result_data)
+        
+    #     return self.success_response("Pipe list fetched successfully", processed_data)
+    
+    def get(self, request, pk=None):
         user_discount = UserDiscount.objects.filter(user_id=request.user.id).values().first()
         if user_discount:
             discount_list = user_discount.get("discount_data", [])
@@ -117,6 +139,20 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         else:
             self.discount_data = {}
 
+        base_url = request.build_absolute_uri("/").rstrip("/")
+        
+        # If pk is provided, return a specific pipe
+        if pk:
+            try:
+                pipe = Pipe.objects.get(pk=pk, product__isnull=False)
+                serializer = PipeSerializer(pipe)
+                result_data = serializer.data
+                processed_data = self.update_image_urls_recursively(base_url, [result_data])
+                return self.success_response(f"Product with ID {pk} fetched successfully", processed_data[0])
+            except Pipe.DoesNotExist:
+                return self.error_response(f"Product with ID {pk} not found")
+        
+        # If no pk, return the list of pipes
         queryset = Pipe.objects.filter(parent__isnull=True, product__isnull=True)
 
         name_filter = request.query_params.get("name")
@@ -125,11 +161,11 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
         serializer = RecursivePipeSerializer(queryset, many=True)
         result_data = serializer.data
-
-        base_url = request.build_absolute_uri("/").rstrip("/")
+        
         processed_data = self.update_image_urls_recursively(base_url, result_data)
         
         return self.success_response("Pipe list fetched successfully", processed_data)
+
 
     def delete(self, request, pk=None):
         try:

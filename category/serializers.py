@@ -79,11 +79,19 @@ class RecursivePipeSerializer(serializers.ModelSerializer):
 class PipeSerializer(serializers.ModelSerializer):
     """
     A more basic serializer that can be used for simpler representations.
+    Includes basic_data from the related PipeDetail.
     """
+    basic_data = serializers.SerializerMethodField()
 
     class Meta:
         model = Pipe
-        fields = ["id", "name", "image"]
+        fields = ["id", "name", "image", "basic_data"]
+    
+    def get_basic_data(self, obj):
+        pipe_detail = PipeDetail.objects.filter(pipe=obj).first()
+        if pipe_detail:
+            return pipe_detail.basic_data
+        return None
 
 
 class PipeCreateUpdateSerializer(serializers.ModelSerializer):
