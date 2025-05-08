@@ -148,7 +148,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 serializer = PipeSerializer(pipe)
                 result_data = serializer.data
                 processed_data = self.update_image_urls_recursively(base_url, result_data)
-                processed_data["sub_category_full_name"] = f"{pipe.product.parent.parent.name}  -->  {pipe.product.parent.name}  -->  {pipe.product.name}"
+                processed_data["sub_category_full_name"] = f"{pipe.product.parent.parent.name}  >  {pipe.product.parent.name}  >  {pipe.product.name}"
                 return self.success_response(f"Product with ID {pk} fetched successfully", processed_data)
             except Pipe.DoesNotExist:
                 return self.error_response(f"Product with ID {pk} not found")
