@@ -217,12 +217,18 @@ class OrderSplitViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 )
                 for key in keys_to_remove:
                     order_item.pop(key, None)
-
-        __, __ = Order.objects.update_or_create(
-            order_items=order_split_list,
-            user=old_order.user,
-            address=old_order.address,
-            address_link=old_order.address_link,
-        )
+        if Order.objects.filter(old_order = data.get("old_order")).exists():
+            older_order = Order.objects.get(old_order = data.get("old_order"))
+            order_split_list.append(next(iter(older_order.order_items)))
+            older_order.order_items = order_split_list
+            older_order.save()
+        else:
+            __, __ = Order.objects.update_or_create(
+                old_order = old_order,
+                order_items=order_split_list,
+                user=old_order.user,
+                address=old_order.address,
+                address_link=old_order.address_link,
+            )
         old_order.save()
         return self.success_response("Order Split Successfully")

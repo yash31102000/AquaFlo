@@ -20,3 +20,10 @@ class Order(models.Model):
     address = models.JSONField()
     address_link = models.CharField(max_length=250, null=False, blank=False)
     cancellation_reason = models.CharField(max_length=250, null=True, blank=True)
+    old_order = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        related_name="related_order",
+        blank=True,
+        null=True,
+    )
