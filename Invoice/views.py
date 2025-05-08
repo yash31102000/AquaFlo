@@ -12,6 +12,13 @@ from .serializers import InvoiceSerializer
 class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
     serializer_class = InvoiceSerializer
     # permission_classes = [IsAuthenticatedOrReadOnly]
+    
+    def is_accepted(self, value):
+        # Check if the value is a whole number (either integer or float ending with .0)
+        if value == int(value):  # Checks if the value is effectively an integer (e.g., 20.0 or 20)
+            return True
+        return False
+
 
     def post(self, request, *args, **kwargs):
         """
@@ -120,25 +127,25 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     #                     break
                     if basic_datas:
                         for basic_data in basic_datas.get("basic_data"):
-                            if order_items.get("basic_data_id") == basic_data.get("id"):
+                            if order_item.get("basic_data_id") == basic_data.get("id"):
                                 item_basic_data = basic_data
                                 if not admin:
                                     if basic_data.get("packing") and basic_data.get("large_bag"):
                                         packing = int(basic_data.get("packing"))
-                                        total_units = int(basic_data.get("packing")) * int(order_items.get("quantity"))
+                                        total_units = int(basic_data.get("packing")) * int(order_item.get("quantity"))
                                         large_bag = int(basic_data.get("large_bag"))
 
                                         # Calculate full large bag quantity and remainder
                                         full_large_bags = total_units // large_bag
                                         remainder_units = total_units % large_bag
-                                        order_items["number_of_pic"] = str(total_units)
+                                        order_item["number_of_pic"] = str(total_units)
                                         if self.is_accepted(full_large_bags):
-                                            order_items["large_bag_quantity"] = str(full_large_bags)
+                                            order_item["large_bag_quantity"] = str(full_large_bags)
                                             if remainder_units > 0:
-                                                order_items["bag_quantity"] = str(int(remainder_units/packing ))
-                                            # order_items.pop("quantity")
+                                                order_item["bag_quantity"] = str(int(remainder_units/packing ))
+                                            # order_item.pop("quantity")
                                         
-                                        order_items.pop("basic_data_id")
+                                        order_item.pop("basic_data_id")
                                         break
                     base_url = request.build_absolute_uri("/").rstrip("/")
                     if pipe_details.image and hasattr(pipe_details.image, 'path'):
