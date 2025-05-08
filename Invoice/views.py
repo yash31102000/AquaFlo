@@ -96,27 +96,49 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         .values("basic_data")
                         .first()
                      )
+                    # if basic_datas:
+                    #     for basic_data in basic_datas.get("basic_data"):
+                    #         if order_item.get("basic_data_id") == basic_data.get("id"):
+                    #             item_basic_data = basic_data
+                    #             if not admin:
+                    #                 if basic_data.get("packing") and basic_data.get("large_bag"):
+                    #                     value = int(
+                    #                         (
+                    #                             int(basic_data.get("packing"))
+                    #                             * int(order_item.get("quantity"))
+                    #                         )
+                    #                         / int(basic_data.get("large_bag"))
+                    #                     )
+                    #                     if value != 0:
+                    #                         # order_items["quantity"] = ""
+                    #                         order_item["large_bag_quantity"] = str(value)
+                    #                         order_item.pop("quantity")
+                    #                     # else:
+                    #                     #     order_items["large_bag_quantity"] = ""
+                    #                     order_item.pop("basic_data_id")
+                    #                     # order_items.pop("mm")
+                    #                     break
                     if basic_datas:
                         for basic_data in basic_datas.get("basic_data"):
-                            if order_item.get("basic_data_id") == basic_data.get("id"):
+                            if order_items.get("basic_data_id") == basic_data.get("id"):
                                 item_basic_data = basic_data
                                 if not admin:
                                     if basic_data.get("packing") and basic_data.get("large_bag"):
-                                        value = int(
-                                            (
-                                                int(basic_data.get("packing"))
-                                                * int(order_item.get("quantity"))
-                                            )
-                                            / int(basic_data.get("large_bag"))
-                                        )
-                                        if value != 0:
-                                            # order_items["quantity"] = ""
-                                            order_item["large_bag_quantity"] = str(value)
-                                            order_item.pop("quantity")
-                                        # else:
-                                        #     order_items["large_bag_quantity"] = ""
-                                        order_item.pop("basic_data_id")
-                                        # order_items.pop("mm")
+                                        packing = int(basic_data.get("packing"))
+                                        total_units = int(basic_data.get("packing")) * int(order_items.get("quantity"))
+                                        large_bag = int(basic_data.get("large_bag"))
+
+                                        # Calculate full large bag quantity and remainder
+                                        full_large_bags = total_units // large_bag
+                                        remainder_units = total_units % large_bag
+                                        order_items["number_of_pic"] = str(total_units)
+                                        if self.is_accepted(full_large_bags):
+                                            order_items["large_bag_quantity"] = str(full_large_bags)
+                                            if remainder_units > 0:
+                                                order_items["bag_quantity"] = str(int(remainder_units/packing ))
+                                            # order_items.pop("quantity")
+                                        
+                                        order_items.pop("basic_data_id")
                                         break
                     base_url = request.build_absolute_uri("/").rstrip("/")
                     if pipe_details.image and hasattr(pipe_details.image, 'path'):
