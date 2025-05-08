@@ -32,7 +32,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
             return self.success_response("Order placed successfully")
         return self.error_response("Order Placed Faild")
 
-    def get(self, request, user_id=None):
+    def get(self, request, user_id=None, pk=None):
         """
         Fetch all orders or orders for a specific user (if user_id is provided).
         """
@@ -40,6 +40,8 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
         if user_id:
             queryset = Order.objects.filter(user_id=user_id)
+        elif pk:
+            queryset = Order.objects.filter(pk=pk)
         else:
             queryset = Order.objects.all()
 
