@@ -11,8 +11,6 @@ urlpatterns = [
     path('markasfavorite/', MarkedAsfavoriteViewset.as_view()),
     path("pipe-detail/",PipeDetailViewset.as_view()),
     path("pipe-detail/<int:pk>/",PipeDetailViewset.as_view()),
-    # path("weightlist/",WeightListViewset.as_view()),
-    # path("weightlist/<int:pk>/",WeightListViewset.as_view()),
 
     
 ]

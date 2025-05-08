@@ -829,29 +829,6 @@
 					]
 				},
 				{
-					"name": "WeightList",
-					"item": [
-						{
-							"name": "New Request",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"url": {
-									"raw": "{{base_url}}/weightlist/",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"weightlist",
-										""
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
 					"name": "pipes",
 					"request": {
 						"auth": {

@@ -44,6 +44,3 @@ class BestSeller(models.Model):
     toggel = models.BooleanField(default=True)
     quantity = models.PositiveIntegerField()
 
-# class WeightList(models.Model):
-#     pipe = models.ForeignKey(Pipe, on_delete=models.CASCADE, related_name="weightlist")
-#     keys = models.JSONField()
