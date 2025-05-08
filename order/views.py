@@ -104,7 +104,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                     # Calculate full large bag quantity and remainder
                                     full_large_bags = total_units // large_bag
                                     remainder_units = total_units % large_bag
-
+                                    order_items["number_of_pic"] = str(total_units)
                                     if self.is_accepted(full_large_bags):
                                         order_items["large_bag_quantity"] = str(full_large_bags)
                                         if remainder_units > 0:
@@ -193,26 +193,6 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
             for order_item in order_items:
                 if not order_item.get("item_id"):
                     return self.error_response("item_id missing in order_items")
-                if not order_item.get("quantity") and order_item.get(
-                    "large_bag_quantity"
-                ):
-                    basic_datas = (
-                        PipeDetail.objects.filter(pipe=order_item.get("item_id"))
-                        .values("basic_data")
-                        .first()
-                    )
-                    for basic_data in basic_datas.get("basic_data"):
-                        if basic_data.get("id") == order_item.get("basic_data_id"):
-                            quantity = int(
-                                    (
-                                        int(order_item.get("large_bag_quantity"))
-                                        * int(basic_data.get("large_bag"))
-                                    )
-                                    / int(basic_data.get("packing"))
-                                )
-                            order_item['quantity'] = str(quantity)
-                            order_item.pop("large_bag_quantity")
-            print(order_items)
         serializer = OrderSerializer(order, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
