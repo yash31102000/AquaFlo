@@ -97,6 +97,8 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             item_basic_data = basic_data
                             if not user_id:
                                 if basic_data.get("packing") and basic_data.get("large_bag"):
+                                    if order_items.get("message"):
+                                        continue
                                     packing = int(basic_data.get("packing"))
                                     total_units = int(basic_data.get("packing")) * int(order_items.get("quantity"))
                                     large_bag = int(basic_data.get("large_bag"))
@@ -217,18 +219,21 @@ class OrderSplitViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 )
                 for key in keys_to_remove:
                     order_item.pop(key, None)
-        if Order.objects.filter(old_order = data.get("old_order")).exists():
-            older_order = Order.objects.get(old_order = data.get("old_order"))
-            order_split_list.append(next(iter(older_order.order_items)))
-            older_order.order_items = order_split_list
-            older_order.save()
+        if order_split_list:
+            if Order.objects.filter(old_order=data.get("old_order")).exists():
+                older_order = Order.objects.get(old_order=data.get("old_order"))
+                order_split_list.append(next(iter(older_order.order_items)))
+                older_order.order_items = order_split_list
+                older_order.save()
+            else:
+                __, __ = Order.objects.update_or_create(
+                    old_order=old_order,
+                    order_items=order_split_list,
+                    user=old_order.user,
+                    address=old_order.address,
+                    address_link=old_order.address_link,
+                )
+            old_order.save()
+            return self.success_response("Order Split Successfully")
         else:
-            __, __ = Order.objects.update_or_create(
-                old_order = old_order,
-                order_items=order_split_list,
-                user=old_order.user,
-                address=old_order.address,
-                address_link=old_order.address_link,
-            )
-        old_order.save()
-        return self.success_response("Order Split Successfully")
+            return self.success_response("No items were split; order remains unchanged.")
