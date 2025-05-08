@@ -60,11 +60,10 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
         return self.error_response("Failed to update invoice.", serializer.errors)
 
     def get(self, request, *args, **kwargs):
-        # """
-        # Retrieve a list of invoices, optionally filtering by date or other criteria.
-        # """
-        # try:
-            admin = request.user.is_superuser
+        """
+        Retrieve a list of invoices, optionally filtering by date or other criteria.
+        """
+        try:
             if kwargs.get("pk",None):
                 invoices = Invoice.objects.filter(order__user = kwargs.get("pk")).select_related("order__user")
             elif kwargs.get("order_id",None):
@@ -129,24 +128,23 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         for basic_data in basic_datas.get("basic_data"):
                             if order_item.get("basic_data_id") == basic_data.get("id"):
                                 item_basic_data = basic_data
-                                if not admin:
-                                    if basic_data.get("packing") and basic_data.get("large_bag"):
-                                        packing = int(basic_data.get("packing"))
-                                        total_units = int(basic_data.get("packing")) * int(order_item.get("quantity"))
-                                        large_bag = int(basic_data.get("large_bag"))
+                                if basic_data.get("packing") and basic_data.get("large_bag"):
+                                    packing = int(basic_data.get("packing"))
+                                    total_units = int(basic_data.get("packing")) * int(order_item.get("quantity"))
+                                    large_bag = int(basic_data.get("large_bag"))
 
-                                        # Calculate full large bag quantity and remainder
-                                        full_large_bags = total_units // large_bag
-                                        remainder_units = total_units % large_bag
-                                        order_item["number_of_pic"] = str(total_units)
-                                        if self.is_accepted(full_large_bags):
-                                            order_item["large_bag_quantity"] = str(full_large_bags)
-                                            if remainder_units > 0:
-                                                order_item["bag_quantity"] = str(int(remainder_units/packing ))
-                                            # order_item.pop("quantity")
-                                        
-                                        order_item.pop("basic_data_id")
-                                        break
+                                    # Calculate full large bag quantity and remainder
+                                    full_large_bags = total_units // large_bag
+                                    remainder_units = total_units % large_bag
+                                    order_item["number_of_pic"] = str(total_units)
+                                    if self.is_accepted(full_large_bags):
+                                        order_item["large_bag_quantity"] = str(full_large_bags)
+                                        if remainder_units > 0:
+                                            order_item["bag_quantity"] = str(int(remainder_units/packing ))
+                                        # order_item.pop("quantity")
+                                    
+                                    order_item.pop("basic_data_id")
+                                    break
                     base_url = request.build_absolute_uri("/").rstrip("/")
                     if pipe_details.image and hasattr(pipe_details.image, 'path'):
                         with open(pipe_details.image.path, 'rb') as image_file:
@@ -232,8 +230,8 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 "Invoices fetched successfully.", serializer.data
             )
 
-        # except Exception as e:
-        #     return self.error_response(f"Failed to retrieve invoices : {e}")
+        except Exception as e:
+            return self.error_response(f"Failed to retrieve invoices : {e}")
 
 class TotalTransactionViewSet(DefaultResponseMixin, generics.GenericAPIView):
     def get(self, request):
