@@ -298,7 +298,7 @@ class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
 
             # Step 2: Match with BestSeller and prepare response
 
-            best_sellers_product = Pipe.objects.filter(id__in=product_quantities.keys())
+            best_sellers_product = Pipe.objects.filter(id__in=product_quantities.keys()).select_related("product", "parent")
             for bs in best_sellers_product:
                 bs.total_order_quantity = product_quantities.get(bs.id, 0)
 
@@ -317,6 +317,7 @@ class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
             serializer = PipeSerializer(sorted_best_sellers, many=True)
             serialized_data = serializer.data
             for i, bs in enumerate(sorted_best_sellers):
+                serialized_data[i]["sub_category_full_name"] = f"{bs.product.parent.parent.name}  -->  {bs.product.parent.name}  -->  {bs.product.name}"
                 image_url = getattr(bs.image, 'url', '') if bs.id else ""
                 
                 serialized_data[i]["image"] = base_url + image_url
