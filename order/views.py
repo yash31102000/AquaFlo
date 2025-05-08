@@ -112,7 +112,8 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                             if remainder_units > 0 and packing > 0:
                                                 order_items["bag_quantity"] = str(int(remainder_units / packing))
                                             # order_items.pop("quantity")
-                                        order_items.pop("basic_data_id")
+                                    order_items.pop("basic_data_id")
+                                    order_items["bag_quantity"] = str(int(order_items.get("quantity",0)))
                                     break
 
                 if sub_item:
