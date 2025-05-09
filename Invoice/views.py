@@ -60,10 +60,10 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
         return self.error_response("Failed to update invoice.", serializer.errors)
 
     def get(self, request, *args, **kwargs):
-        """
-        Retrieve a list of invoices, optionally filtering by date or other criteria.
-        """
-        try:
+        # """
+        # Retrieve a list of invoices, optionally filtering by date or other criteria.
+        # """
+        # try:
             if kwargs.get("pk",None):
                 invoices = Invoice.objects.filter(order__user = kwargs.get("pk")).select_related("order__user")
             elif kwargs.get("order_id",None):
@@ -96,7 +96,10 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     pipe_details = (
                         Pipe.objects.filter(id=order_item.get("item_id")).select_related("product").first()
                     )
-                    category_value_name =   f"{pipe_details.product.parent.name}   ➤   {pipe_details.product.name}"
+                    if pipe_details.product.parent:
+                        category_value_name = f"{pipe_details.product.parent.name}   ➤   {pipe_details.product.name}"
+                    else:
+                        category_value_name = pipe_details.product.name
                     basic_datas = (
                         PipeDetail.objects.filter(pipe_id=order_item.get("item_id"))
                         .values("basic_data")
@@ -146,9 +149,9 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                     order_item.pop("basic_data_id")
                                     break
                     base_url = request.build_absolute_uri("/").rstrip("/")
-                    if pipe_details.image and hasattr(pipe_details.image, 'path'):
-                        with open(pipe_details.image.path, 'rb') as image_file:
-                            image_base64 = base64.b64encode(image_file.read()).decode('utf-8')
+                    # if pipe_details.image and hasattr(pipe_details.image, 'path'):
+                    #     with open(pipe_details.image.path, 'rb') as image_file:
+                    #         image_base64 = base64.b64encode(image_file.read()).decode('utf-8')
 
                     image_url = str(pipe_details.image) if pipe_details.id else ""
                     if pipe_details:
@@ -156,7 +159,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             "id": pipe_details.id,
                             "name": pipe_details.name,
                             "image":  base_url + "/media/" + image_url if image_url else None,
-                            "image_base64" : image_base64,
+                            # "image_base64" : image_base64,
                             "category": category_value_name,
                             "basic_data": item_basic_data,
                         }
@@ -232,8 +235,8 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 "Invoices fetched successfully.", serializer.data
             )
 
-        except Exception as e:
-            return self.error_response(f"Failed to retrieve invoices : {e}")
+        # except Exception as e:
+        #     return self.error_response(f"Failed to retrieve invoices : {e}")
 
 class TotalTransactionViewSet(DefaultResponseMixin, generics.GenericAPIView):
     def get(self, request):
