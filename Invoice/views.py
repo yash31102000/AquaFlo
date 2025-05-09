@@ -96,7 +96,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     pipe_details = (
                         Pipe.objects.filter(id=order_item.get("item_id")).select_related("product").first()
                     )
-                    category_value_name =   f"{pipe_details.product.parent.name}  ➤  {pipe_details.product.name}"
+                    category_value_name =   f"{pipe_details.product.parent.name}   ➤   {pipe_details.product.name}"
                     basic_datas = (
                         PipeDetail.objects.filter(pipe_id=order_item.get("item_id"))
                         .values("basic_data")
