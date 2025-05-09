@@ -226,7 +226,7 @@ class ChangePasswordView(DefaultResponseMixin ,generics.GenericAPIView):
 
             if not check_password(old_password, user.password):
                 return self.error_response(
-                    "old_password Wrong password.",
+                    "Your Current Password is Wrong.",
                 )
 
             user.set_password(new_password)
