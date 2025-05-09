@@ -7,6 +7,7 @@ from order.models import Order
 from collections import defaultdict
 from django.db.models import Q
 
+
 class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
     serializer_class = PipeCreateUpdateSerializer
     permission_classes = [CustomAPIPermissions]
@@ -18,15 +19,16 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         Update all image URLs in the data structure using a single recursive function
         that handles both updating and path construction in one pass.
         """
+
         def process_node(node, path_segments=None):
             if path_segments is None:
                 path_segments = []
-                
+
             if isinstance(node, dict):
                 # Update image URL if present
                 if "image" in node and node["image"]:
                     node["image"] = f"{base_url}{node['image']}"
-                
+
                 # Track category path components
                 if "name" in node:
                     current_level = len(path_segments)
@@ -35,14 +37,14 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             path_segments.append(node["name"])
                         else:
                             path_segments[current_level] = node["name"]
-                
+
                 # Add category path to products
                 if "product" in node and node["product"]:
                     path_string = "   ➤   ".join(path_segments) + "   ➤   "
                     for product in node["product"]:
                         product["sub_category_full_name"] = path_string
                         process_node(product)
-                
+
                 # Process other dictionary items
                 for key, value in node.items():
                     if key not in ("image", "product"):
@@ -52,7 +54,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             process_node(value, current_path)
                         else:
                             process_node(value, path_segments)
-                            
+
                 # Apply discount data if this is a subcategory
                 if isinstance(node, dict):
                     # Apply discount if ID matches
@@ -66,16 +68,14 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             node["discount_percent"] = ""
                             node["discount_type"] = ""
 
-                                        
             elif isinstance(node, list):
                 for item in node:
                     # For list items, we need to pass a copy of path_segments to avoid cross-contamination
                     process_node(item, path_segments.copy() if path_segments else None)
-        
+
         # Start the recursive processing
         process_node(data)
         return data
-
 
     def post(self, request, *args, **kwargs):
         # Check if the pipe with the same name already exists at the same level
@@ -87,7 +87,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         existing_pipe_query = Pipe.objects.filter(name=name)
         if parent_id:
             existing_pipe_query = existing_pipe_query.filter(parent_id=parent_id)
-        
+
         if product:
             existing_pipe_query = existing_pipe_query.filter(product_id=product)
 
@@ -128,41 +128,55 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
     #     base_url = request.build_absolute_uri("/").rstrip("/")
     #     processed_data = self.update_image_urls_recursively(base_url, result_data)
-        
+
     #     return self.success_response("Pipe list fetched successfully", processed_data)
-    
+
     def get(self, request, pk=None):
-        user_discount = UserDiscount.objects.filter(user_id=request.user.id).values().first()
+        user_discount = (
+            UserDiscount.objects.filter(user_id=request.user.id).values().first()
+        )
         if user_discount:
             discount_list = user_discount.get("discount_data", [])
-            self.discount_data = {int(item["id"]): item for item in discount_list if "id" in item}
+            self.discount_data = {
+                int(item["id"]): item for item in discount_list if "id" in item
+            }
         else:
             self.discount_data = {}
 
         base_url = request.build_absolute_uri("/").rstrip("/")
-        
+
         # If pk is provided, return a specific pipe
         if pk:
             try:
-                pipe = Pipe.objects.filter(pk=pk, product__isnull=False).select_related("product", "parent").first()
+                pipe = (
+                    Pipe.objects.filter(pk=pk, product__isnull=False)
+                    .select_related("product", "parent")
+                    .first()
+                )
                 serializer = PipeSerializer(pipe)
                 result_data = serializer.data
-                processed_data = self.update_image_urls_recursively(base_url, result_data)
+                processed_data = self.update_image_urls_recursively(
+                    base_url, result_data
+                )
                 product = pipe.product
                 parent = product.parent if product else None
                 grandparent = parent.parent if parent else None
 
                 processed_data["sub_category_full_name"] = "   ➤   ".join(
-                    name for name in [
+                    name
+                    for name in [
                         grandparent.name if grandparent else None,
                         parent.name if parent else None,
-                        product.name if product else None
-                    ] if name
+                        product.name if product else None,
+                    ]
+                    if name
                 )
-                return self.success_response(f"Product with ID {pk} fetched successfully", processed_data)
+                return self.success_response(
+                    f"Product with ID {pk} fetched successfully", processed_data
+                )
             except Pipe.DoesNotExist:
                 return self.error_response(f"Product with ID {pk} not found")
-        
+
         # If no pk, return the list of pipes
         queryset = Pipe.objects.filter(parent__isnull=True, product__isnull=True)
 
@@ -172,11 +186,10 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
         serializer = RecursivePipeSerializer(queryset, many=True)
         result_data = serializer.data
-        
-        processed_data = self.update_image_urls_recursively(base_url, result_data)
-        
-        return self.success_response("Pipe list fetched successfully", processed_data)
 
+        processed_data = self.update_image_urls_recursively(base_url, result_data)
+
+        return self.success_response("Pipe list fetched successfully", processed_data)
 
     def delete(self, request, pk=None):
         try:
@@ -208,7 +221,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         try:
             # Retrieve the existing pipe
             pipe = Pipe.objects.get(id=pk)
-            
+
             if pipe.product is not None and "marked_as_favorite" in request.data:
                 pipe.marked_as_favorite = request.data.get("marked_as_favorite")
                 pipe.save()
@@ -219,9 +232,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-                return self.success_response(
-                    "Pipe updated successfully"
-                )
+                return self.success_response("Pipe updated successfully")
 
         except Pipe.DoesNotExist:
             return self.error_response(f"Pipe {pk} not found")
@@ -249,13 +260,13 @@ class GetPipeViewset(DefaultResponseMixin, generics.GenericAPIView):
                         base_url = (
                             request.build_absolute_uri("/").rstrip("/") + "/media/"
                         )
-                        product['image'] = base_url + product.get("image")
+                        product["image"] = base_url + product.get("image")
                         product["sub_categorie_name"] = sub_categorie.get("name")
                         related_product.append(product)
             products = Pipe.objects.filter(product=main_pip.get("id")).values()
             for product in products:
                 base_url = request.build_absolute_uri("/").rstrip("/") + "/media/"
-                product['image'] = base_url + product.get("image")
+                product["image"] = base_url + product.get("image")
                 product["sub_categorie_name"] = ""
                 related_product.append(product)
             response_data = {
@@ -273,6 +284,7 @@ class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
     permission_classes = [CustomAPIPermissions]
     public_methods = ["GET"]
     admin_only_methods = ["POST", "PUT", "DELETE"]
+
     def post(self, request):
         serializer = BestSellerSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -308,7 +320,9 @@ class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
 
             # Step 2: Match with BestSeller and prepare response
 
-            best_sellers_product = Pipe.objects.filter(id__in=product_quantities.keys()).select_related("product", "parent")
+            best_sellers_product = Pipe.objects.filter(
+                id__in=product_quantities.keys()
+            ).select_related("product", "parent")
             for bs in best_sellers_product:
                 bs.total_order_quantity = product_quantities.get(bs.id, 0)
 
@@ -327,9 +341,18 @@ class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
             serializer = PipeSerializer(sorted_best_sellers, many=True)
             serialized_data = serializer.data
             for i, bs in enumerate(sorted_best_sellers):
-                serialized_data[i]["sub_category_full_name"] = f"{bs.product.parent.parent.name}   ➤   {bs.product.parent.name}   ➤   {bs.product.name}"
-                image_url = getattr(bs.image, 'url', '') if bs.id else ""
-                
+                serialized_data[i]["sub_category_full_name"] = (
+                    f"{bs.product.parent.parent.name}   ➤   {bs.product.parent.name}   ➤   {bs.product.name}"
+                    if bs.product.parent and bs.product.parent.parent
+                    else (
+                        f"{bs.product.parent.name}   ➤   {bs.product.name}"
+                        if bs.product.parent
+                        else bs.product.name
+                    )
+                )
+
+                image_url = getattr(bs.image, "url", "") if bs.id else ""
+
                 serialized_data[i]["image"] = base_url + image_url
             return self.success_response(
                 "BestSeller Fetched Successfully", serializer.data
@@ -348,6 +371,7 @@ class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
 class GetMainCategoryViewset(DefaultResponseMixin, generics.GenericAPIView):
     permission_classes = [CustomAPIPermissions]
     public_methods = ["GET", "POST", "PUT", "DELETE"]
+
     def get(self, request):
         try:
             main_category = Pipe.objects.filter(
@@ -361,21 +385,30 @@ class GetMainCategoryViewset(DefaultResponseMixin, generics.GenericAPIView):
             )
         except:
             return self.error_response("Main Category Not Fetched")
-    
+
+
 class MarkedAsfavoriteViewset(DefaultResponseMixin, generics.GenericAPIView):
     permission_classes = [CustomAPIPermissions]
     public_methods = ["GET", "POST", "PUT", "DELETE"]
-    def get(self,request):
-        queryset = Pipe.objects.filter(marked_as_favorite=True).values("id","name","image","marked_as_favorite")
+
+    def get(self, request):
+        queryset = Pipe.objects.filter(marked_as_favorite=True).values(
+            "id", "name", "image", "marked_as_favorite"
+        )
         if not queryset:
             return self.error_response("Data Not found")
         for makasfavoritedata in queryset:
             base_url = request.build_absolute_uri("/").rstrip("/") + "/media/"
             makasfavoritedata["image"] = base_url + makasfavoritedata.get("image")
-            pipe_detail = PipeDetail.objects.filter(pipe=makasfavoritedata.get("id")).first()
+            pipe_detail = PipeDetail.objects.filter(
+                pipe=makasfavoritedata.get("id")
+            ).first()
             if pipe_detail:
                 makasfavoritedata["basic_data"] = pipe_detail.basic_data
-        return self.success_response("MarkedAsfavorite Featched Succsessfully",queryset)
+        return self.success_response(
+            "MarkedAsfavorite Featched Succsessfully", queryset
+        )
+
 
 class PipeDetailViewset(DefaultResponseMixin, generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
@@ -392,16 +425,14 @@ class PipeDetailViewset(DefaultResponseMixin, generics.GenericAPIView):
         except Exception as e:
             return self.error_response(f"Pipe creation failed: {str(e)}")
 
-    def put(self,request,pk):
-        
+    def put(self, request, pk):
+
         querytset = PipeDetail.objects.get(pipe__id=pk)
         if not querytset:
             return self.error_response("Pipe Details Not Found")
 
-        serializer = PipeDetailSerializer(querytset,data=request.data,partial=True)
+        serializer = PipeDetailSerializer(querytset, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return self.success_response("Pipe Detail Update successfully")
         return self.error_response("PipeDetail Update Faild")
-    
-    
