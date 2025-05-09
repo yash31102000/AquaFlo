@@ -372,6 +372,9 @@ class MarkedAsfavoriteViewset(DefaultResponseMixin, generics.GenericAPIView):
         for makasfavoritedata in queryset:
             base_url = request.build_absolute_uri("/").rstrip("/") + "/media/"
             makasfavoritedata["image"] = base_url + makasfavoritedata.get("image")
+            pipe_detail = PipeDetail.objects.filter(pipe=makasfavoritedata.get("id")).first()
+            if pipe_detail:
+                makasfavoritedata["basic_data"] = pipe_detail.basic_data
         return self.success_response("MarkedAsfavorite Featched Succsessfully",queryset)
 
 class PipeDetailViewset(DefaultResponseMixin, generics.GenericAPIView):

@@ -13,6 +13,7 @@ class SimpleProductSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "image",
+            "marked_as_favorite",
         ]
 
 
