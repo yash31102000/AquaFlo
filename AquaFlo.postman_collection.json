@@ -563,13 +563,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/order/7/",
+							"raw": "{{base_url}}/order/12/",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"order",
-								"7",
+								"12",
 								""
 							]
 						}
@@ -586,7 +586,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"old_order\": \"6\",\r\n    \"item_id\": \"125\"\r\n}",
+							"raw": "{\r\n    \"old_order\": \"6\",\r\n    \"item_id\": \"125\",\r\n    \"basic_data_id\" : 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -731,13 +731,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/order-invoice/15/",
+							"raw": "{{base_url}}/order-invoice/25/",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"order-invoice",
-								"15",
+								"25",
 								""
 							]
 						}
