@@ -115,8 +115,8 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                         # order_items.pop("quantity")
                             else:
                                 order_items["number_of_pic"] = str(order_items.get("quantity",0))
+                                order_items["bag_quantity"] = str(int(order_items.get("quantity",0)))
                             order_items.pop("basic_data_id")
-                            order_items["bag_quantity"] = str(int(order_items.get("quantity",0)))
                             break
 
                 if sub_item:
