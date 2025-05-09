@@ -217,7 +217,7 @@ class OrderSplitViewSet(DefaultResponseMixin, generics.GenericAPIView):
         data = request.data
         old_order = Order.objects.get(pk=data.get("old_order"))
         for order_item in old_order.order_items:
-            if order_item.get("item_id") == data.get("item_id"):
+            if order_item.get("item_id") == data.get("item_id") and order_item.get("basic_data_id") == data.get("basic_data_id"):
                 new_order_item = order_item.copy()
                 order_split_list.append(new_order_item)
                 order_item["message"] = (
