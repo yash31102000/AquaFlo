@@ -113,6 +113,9 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                         if remainder_units > 0 and packing > 0:
                                             order_items["bag_quantity"] = str(int(remainder_units / packing))
                                         # order_items.pop("quantity")
+                                else:
+                                    order_items["number_of_pic"] = str(total_units)
+                                    order_items["bag_quantity"] = str(int(order_items.get("quantity",0)))
                             else:
                                 order_items["number_of_pic"] = str(order_items.get("quantity",0))
                                 order_items["bag_quantity"] = str(int(order_items.get("quantity",0)))
