@@ -51,6 +51,9 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
         return self.success_response("Registered successfully", all_user)
 
     def put(self, request, user_id=None):
+        if not request.data.get("email") or request.data.get("email") == "":
+            # request.data["email"] = None
+            request.data.pop("email")
         if user_id is None:
             return self.error_response("User ID is required")
         user = UserModel.objects.get(id=user_id, is_deleted=False)

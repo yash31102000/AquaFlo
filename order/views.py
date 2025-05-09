@@ -221,7 +221,7 @@ class OrderSplitViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 new_order_item = order_item.copy()
                 order_split_list.append(new_order_item)
                 order_item["message"] = (
-                    "This items are currently out of stock. We've created a new order for them. Once restocked, we'll fulfill it faithfully."
+                    "This item is currently out of stock. We've created a new order for it. Once restocked, we'll fulfill it faithfully."
                 )
                 for key in keys_to_remove:
                     order_item.pop(key, None)
