@@ -38,7 +38,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 
                 # Add category path to products
                 if "product" in node and node["product"]:
-                    path_string = " >> ".join(path_segments) + " >>"
+                    path_string = " ➤ ".join(path_segments) + " ➤ "
                     for product in node["product"]:
                         product["sub_category_full_name"] = path_string
                         process_node(product)
@@ -152,7 +152,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 parent = product.parent if product else None
                 grandparent = parent.parent if parent else None
 
-                processed_data["sub_category_full_name"] = " > ".join(
+                processed_data["sub_category_full_name"] = " ➤ ".join(
                     name for name in [
                         grandparent.name if grandparent else None,
                         parent.name if parent else None,
@@ -327,7 +327,7 @@ class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
             serializer = PipeSerializer(sorted_best_sellers, many=True)
             serialized_data = serializer.data
             for i, bs in enumerate(sorted_best_sellers):
-                serialized_data[i]["sub_category_full_name"] = f"{bs.product.parent.parent.name}  >  {bs.product.parent.name}  >  {bs.product.name}"
+                serialized_data[i]["sub_category_full_name"] = f"{bs.product.parent.parent.name}  ➤  {bs.product.parent.name}  ➤  {bs.product.name}"
                 image_url = getattr(bs.image, 'url', '') if bs.id else ""
                 
                 serialized_data[i]["image"] = base_url + image_url
