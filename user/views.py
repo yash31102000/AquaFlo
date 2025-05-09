@@ -6,6 +6,7 @@ from .serializers import *
 from rest_framework import generics
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
+from django.contrib.auth.hashers import check_password
 from django.conf import settings
 from django.conf import settings
 
@@ -208,3 +209,31 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
             return self.error_response("UserDiscount Not Found")
         user.delete()
         return self.success_response("UserDiscount deleted successfully.")
+
+
+class ChangePasswordView(DefaultResponseMixin ,generics.GenericAPIView):
+    serializer_class = ChangePasswordSerializer
+    permission_classes = [CustomAPIPermissions]
+    public_methods = ["POST"]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        user = request.user
+
+        if serializer.is_valid():
+            old_password = serializer.validated_data['old_password']
+            new_password = serializer.validated_data['new_password']
+
+            if not check_password(old_password, user.password):
+                return self.error_response(
+                    "old_password Wrong password.",
+                )
+
+            user.set_password(new_password)
+            user.save()
+
+            return self.success_response(
+                "Your Password is successfully updated."
+            )
+
+        return self.error_response(serializer.errors)

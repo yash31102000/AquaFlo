@@ -247,6 +247,43 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "change-password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"old_password\": \"7894\",\r\n    \"new_password\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/change-password/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"change-password",
+								""
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

@@ -39,3 +39,7 @@ class UserDiscountSerializer(serializers.ModelSerializer):
         model = UserDiscount
         fields = ["id", "user", "discount_data"]
         read_only_fields = ["created_at", "updated_at"]
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
