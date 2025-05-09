@@ -327,7 +327,7 @@ class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
             serializer = PipeSerializer(sorted_best_sellers, many=True)
             serialized_data = serializer.data
             for i, bs in enumerate(sorted_best_sellers):
-                serialized_data[i]["sub_category_full_name"] = f"{bs.product.parent.parent.name}  -->  {bs.product.parent.name}  -->  {bs.product.name}"
+                serialized_data[i]["sub_category_full_name"] = f"{bs.product.parent.parent.name}  >  {bs.product.parent.name}  >  {bs.product.name}"
                 image_url = getattr(bs.image, 'url', '') if bs.id else ""
                 
                 serialized_data[i]["image"] = base_url + image_url
