@@ -25,6 +25,17 @@ class RegisterSerializer(serializers.ModelSerializer):
         validated_data["password"] = make_password(validated_data["password"])
         validated_data["username"] = validated_data["phone_number"]
         return super(RegisterSerializer, self).create(validated_data)
+    
+    def update(self, instance, validated_data):
+        if "password" in validated_data:
+            validated_data["password"] = make_password(validated_data["password"])
+        if not validated_data.get("email"):
+            validated_data["email"] = None
+        if "phone_number" in validated_data:
+            validated_data["username"] = validated_data["phone_number"]
+
+        return super(RegisterSerializer, self).update(instance, validated_data)
+
 
 
 class LoginSerializer(serializers.Serializer):
