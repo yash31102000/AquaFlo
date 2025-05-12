@@ -194,7 +194,9 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         discount_percent = order_item.get("discount_percent")
                         if discount_percent == '':
                             discount_percent = 0
-                        price = int(order_item.get("number_of_pic", 0)) * int(order_item.get("price", 0))
+                        if not order_item.get("price"):
+                            break
+                        price = int(order_item.get("number_of_pic", 0)) * int(order_item.get("price", 0) )
                         final_price = price - int(discount_percent)
                     else:
                         discount_percent = order_item.get("discount_percent", 0)
