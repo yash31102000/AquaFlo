@@ -25,6 +25,10 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 path_segments = []
 
             if isinstance(node, dict):
+                # Skip recursion if 'basic_data' key is present
+                if "basic_data" in node:
+                    return
+
                 # Update image URL if present
                 if "image" in node and node["image"]:
                     node["image"] = f"{base_url}{node['image']}"
@@ -56,17 +60,15 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             process_node(value, path_segments)
 
                 # Apply discount data if this is a subcategory
-                if isinstance(node, dict):
-                    # Apply discount if ID matches
-                    node_id = node.get("id")
-                    if node_id and isinstance(node_id, int):
-                        discount_info = self.discount_data.get(node_id)
-                        if discount_info:
-                            node["discount_percent"] = discount_info["discount_percent"]
-                            node["discount_type"] = discount_info["discount_type"]
-                        else:
-                            node["discount_percent"] = ""
-                            node["discount_type"] = ""
+                node_id = node.get("id")
+                if node_id and isinstance(node_id, int):
+                    discount_info = self.discount_data.get(node_id)
+                    if discount_info:
+                        node["discount_percent"] = discount_info["discount_percent"]
+                        node["discount_type"] = discount_info["discount_type"]
+                    else:
+                        node["discount_percent"] = ""
+                        node["discount_type"] = ""
 
             elif isinstance(node, list):
                 for item in node:
