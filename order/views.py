@@ -131,11 +131,17 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 if sub_item:
                     base_url = request.build_absolute_uri("/").rstrip("/")
                     image_url = str(sub_item.image) if sub_item.image else None
-                    category_value_name = (
-                        f"{sub_item.product.parent.name}   ➤   {sub_item.product.name}"
-                        if sub_item.product and sub_item.product.parent
-                        else ""
-                    )
+                    product = sub_item.product
+                    parent = product.parent if product else None
+                    grandparent = parent.parent if parent else None
+
+                    names = [grandparent.name if grandparent else None,
+                            parent.name if parent else None,
+                            product.name if product else None]
+
+                    # Keep only the last 2 non-empty names
+                    category_value_name = "   ➤   ".join([n for n in names if n][-2:]) + "   ➤   "
+
                     order_items.pop("item_id", None)
                     order_items["item"] = {
                         "id": sub_item.id,

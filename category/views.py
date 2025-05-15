@@ -27,20 +27,30 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
             if isinstance(node, dict):
                 if "image" in node and node["image"]:
-                    node["image"] = f"{base_url}{node['image']}" if not node["image"].startswith("http") else node["image"]
+                    node["image"] = (
+                        f"{base_url}{node['image']}"
+                        if not node["image"].startswith("http")
+                        else node["image"]
+                    )
 
                 # Add current name to path
-                current_path = path_segments + [node["name"]] if "name" in node else path_segments
+                current_path = (
+                    path_segments + [node["name"]] if "name" in node else path_segments
+                )
 
                 # Add category path to products
                 if "product" in node and node["product"]:
                     trimmed_path = current_path[-2:]  # Use only last 2 levels
-                    path_string = "   ➤   ".join(trimmed_path)+"   ➤   "
+                    path_string = "   ➤   ".join(trimmed_path) + "   ➤   "
                     for product in node["product"]:
                         product["sub_category_full_name"] = path_string
                         # Update product image URL too
                         if "image" in product and product["image"]:
-                            product["image"] = f"{base_url}{product['image']}" if not product["image"].startswith("http") else product["image"]
+                            product["image"] = (
+                                f"{base_url}{product['image']}"
+                                if not product["image"].startswith("http")
+                                else product["image"]
+                            )
                         process_node(product, current_path)
 
                 # Recurse into other dict fields
@@ -69,7 +79,6 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
         process_node(data)
         return data
-
 
     def post(self, request, *args, **kwargs):
         # Check if the pipe with the same name already exists at the same level
@@ -134,15 +143,16 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 parent = product.parent if product else None
                 grandparent = parent.parent if parent else None
 
-                processed_data["sub_category_full_name"] = "   ➤   ".join(
-                    name
-                    for name in [
-                        grandparent.name if grandparent else None,
-                        parent.name if parent else None,
-                        product.name if product else None,
-                    ]
-                    if name
+                names = [
+                    grandparent.name if grandparent else None,
+                    parent.name if parent else None,
+                    product.name if product else None,
+                ]
+
+                processed_data["sub_category_full_name"] = (
+                    "   ➤   ".join([n for n in names if n][-2:]) + "   ➤   "
                 )
+
                 return self.success_response(
                     f"Product with ID {pk} fetched successfully", processed_data
                 )
@@ -216,40 +226,68 @@ class GetPipeViewset(DefaultResponseMixin, generics.GenericAPIView):
     permission_classes = [CustomAPIPermissions]
     public_methods = ["GET", "POST", "PUT", "DELETE"]
 
+    def get_related_pipes(self, start_id):
+        visited = set()
+        sub_categories_name_list = []
+        product_list = []
+
+        def recurse(current_id):
+            if current_id in visited:
+                return
+            visited.add(current_id)
+            try:
+                pipe = Pipe.objects.get(id=current_id)
+            except Pipe.DoesNotExist:
+                return
+            # Stop if this pipe has a product assigned
+            if pipe.parent and not pipe.product:
+                sub_categories_name_list.append(pipe.name)
+            if pipe.product:
+                product_list.append(pipe)
+                return
+            # Continue if no product
+            children = Pipe.objects.filter(
+                models.Q(parent=pipe) | models.Q(product=pipe)
+            ).exclude(id=current_id)
+            for child in children:
+                recurse(child.id)
+
+        recurse(start_id)
+        return sub_categories_name_list, product_list
+
     def get(self, request, pk=None):
-        try:
-            main_pip = Pipe.objects.filter(pk=pk).values().first()
-            sub_categories = Pipe.objects.filter(parent=main_pip.get("id")).values()
-            related_product = []
-            sub_categories_name_list = []
-            if sub_categories.exists():
-                for sub_categorie in sub_categories:
-                    sub_categories_name_list.append(sub_categorie.get("name"))
-                    products = Pipe.objects.filter(
-                        product=sub_categorie.get("id")
-                    ).values()
-                    for product in products:
-                        base_url = (
-                            request.build_absolute_uri("/").rstrip("/") + "/media/"
+        related_product = []
+        sub_categories_name_list, product_list = self.get_related_pipes(pk)
+        base_url = request.build_absolute_uri("/").rstrip("/")
+        for product in product_list:
+            related_product.append(
+                {
+                    "id": product.id,
+                    "name": product.name,
+                    "image": base_url + product.image.url,
+                    "parent_id": product.parent_id,
+                    "product_id": product.product_id,
+                    "marked_as_favorite": product.marked_as_favorite,
+                    "sub_categorie_name": product.product.name,
+                    "sub_category_full_name": (
+                        (
+                            product.parent.name + "   ➤   "
+                            if product.parent and product.parent.name
+                            else ""
                         )
-                        product["image"] = base_url + product.get("image")
-                        product["sub_categorie_name"] = sub_categorie.get("name")
-                        related_product.append(product)
-            products = Pipe.objects.filter(product=main_pip.get("id")).values()
-            for product in products:
-                base_url = request.build_absolute_uri("/").rstrip("/") + "/media/"
-                product["image"] = base_url + product.get("image")
-                product["sub_categorie_name"] = ""
-                related_product.append(product)
-            response_data = {
-                "filtter_list": sub_categories_name_list,
-                "related_product_list": related_product,
-            }
-            return self.success_response(
-                "Products List Fatch successfully", response_data
+                        + (
+                            product.product.name + "   ➤   "
+                            if product.product and product.product.name
+                            else ""
+                        )
+                    ),
+                }
             )
-        except Exception as e:
-            return self.error_response("Product List Not Fatch")
+        response_data = {
+            "filtter_list": sub_categories_name_list,
+            "related_product_list": related_product,
+        }
+        return self.success_response("Products List Fetch successfully", response_data)
 
 
 class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
