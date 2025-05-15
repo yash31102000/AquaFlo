@@ -35,7 +35,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 # Add category path to products
                 if "product" in node and node["product"]:
                     trimmed_path = current_path[-2:]  # Use only last 2 levels
-                    path_string = "   ➤   ".join(trimmed_path)
+                    path_string = "   ➤   ".join(trimmed_path)+"   ➤   "
                     for product in node["product"]:
                         product["sub_category_full_name"] = path_string
                         # Update product image URL too
