@@ -399,7 +399,10 @@ class GetMainCategoryViewset(DefaultResponseMixin, generics.GenericAPIView):
             ).values("id", "name", "image")
             base_url = request.build_absolute_uri("/").rstrip("/") + "/media/"
             for category in main_category:
-                category["image"] = base_url + category.get("image")
+                if category.get("image"):
+                    category["image"] = base_url + category.get("image")
+                else:
+                    category["image"] = None
             return self.success_response(
                 "Main Category Fetched Successfully", main_category
             )
