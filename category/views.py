@@ -18,6 +18,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         """
         Update all image URLs in the data structure using a single recursive function
         that handles both updating and path construction in one pass.
+        Recursively build category path (up to 2 levels) for products.s
         """
 
         def process_node(node, path_segments=None):
@@ -25,38 +26,32 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 path_segments = []
 
             if isinstance(node, dict):
-
-                # Update image URL if present
                 if "image" in node and node["image"]:
-                    node["image"] = f"{base_url}{node['image']}"
+                    node["image"] = f"{base_url}{node['image']}" if not node["image"].startswith("http") else node["image"]
 
-                # Track category path components
-                if "name" in node:
-                    current_level = len(path_segments)
-                    if current_level < 3:  # Only track up to 3 levels
-                        if current_level == len(path_segments):
-                            path_segments.append(node["name"])
-                        else:
-                            path_segments[current_level] = node["name"]
+                # Add current name to path
+                current_path = path_segments + [node["name"]] if "name" in node else path_segments
 
                 # Add category path to products
                 if "product" in node and node["product"]:
-                    path_string = "   ➤   ".join(path_segments) + "   ➤   "
+                    trimmed_path = current_path[-2:]  # Use only last 2 levels
+                    path_string = "   ➤   ".join(trimmed_path)
                     for product in node["product"]:
                         product["sub_category_full_name"] = path_string
-                        process_node(product)
+                        # Update product image URL too
+                        if "image" in product and product["image"]:
+                            product["image"] = f"{base_url}{product['image']}" if not product["image"].startswith("http") else product["image"]
+                        process_node(product, current_path)
 
-                # Process other dictionary items
+                # Recurse into other dict fields
                 for key, value in node.items():
                     if key not in ("image", "product"):
                         if key == "sub_categories":
-                            # For subcategories, preserve the current path
-                            current_path = path_segments.copy()
                             process_node(value, current_path)
                         else:
-                            process_node(value, path_segments)
+                            process_node(value, current_path)
 
-                # Apply discount data if this is a subcategory
+                # Apply discount if available
                 if "image" in node:
                     node_id = node.get("id")
                     if node_id and isinstance(node_id, int):
@@ -70,12 +65,11 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
             elif isinstance(node, list):
                 for item in node:
-                    # For list items, we need to pass a copy of path_segments to avoid cross-contamination
-                    process_node(item, path_segments.copy() if path_segments else None)
+                    process_node(item, path_segments.copy())
 
-        # Start the recursive processing
         process_node(data)
         return data
+
 
     def post(self, request, *args, **kwargs):
         # Check if the pipe with the same name already exists at the same level
@@ -108,28 +102,6 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 )
         except Exception as e:
             return self.error_response(f"Pipe creation failed: {str(e)}")
-
-    # def get(self, request, pk=None):
-    #     user_discount = UserDiscount.objects.filter(user_id=request.user.id).values().first()
-    #     if user_discount:
-    #         discount_list = user_discount.get("discount_data", [])
-    #         self.discount_data = {int(item["id"]): item for item in discount_list if "id" in item}
-    #     else:
-    #         self.discount_data = {}
-
-    #     queryset = Pipe.objects.filter(parent__isnull=True, product__isnull=True)
-
-    #     name_filter = request.query_params.get("name")
-    #     if name_filter:
-    #         queryset = queryset.filter(name__icontains=name_filter)
-
-    #     serializer = RecursivePipeSerializer(queryset, many=True)
-    #     result_data = serializer.data
-
-    #     base_url = request.build_absolute_uri("/").rstrip("/")
-    #     processed_data = self.update_image_urls_recursively(base_url, result_data)
-
-    #     return self.success_response("Pipe list fetched successfully", processed_data)
 
     def get(self, request, pk=None):
         user_discount = (
