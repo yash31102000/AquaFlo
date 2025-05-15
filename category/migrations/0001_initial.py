@@ -8,38 +8,78 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='BestSeller',
+            name="BestSeller",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('toggel', models.BooleanField(default=True)),
-                ('quantity', models.PositiveIntegerField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("toggel", models.BooleanField(default=True)),
+                ("quantity", models.PositiveIntegerField()),
             ],
         ),
         migrations.CreateModel(
-            name='Pipe',
+            name="Pipe",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('image', models.ImageField(blank=True, null=True, upload_to='')),
-                ('marked_as_favorite', models.BooleanField(default=False)),
-                ('parent', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='sub_categories', to='category.pipe')),
-                ('product', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='related_product', to='category.pipe')),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                ("image", models.ImageField(blank=True, null=True, upload_to="")),
+                ("marked_as_favorite", models.BooleanField(default=False)),
+                (
+                    "parent",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="sub_categories",
+                        to="category.pipe",
+                    ),
+                ),
+                (
+                    "product",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="related_product",
+                        to="category.pipe",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Pipes',
+                "verbose_name_plural": "Pipes",
             },
         ),
         migrations.CreateModel(
-            name='PipeDetail',
+            name="PipeDetail",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('basic_data', models.JSONField(default=list)),
-                ('pipe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='details', to='category.pipe')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("basic_data", models.JSONField(default=list)),
+                (
+                    "pipe",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="details",
+                        to="category.pipe",
+                    ),
+                ),
             ],
         ),
     ]

@@ -43,4 +43,3 @@ class PipeDetail(models.Model):
 class BestSeller(models.Model):
     toggel = models.BooleanField(default=True)
     quantity = models.PositiveIntegerField()
-

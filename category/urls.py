@@ -8,9 +8,7 @@ urlpatterns = [
     path("bestseller/", BestSellerViewset.as_view()),
     path("bestseller/<int:pk>/", BestSellerViewset.as_view()),
     path("main-category/", GetMainCategoryViewset.as_view()),
-    path('markasfavorite/', MarkedAsfavoriteViewset.as_view()),
-    path("pipe-detail/",PipeDetailViewset.as_view()),
-    path("pipe-detail/<int:pk>/",PipeDetailViewset.as_view()),
-
-    
+    path("markasfavorite/", MarkedAsfavoriteViewset.as_view()),
+    path("pipe-detail/", PipeDetailViewset.as_view()),
+    path("pipe-detail/<int:pk>/", PipeDetailViewset.as_view()),
 ]

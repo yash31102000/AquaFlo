@@ -52,29 +52,30 @@ class RecursivePipeSerializer(serializers.ModelSerializer):
 
         if not related_products:
             return []
-        
+
         # Create a list to store serialized products with basic_data
         serialized_products = []
-        
+
         # Process each product individually to add basic_data
         for product in related_products:
             # Serialize the product first
             serialized_product = SimpleProductSerializer(product).data
-            
+
             # Get basic_data for this product and add it to the serialized data
-            basic_data_obj = PipeDetail.objects.filter(pipe=product.id).values("basic_data").first()
+            basic_data_obj = (
+                PipeDetail.objects.filter(pipe=product.id).values("basic_data").first()
+            )
             if basic_data_obj:
                 basic_data_list = basic_data_obj["basic_data"]
                 for item in basic_data_list:
                     for key, value in item.items():
-                        if value in ['None',None]:
+                        if value in ["None", None]:
                             item[key] = "-"
                 serialized_product["basic_data"] = basic_data_list
-            
-            serialized_products.append(serialized_product)
-        
-        return serialized_products
 
+            serialized_products.append(serialized_product)
+
+        return serialized_products
 
 
 class PipeSerializer(serializers.ModelSerializer):
@@ -82,12 +83,13 @@ class PipeSerializer(serializers.ModelSerializer):
     A more basic serializer that can be used for simpler representations.
     Includes basic_data from the related PipeDetail.
     """
+
     basic_data = serializers.SerializerMethodField()
 
     class Meta:
         model = Pipe
         fields = ["id", "name", "image", "basic_data"]
-    
+
     def get_basic_data(self, obj):
         pipe_detail = PipeDetail.objects.filter(pipe=obj).first()
         if pipe_detail:
@@ -196,8 +198,8 @@ class BestSellerSerializer(serializers.ModelSerializer):
         model = BestSeller
         fields = ["toggel", "quantity"]
 
+
 class PipeDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = PipeDetail
-        fields = ['id', 'pipe', 'basic_data']
-
+        fields = ["id", "pipe", "basic_data"]
