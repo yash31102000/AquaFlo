@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('Invoice', '0002_initial'),
+        ("Invoice", "0002_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='invoice',
-            name='discount_type',
+            model_name="invoice",
+            name="discount_type",
             field=models.CharField(blank=True, max_length=50, null=True),
         ),
         migrations.AddField(
-            model_name='invoice',
-            name='tax_percentage',
+            model_name="invoice",
+            name="tax_percentage",
             field=models.CharField(blank=True, max_length=50, null=True),
         ),
     ]

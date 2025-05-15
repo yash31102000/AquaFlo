@@ -9,14 +9,18 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('Invoice', '0001_initial'),
-        ('order', '0001_initial'),
+        ("Invoice", "0001_initial"),
+        ("order", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='invoice',
-            name='order',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='invoice', to='order.order'),
+            model_name="invoice",
+            name="order",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="invoice",
+                to="order.order",
+            ),
         ),
     ]

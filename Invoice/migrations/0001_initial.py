@@ -7,20 +7,43 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Invoice',
+            name="Invoice",
             fields=[
-                ('invoice_number', models.AutoField(primary_key=True, serialize=False)),
-                ('tax_amount', models.DecimalField(blank=True, decimal_places=0, max_digits=10, null=True)),
-                ('discount', models.DecimalField(blank=True, decimal_places=0, max_digits=10, null=True)),
-                ('issue_date', models.DateTimeField(auto_now_add=True)),
-                ('due_date', models.DateTimeField(blank=True, null=True)),
-                ('payment_status', models.CharField(choices=[('PENDING', 'Pending'), ('PAID', 'Paid'), ('CANCELLED', 'Cancelled')], default='PENDING', max_length=20)),
-                ('payment_method', models.CharField(blank=True, max_length=50, null=True)),
+                ("invoice_number", models.AutoField(primary_key=True, serialize=False)),
+                (
+                    "tax_amount",
+                    models.DecimalField(
+                        blank=True, decimal_places=0, max_digits=10, null=True
+                    ),
+                ),
+                (
+                    "discount",
+                    models.DecimalField(
+                        blank=True, decimal_places=0, max_digits=10, null=True
+                    ),
+                ),
+                ("issue_date", models.DateTimeField(auto_now_add=True)),
+                ("due_date", models.DateTimeField(blank=True, null=True)),
+                (
+                    "payment_status",
+                    models.CharField(
+                        choices=[
+                            ("PENDING", "Pending"),
+                            ("PAID", "Paid"),
+                            ("CANCELLED", "Cancelled"),
+                        ],
+                        default="PENDING",
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "payment_method",
+                    models.CharField(blank=True, max_length=50, null=True),
+                ),
             ],
         ),
     ]

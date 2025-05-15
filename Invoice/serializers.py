@@ -19,5 +19,5 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "payment_status",
             "payment_method",
             "tax_percentage",
-            "discount_type"
+            "discount_type",
         ]
