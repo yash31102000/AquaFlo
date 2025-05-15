@@ -140,7 +140,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             product.name if product else None]
 
                     # Keep only the last 2 non-empty names
-                    category_value_name = "   ➤   ".join([n for n in names if n][-2:]) + "   ➤   "
+                    category_value_name = "   ➤   ".join([n for n in names if n][-2:])
 
                     order_items.pop("item_id", None)
                     order_items["item"] = {
