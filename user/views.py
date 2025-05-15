@@ -1,5 +1,3 @@
-import requests
-import json
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from AquaFlo.Utils.permissions import CustomAPIPermissions
 from .serializers import *
@@ -9,6 +7,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.hashers import check_password
 from django.conf import settings
 from django.conf import settings
+
 
 # Create your views here.
 class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
@@ -108,20 +107,20 @@ class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
             #         "city": addr.get("city") or "-",
             #         "state": addr.get("state") or "-",
             #         "zip": addr.get("zip") or "-"
-                    
+
             #     }
             #     for addr in user.addresses
             # ]
 
             response_data = {
-                "id":user.id,
+                "id": user.id,
                 "phone_number": user.phone_number,
                 "first_name": user.first_name,
                 "last_name": user.last_name,
                 "email": user.email,
                 "is_admin": user.is_superuser,
                 "tokens": user.tokens,
-                "addresses":user.addresses,
+                "addresses": user.addresses,
             }
             return self.success_response("Login successfully", response_data)
         else:
@@ -150,6 +149,7 @@ class AddorRemoveAddressAPI(DefaultResponseMixin, generics.GenericAPIView):
             "Address Update or Delete Successfully", get_address.addresses
         )
 
+
 class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
     # permission_classes = [CustomAPIPermissions]
     # public_methods = ["GET"]
@@ -162,19 +162,19 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
             serializer.save()
             return self.success_response("UserDiscount Placed successfully")
         return self.error_response("UserDiscount Placed Faild")
-    
+
     def get(self, request):
-        user =request.user
+        user = request.user
         if user.is_superuser:
             discounts = UserDiscount.objects.all().values()
         else:
             discounts = UserDiscount.objects.filter(user=user).values()
         return self.success_response("User Discount List Fatch successfully", discounts)
-    
+
     def put(self, request, pk):
-        new_discounts = request.data.get('discount_data', [])
+        new_discounts = request.data.get("discount_data", [])
         try:
-            user_discount = UserDiscount.objects.get(pk=pk,user= request.user)
+            user_discount = UserDiscount.objects.get(pk=pk, user=request.user)
         except UserDiscount.DoesNotExist:
             return self.error_response("UserDiscount Not Found")
 
@@ -184,11 +184,11 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
         # Convert existing data to dict with ID as key for fast lookup
         existing_discounts = {
-            item['id']: item for item in user_discount.discount_data if 'id' in item
+            item["id"]: item for item in user_discount.discount_data if "id" in item
         }
 
         for new_item in new_discounts:
-            item_id = new_item.get('id')
+            item_id = new_item.get("id")
             if item_id in existing_discounts:
                 # Update existing item
                 existing_discounts[item_id].update(new_item)
@@ -202,7 +202,6 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
         return self.success_response("UserDiscount Update successfully")
 
-    
     def delete(self, request, pk):
         user = UserDiscount.objects.filter(id=pk).first()
         if not user:
@@ -211,7 +210,7 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
         return self.success_response("UserDiscount deleted successfully.")
 
 
-class ChangePasswordView(DefaultResponseMixin ,generics.GenericAPIView):
+class ChangePasswordView(DefaultResponseMixin, generics.GenericAPIView):
     serializer_class = ChangePasswordSerializer
     permission_classes = [CustomAPIPermissions]
     public_methods = ["POST"]
@@ -221,8 +220,8 @@ class ChangePasswordView(DefaultResponseMixin ,generics.GenericAPIView):
         user = request.user
 
         if serializer.is_valid():
-            old_password = serializer.validated_data['old_password']
-            new_password = serializer.validated_data['new_password']
+            old_password = serializer.validated_data["old_password"]
+            new_password = serializer.validated_data["new_password"]
 
             if not check_password(old_password, user.password):
                 return self.error_response(
@@ -232,8 +231,6 @@ class ChangePasswordView(DefaultResponseMixin ,generics.GenericAPIView):
             user.set_password(new_password)
             user.save()
 
-            return self.success_response(
-                "Your Password is successfully updated."
-            )
+            return self.success_response("Your Password is successfully updated.")
 
         return self.error_response(serializer.errors)

@@ -25,7 +25,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         validated_data["password"] = make_password(validated_data["password"])
         validated_data["username"] = validated_data["phone_number"]
         return super(RegisterSerializer, self).create(validated_data)
-    
+
     def update(self, instance, validated_data):
         if "password" in validated_data:
             validated_data["password"] = make_password(validated_data["password"])
@@ -35,7 +35,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             validated_data["username"] = validated_data["phone_number"]
 
         return super(RegisterSerializer, self).update(instance, validated_data)
-
 
 
 class LoginSerializer(serializers.Serializer):
@@ -50,6 +49,7 @@ class UserDiscountSerializer(serializers.ModelSerializer):
         model = UserDiscount
         fields = ["id", "user", "discount_data"]
         read_only_fields = ["created_at", "updated_at"]
+
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
