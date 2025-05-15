@@ -101,32 +101,62 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 )
                 if basic_datas:
                     for basic_data in basic_datas.get("basic_data"):
-                        if order_item.get("basic_data_id") == basic_data.get("id"):
-                            item_basic_data = basic_data
-                            if basic_data.get("packing") and basic_data.get(
-                                "large_bag"
-                            ):
-                                packing = int(basic_data.get("packing"))
-                                total_units = int(basic_data.get("packing")) * int(
-                                    order_item.get("quantity")
-                                )
-                                large_bag = int(basic_data.get("large_bag"))
-
-                                # Calculate full large bag quantity and remainder
-                                full_large_bags = total_units // large_bag
-                                remainder_units = total_units % large_bag
-                                order_item["number_of_pic"] = str(total_units)
-                                if self.is_accepted(full_large_bags):
-                                    order_item["large_bag_quantity"] = str(
-                                        full_large_bags
-                                    )
-                                    if remainder_units > 0:
-                                        order_item["bag_quantity"] = str(
-                                            int(remainder_units / packing)
+                        if not basic_data.get("id") and basic_data.get("name"):
+                            for data in basic_data.get("data"):
+                                if order_item.get("basic_data_id") == data.get("id"):
+                                    item_basic_data = data
+                                    if data.get("packing") and data.get(
+                                        "large_bag"
+                                    ):
+                                        packing = int(data.get("packing"))
+                                        total_units = int(data.get("packing")) * int(
+                                            order_item.get("quantity")
                                         )
+                                        large_bag = int(data.get("large_bag"))
 
-                                order_item.pop("basic_data_id")
-                                break
+                                        # Calculate full large bag quantity and remainder
+                                        full_large_bags = total_units // large_bag
+                                        remainder_units = total_units % large_bag
+                                        order_item["number_of_pic"] = str(total_units)
+                                        if self.is_accepted(full_large_bags):
+                                            order_item["large_bag_quantity"] = str(
+                                                full_large_bags
+                                            )
+                                            if remainder_units > 0:
+                                                order_item["bag_quantity"] = str(
+                                                    int(remainder_units / packing)
+                                                )
+
+                                        order_item.pop("basic_data_id")
+                                        break
+                        
+                        else:
+                            if order_item.get("basic_data_id") == basic_data.get("id"):
+                                item_basic_data = basic_data
+                                if basic_data.get("packing") and basic_data.get(
+                                    "large_bag"
+                                ):
+                                    packing = int(basic_data.get("packing"))
+                                    total_units = int(basic_data.get("packing")) * int(
+                                        order_item.get("quantity")
+                                    )
+                                    large_bag = int(basic_data.get("large_bag"))
+
+                                    # Calculate full large bag quantity and remainder
+                                    full_large_bags = total_units // large_bag
+                                    remainder_units = total_units % large_bag
+                                    order_item["number_of_pic"] = str(total_units)
+                                    if self.is_accepted(full_large_bags):
+                                        order_item["large_bag_quantity"] = str(
+                                            full_large_bags
+                                        )
+                                        if remainder_units > 0:
+                                            order_item["bag_quantity"] = str(
+                                                int(remainder_units / packing)
+                                            )
+
+                                    order_item.pop("basic_data_id")
+                                    break
                 base_url = request.build_absolute_uri("/").rstrip("/")
 
                 image_url = str(pipe_details.image) if pipe_details.id else ""
