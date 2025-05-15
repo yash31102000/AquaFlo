@@ -31,7 +31,6 @@ urlpatterns = [
     path("api/", include("order.urls")),
     path("api/", include("Invoice.urls")),
     path("api/", include("stocks.urls")),
-
 ]
 
 if settings.DEBUG:
