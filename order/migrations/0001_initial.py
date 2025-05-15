@@ -7,20 +7,42 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Order',
+            name="Order",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('order_items', models.JSONField(blank=True, default=list, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('status', models.CharField(choices=[('PENDING', 'Pending'), ('CONFIRM', 'Confirm'), ('COMPLETED', 'Completed'), ('CANCEL', 'Cancel')], default='PENDING', max_length=20)),
-                ('address', models.JSONField()),
-                ('address_link', models.CharField(max_length=250)),
-                ('cancellation_reason', models.CharField(blank=True, max_length=250, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("order_items", models.JSONField(blank=True, default=list, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("PENDING", "Pending"),
+                            ("CONFIRM", "Confirm"),
+                            ("COMPLETED", "Completed"),
+                            ("CANCEL", "Cancel"),
+                        ],
+                        default="PENDING",
+                        max_length=20,
+                    ),
+                ),
+                ("address", models.JSONField()),
+                ("address_link", models.CharField(max_length=250)),
+                (
+                    "cancellation_reason",
+                    models.CharField(blank=True, max_length=250, null=True),
+                ),
             ],
         ),
     ]

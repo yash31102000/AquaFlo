@@ -1,11 +1,8 @@
-from rest_framework.decorators import action
 from rest_framework import generics
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
-from AquaFlo.Utils.permissions import CustomAPIPermissions
 from user.models import UserDiscount
 from .models import *
 from category.models import Pipe, PipeDetail
-from django.db.models.expressions import RawSQL
 from .serializers import *
 from datetime import datetime
 
@@ -19,7 +16,9 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
     def is_accepted(self, value):
         # Check if the value is a whole number (either integer or float ending with .0)
-        if value == int(value):  # Checks if the value is effectively an integer (e.g., 20.0 or 20)
+        if value == int(
+            value
+        ):  # Checks if the value is effectively an integer (e.g., 20.0 or 20)
             return True
         return False
 
@@ -78,53 +77,81 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                     if data.get("packing") or data.get("large_bag"):
                                         if order_items.get("message"):
                                             continue
-                                        packing = int(data.get("packing",0))
-                                        total_units = int(data.get("packing",0)) * int(order_items.get("quantity",0))
+                                        packing = int(data.get("packing", 0))
+                                        total_units = int(data.get("packing", 0)) * int(
+                                            order_items.get("quantity", 0)
+                                        )
                                         large_bag = int(data.get("large_bag", 0))
 
                                         order_items["number_of_pic"] = str(total_units)
                                         if large_bag > 0:
                                             full_large_bags = total_units // large_bag
-                                            remainder_units = total_units % large_bag                                        
+                                            remainder_units = total_units % large_bag
                                             if self.is_accepted(full_large_bags):
-                                                order_items["large_bag_quantity"] = str(full_large_bags)
+                                                order_items["large_bag_quantity"] = str(
+                                                    full_large_bags
+                                                )
                                                 if remainder_units > 0 and packing > 0:
-                                                    order_items["bag_quantity"] = str(int(remainder_units / packing))
+                                                    order_items["bag_quantity"] = str(
+                                                        int(remainder_units / packing)
+                                                    )
                                                 # order_items.pop("quantity")
                                         else:
-                                            order_items["number_of_pic"] = str(total_units)
-                                            order_items["bag_quantity"] = str(int(order_items.get("quantity",0)))
+                                            order_items["number_of_pic"] = str(
+                                                total_units
+                                            )
+                                            order_items["bag_quantity"] = str(
+                                                int(order_items.get("quantity", 0))
+                                            )
                                     else:
-                                        order_items["number_of_pic"] = str(order_items.get("quantity",0))
-                                        order_items["bag_quantity"] = str(int(order_items.get("quantity",0)))
+                                        order_items["number_of_pic"] = str(
+                                            order_items.get("quantity", 0)
+                                        )
+                                        order_items["bag_quantity"] = str(
+                                            int(order_items.get("quantity", 0))
+                                        )
                                     order_items.pop("basic_data_id")
                                     break
-                                
-                        else:        
+
+                        else:
                             if order_items.get("basic_data_id") == basic_data.get("id"):
                                 item_basic_data = basic_data
-                                if basic_data.get("packing") or basic_data.get("large_bag"):
+                                if basic_data.get("packing") or basic_data.get(
+                                    "large_bag"
+                                ):
                                     if order_items.get("message"):
                                         continue
-                                    packing = int(basic_data.get("packing",0))
-                                    total_units = int(basic_data.get("packing",0)) * int(order_items.get("quantity",0))
+                                    packing = int(basic_data.get("packing", 0))
+                                    total_units = int(
+                                        basic_data.get("packing", 0)
+                                    ) * int(order_items.get("quantity", 0))
                                     large_bag = int(basic_data.get("large_bag", 0))
 
                                     order_items["number_of_pic"] = str(total_units)
                                     if large_bag > 0:
                                         full_large_bags = total_units // large_bag
-                                        remainder_units = total_units % large_bag                                        
+                                        remainder_units = total_units % large_bag
                                         if self.is_accepted(full_large_bags):
-                                            order_items["large_bag_quantity"] = str(full_large_bags)
+                                            order_items["large_bag_quantity"] = str(
+                                                full_large_bags
+                                            )
                                             if remainder_units > 0 and packing > 0:
-                                                order_items["bag_quantity"] = str(int(remainder_units / packing))
+                                                order_items["bag_quantity"] = str(
+                                                    int(remainder_units / packing)
+                                                )
                                             # order_items.pop("quantity")
                                     else:
                                         order_items["number_of_pic"] = str(total_units)
-                                        order_items["bag_quantity"] = str(int(order_items.get("quantity",0)))
+                                        order_items["bag_quantity"] = str(
+                                            int(order_items.get("quantity", 0))
+                                        )
                                 else:
-                                    order_items["number_of_pic"] = str(order_items.get("quantity",0))
-                                    order_items["bag_quantity"] = str(int(order_items.get("quantity",0)))
+                                    order_items["number_of_pic"] = str(
+                                        order_items.get("quantity", 0)
+                                    )
+                                    order_items["bag_quantity"] = str(
+                                        int(order_items.get("quantity", 0))
+                                    )
                                 order_items.pop("basic_data_id")
                                 break
 
@@ -135,9 +162,11 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     parent = product.parent if product else None
                     grandparent = parent.parent if parent else None
 
-                    names = [grandparent.name if grandparent else None,
-                            parent.name if parent else None,
-                            product.name if product else None]
+                    names = [
+                        grandparent.name if grandparent else None,
+                        parent.name if parent else None,
+                        product.name if product else None,
+                    ]
 
                     # Keep only the last 2 non-empty names
                     category_value_name = "   ➤   ".join([n for n in names if n][-2:])
@@ -229,7 +258,9 @@ class OrderSplitViewSet(DefaultResponseMixin, generics.GenericAPIView):
         data = request.data
         old_order = Order.objects.get(pk=data.get("old_order"))
         for order_item in old_order.order_items:
-            if order_item.get("item_id") == data.get("item_id") and order_item.get("basic_data_id") == data.get("basic_data_id"):
+            if order_item.get("item_id") == data.get("item_id") and order_item.get(
+                "basic_data_id"
+            ) == data.get("basic_data_id"):
                 new_order_item = order_item.copy()
                 order_split_list.append(new_order_item)
                 order_item["message"] = (
@@ -254,4 +285,6 @@ class OrderSplitViewSet(DefaultResponseMixin, generics.GenericAPIView):
             old_order.save()
             return self.success_response("Order Split Successfully")
         else:
-            return self.success_response("No items were split; order remains unchanged.")
+            return self.success_response(
+                "No items were split; order remains unchanged."
+            )
