@@ -84,7 +84,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone_number\":\"9687502200\",\n    \"password\":\"1234\"\n}",
+							"raw": "// =-=-=-=-=-=-=-=-=-=-=-=-           admin           =-=-=-=-=-=-=-=-=-=-=-=-\n{\n    \"phone_number\":\"9687502200\",\n    \"password\":\"1234\"\n}\n\n// =-=-=-=-=-=-=-=-=-=-=-=-           User            =-=-=-=-=-=-=-=-=-=-=-=-\n// {\n//     \"phone_number\": \"9998233017\",\n//     \"password\": \"1234\"\n// }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -176,7 +176,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone_number\": \"9998233013\",\n    \"first_name\": \"Yash\",\n    \"last_name\": \"Gathiys\",\n    \"email\": \"yash.sanghani.g10@gmail.com\",\n    \"password\": \"1234\",\n    \"addresses\": [\n        {\n            \"company_name\":\"\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        }\n    ]\n}",
+							"raw": "{\n    \"phone_number\": \"9998233013\",\n    \"first_name\": \"Yash\",\n    \"last_name\": \"Gathiys\",\n    \"email\": \"\",\n    \"password\": \"1234\",\n    \"addresses\": [\n        {\n            \"company_name\":\"\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -184,13 +184,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/user/72ebe49f-c3db-4850-b250-5bbb1dfdd415/",
+							"raw": "{{base_url}}/user/a9ca82d04cf140ee8b342d351db193ee/",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"user",
-								"72ebe49f-c3db-4850-b250-5bbb1dfdd415",
+								"a9ca82d04cf140ee8b342d351db193ee",
 								""
 							]
 						}
@@ -600,13 +600,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/order/12/",
+							"raw": "{{base_url}}/order/32/",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"order",
-								"12",
+								"32",
 								""
 							]
 						}
@@ -768,13 +768,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/order-invoice/25/",
+							"raw": "{{base_url}}/order-invoice/32/",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"order-invoice",
-								"25",
+								"32",
 								""
 							]
 						}
@@ -1323,6 +1323,34 @@
 							"path": [
 								"bestseller",
 								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-bestseller",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/get-bestseller/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"get-bestseller",
+								""
 							]
 						}
 					},

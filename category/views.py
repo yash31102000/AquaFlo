@@ -378,6 +378,16 @@ class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
         return self.success_response("BestSeller Delete Successfully")
 
 
+class GetBestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
+    permission_classes = [CustomAPIPermissions]
+    admin_only_methods = ["GET"]
+    def get(self, request):
+        best_seller = BestSeller.objects.all()
+        serializer = BestSellerSerializer(best_seller, many=True)
+        return self.success_response(
+                "BestSeller Fetched Successfully", serializer.data
+            )
+
 class GetMainCategoryViewset(DefaultResponseMixin, generics.GenericAPIView):
     permission_classes = [CustomAPIPermissions]
     public_methods = ["GET", "POST", "PUT", "DELETE"]
