@@ -73,33 +73,44 @@ class StockTransactionView(DefaultResponseMixin, generics.GenericAPIView):
 
         return self.success_response("Stock Update Successfully")
 
+
 class StockProductlistView(DefaultResponseMixin, generics.GenericAPIView):
     def get(self, request):
         try:
             base_url = request.build_absolute_uri("/").rstrip("/")
 
             # Get full model instances with product data
-            pipes = Pipe.objects.exclude(
-                id__in=StockTransaction.objects.values_list('pipe_id', flat=True)
-            ).filter(product__isnull=False).select_related('product')
+            pipes = (
+                Pipe.objects.exclude(
+                    id__in=StockTransaction.objects.values_list("pipe_id", flat=True)
+                )
+                .filter(product__isnull=False)
+                .select_related("product")
+            )
 
             stock_product = []
             for pipe in pipes:
-                
-                image = str(pipe.product.image) if pipe.product else (str(pipe.image) if pipe.id else "")
 
-                stock_product.append({
-                    "id": pipe.id,
-                    "name": pipe.name,
-                    "image": base_url + '/media/' + image if image else None,
-                    "parent_id": pipe.parent_id,
-                    "product_id": pipe.product_id,
-                    "Size": pipe.Size,
-                    "MM": pipe.MM,
-                    "Packing": pipe.Packing,
-                    "large_bag": pipe.large_bag,
-                    "marked_as_favorite": pipe.marked_as_favorite,
-                })
+                image = (
+                    str(pipe.product.image)
+                    if pipe.product
+                    else (str(pipe.image) if pipe.id else "")
+                )
+
+                stock_product.append(
+                    {
+                        "id": pipe.id,
+                        "name": pipe.name,
+                        "image": base_url + "/media/" + image if image else None,
+                        "parent_id": pipe.parent_id,
+                        "product_id": pipe.product_id,
+                        "Size": pipe.Size,
+                        "MM": pipe.MM,
+                        "Packing": pipe.Packing,
+                        "large_bag": pipe.large_bag,
+                        "marked_as_favorite": pipe.marked_as_favorite,
+                    }
+                )
 
             return self.success_response("Stock Product List Featched.", stock_product)
         except Exception as e:
