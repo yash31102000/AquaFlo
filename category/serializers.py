@@ -196,7 +196,7 @@ class BestSellerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BestSeller
-        fields = ["toggel", "quantity"]
+        fields = ["id","toggel", "quantity"]
 
 
 class PipeDetailSerializer(serializers.ModelSerializer):
