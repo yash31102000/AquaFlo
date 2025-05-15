@@ -191,7 +191,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     if user_discount:
                         for discount_data in user_discount.discount_data:
                             if sub_item.product.parent:
-                                if discount_data.get("id") == str(
+                                if str(discount_data.get("id")) == str(
                                     sub_item.product.parent.id
                                 ):
                                     order_items["discount_percent"] = discount_data.get(
@@ -201,7 +201,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                         "discount_type"
                                     )
                                 if sub_item.product.parent.parent:
-                                    if discount_data.get("id") == str(
+                                    if str(discount_data.get("id")) == str(
                                         sub_item.product.parent.parent.id
                                     ):
                                         order_items["discount_percent"] = (
@@ -210,7 +210,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                         order_items["discount_type"] = (
                                             discount_data.get("discount_type")
                                         )
-                            if discount_data.get("id") == str(sub_item.product.id):
+                            if str(discount_data.get("id")) == str(sub_item.product.id):
                                 order_items["discount_percent"] = discount_data.get(
                                     "discount_percent"
                                 )
