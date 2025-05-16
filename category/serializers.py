@@ -206,6 +206,8 @@ class PipeDetailSerializer(serializers.ModelSerializer):
 
 
 class PipeKeyTemplateSerializer(serializers.ModelSerializer):
+    pipe_name = serializers.CharField(source='pipe.name', read_only=True)
+
     class Meta:
         model = PipeKeyTemplate
-        fields = ['pipe', 'keys']
+        fields = '__all__'  # or list specific fields + 'pipe_name'
