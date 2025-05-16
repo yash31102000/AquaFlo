@@ -43,3 +43,11 @@ class PipeDetail(models.Model):
 class BestSeller(models.Model):
     toggel = models.BooleanField(default=True)
     quantity = models.PositiveIntegerField()
+
+
+class PipeKeyTemplate(models.Model):
+    pipe = models.ForeignKey(Pipe, on_delete=models.CASCADE, related_name='key_templates')
+    keys = models.JSONField()  # Store list of keys like ["length", "diameter", "material"]
+
+    def __str__(self):
+        return f"{self.pipe.name} Key Template"

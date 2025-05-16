@@ -12,4 +12,6 @@ urlpatterns = [
     path("markasfavorite/", MarkedAsfavoriteViewset.as_view()),
     path("pipe-detail/", PipeDetailViewset.as_view()),
     path("pipe-detail/<int:pk>/", PipeDetailViewset.as_view()),
+    path('pipe-key-template/', PipeKeyTemplateViewset.as_view()),
+    path('pipe-key-template/<int:pk>/', PipeKeyTemplateViewset.as_view()),
 ]

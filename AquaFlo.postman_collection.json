@@ -84,7 +84,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "// =-=-=-=-=-=-=-=-=-=-=-=-           admin           =-=-=-=-=-=-=-=-=-=-=-=-\n{\n    \"phone_number\":\"9687502200\",\n    \"password\":\"1234\"\n}\n\n// =-=-=-=-=-=-=-=-=-=-=-=-           User            =-=-=-=-=-=-=-=-=-=-=-=-\n// {\n//     \"phone_number\": \"9998233017\",\n//     \"password\": \"1234\"\n// }",
+							"raw": "// =-=-=-=-=-=-=-=-=-=-=-=-           admin           =-=-=-=-=-=-=-=-=-=-=-=-\n{\n    \"phone_number\":\"9687502200\",\n    \"password\":\"1234\"\n}\n\n// =-=-=-=-=-=-=-=-=-=-=-=-           User            =-=-=-=-=-=-=-=-=-=-=-=-\n// {\n//     \"phone_number\": \"9099159530\",\n//     \"password\": \"1234\"\n// }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -888,6 +888,142 @@
 					]
 				},
 				{
+					"name": "pipe-key",
+					"item": [
+						{
+							"name": "get-all-pipe-key-template",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/pipe-key-template/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"pipe-key-template",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get-by-pipe_id-pipe-key-template",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/pipe-key-template/?pipe_id=1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"pipe-key-template",
+										""
+									],
+									"query": [
+										{
+											"key": "pipe_id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create-pipe-key-template",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"pipe\": 1,\r\n    \"keys\" : [\"code\", \"size\", \"mm\", \"packing\", \"large_bag\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/pipe-key-template/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"pipe-key-template",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update-pipe-key-template",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    // \"pipe\": 1,\r\n    \"keys\": [\r\n        \"code\",\r\n        \"size\",\r\n        \"mm\",\r\n        \"packing\",\r\n        \"large_bag\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/pipe-key-template/1/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"pipe-key-template",
+										"1",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete-pipe-key-template",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/pipe-key-template/1/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"pipe-key-template",
+										"1",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "pipes",
 					"request": {
 						"auth": {
@@ -1316,13 +1452,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/bestseller/1",
+							"raw": "{{base_url}}/bestseller/1/",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"bestseller",
-								"1"
+								"1",
+								""
 							]
 						}
 					},

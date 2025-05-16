@@ -1,3 +1,4 @@
+import requests
 from rest_framework import generics
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from AquaFlo.Utils.permissions import CustomAPIPermissions
@@ -381,12 +382,12 @@ class BestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
 class GetBestSellerViewset(DefaultResponseMixin, generics.GenericAPIView):
     permission_classes = [CustomAPIPermissions]
     admin_only_methods = ["GET"]
+
     def get(self, request):
         best_seller = BestSeller.objects.all()
         serializer = BestSellerSerializer(best_seller, many=True)
-        return self.success_response(
-                "BestSeller Fetched Successfully", serializer.data
-            )
+        return self.success_response("BestSeller Fetched Successfully", serializer.data)
+
 
 class GetMainCategoryViewset(DefaultResponseMixin, generics.GenericAPIView):
     permission_classes = [CustomAPIPermissions]
@@ -459,3 +460,71 @@ class PipeDetailViewset(DefaultResponseMixin, generics.GenericAPIView):
             serializer.save()
             return self.success_response("Pipe Detail Update successfully")
         return self.error_response("PipeDetail Update Faild")
+
+
+class PipeKeyTemplateViewset(DefaultResponseMixin, generics.GenericAPIView):
+    serializer_class = PipeKeyTemplateSerializer
+    queryset = PipeKeyTemplate.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        pipe_id = request.query_params.get("pipe_id")
+
+        if pipe_id:
+            queryset = PipeKeyTemplate.objects.filter(pipe__id=pipe_id)
+            if not queryset.exists():
+                return self.error_response(
+                    "No Pipe Key Template found for given pipe_id"
+                )
+            serializer = self.get_serializer(queryset, many=True)
+            return self.success_response(
+                "Pipe Key Templates for given pipe_id retrieved", serializer.data
+            )
+        else:
+            queryset = PipeKeyTemplate.objects.all()
+            serializer = self.get_serializer(queryset, many=True)
+            return self.success_response(
+                "All Pipe Key Templates retrieved successfully", serializer.data
+            )
+
+    def post(self, request, *args, **kwargs):
+        pipe_id = request.data.get("pipe")
+
+        if not pipe_id:
+            return self.error_response("pipe ID is required")
+
+        # Check if pipe exists and is not a product
+        try:
+            pipe_instance = Pipe.objects.get(id=pipe_id)
+            if pipe_instance.product:
+                return self.error_response("Cannot create template for a product pipe")
+        except Pipe.DoesNotExist:
+            return self.error_response("Pipe not found")
+
+        # Proceed with creation if valid
+        serializer = self.get_serializer(data=request.data)
+        try:
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return self.success_response("Pipe Key Template created successfully")
+        except Exception as e:
+            return self.error_response(f"Pipe Key Template creation failed: {str(e)}")
+
+    def put(self, request, pk):
+        try:
+            instance = PipeKeyTemplate.objects.get(pk=pk)
+        except PipeKeyTemplate.DoesNotExist:
+            return self.error_response("Pipe Key Template not found")
+
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return self.success_response("Pipe Key Template updated successfully")
+        return self.error_response("Pipe Key Template update failed")
+
+    def delete(self, request, pk):
+        try:
+            instance = PipeKeyTemplate.objects.get(pk=pk)
+            instance.delete()
+            return self.success_response("Pipe Key Template deleted successfully")
+        except PipeKeyTemplate.DoesNotExist:
+            return self.error_response("Pipe Key Template not found")

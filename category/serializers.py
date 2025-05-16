@@ -203,3 +203,9 @@ class PipeDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = PipeDetail
         fields = ["id", "pipe", "basic_data"]
+
+
+class PipeKeyTemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PipeKeyTemplate
+        fields = ['pipe', 'keys']
