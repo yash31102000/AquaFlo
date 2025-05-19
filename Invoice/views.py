@@ -12,9 +12,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
     # permission_classes = [IsAuthenticatedOrReadOnly]
 
     def is_accepted(self, value):
-        if value == int(
-            value
-        ):
+        if value == int(value):
             return True
         return False
 
@@ -44,9 +42,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
         )
 
         if serializer.is_valid():
-            invoice = (
-                serializer.save()
-            )
+            invoice = serializer.save()
             return self.success_response("Invoice updated successfully.")
 
         return self.error_response("Failed to update invoice.", serializer.errors)
@@ -105,9 +101,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                             for data in basic_data.get("data"):
                                 if order_item.get("basic_data_id") == data.get("id"):
                                     item_basic_data = data
-                                    if data.get("packing") and data.get(
-                                        "large_bag"
-                                    ):
+                                    if data.get("packing") and data.get("large_bag"):
                                         packing = int(data.get("packing"))
                                         total_units = int(data.get("packing")) * int(
                                             order_item.get("quantity")
@@ -129,7 +123,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
                                         order_item.pop("basic_data_id")
                                         break
-                        
+
                         else:
                             if order_item.get("basic_data_id") == basic_data.get("id"):
                                 item_basic_data = basic_data
@@ -231,10 +225,11 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         discount_percent = 0
                     final_price = (
                         int(order_item.get("quantity", 0))
-                        * (int(order_item.get("price", 0)) - int(discount_percent))
+                        * (float(order_item.get("price", 0)) - float(discount_percent))
                         if order_item.get("price")
                         else 0
                     )
+
                 total_amount += final_price
 
             tax_percentage = int(invoice.get("tax_percentage"))
@@ -262,6 +257,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 "cancellation_reason": invoice_order.cancellation_reason,
             }
         return self.success_response("Invoices fetched successfully.", serializer.data)
+
 
 class TotalTransactionViewSet(DefaultResponseMixin, generics.GenericAPIView):
     def get(self, request):
