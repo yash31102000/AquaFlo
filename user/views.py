@@ -36,7 +36,9 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
             )  # You can use your default email or configure one in settings
             applications_link = "https://drive.google.com/file/d/1meU8C7f7-mWU39e9VYq_0kLdJf56NjFe/view?usp=sharing"
             serializer_data = serializer.data
-            serializer_data["whatsappmessage"] = f"Appliction Link : {applications_link} \n UserID : {self.request.data.get("phone_number")} \n password : {self.request.data.get("password")}"
+            serializer_data["whatsappmessage"] = (
+                f"Appliction Link : {applications_link} \n UserID : {self.request.data.get('phone_number')} \n password : {self.request.data.get('password')}"
+            )
             # Sending the email
             send_mail(subject, message, from_email, [self.request.data.get("email")])
             return self.success_response("Registered successfully", serializer_data)
