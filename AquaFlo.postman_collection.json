@@ -40,7 +40,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone_number\": \"9998233017\",\n    \"first_name\": \"Raj\",\n    \"last_name\": \"Patel\",\n    \"email\": \"\",\n    \"password\": \"1234\",\n    \"addresses\": [\n        {\n            \"company_name\":\"\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        }\n    ]\n}",
+							"raw": "{\n    \"phone_number\": \"9998883330\",\n    \"first_name\": \"Raj\",\n    \"last_name\": \"Patel\",\n    \"email\": \"\",\n    \"password\": \"1234\",\n    \"addresses\": [\n        {\n            \"company_name\":\"\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -121,7 +121,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"user_id\" : \"72ebe49f-c3db-4850-b250-5bbb1dfdd415\",\n    \"addresses\": [\n        {\n            \"company_name\": \"Abc Sales\",\n            \"GST_Number\": \"1234567890\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        },\n        {\n            \"company_name\": \"Somnath Sales\",\n            \"GST_Number\": \"1234567890\",\n            \"street\": \"789 Sardar St\",\n            \"city\": \"Surat\",\n            \"state\": \"GJ\",\n            \"zip\": \"395003\"\n        },\n        {\n            \"company_name\": \"Ramnath Sales\",\n            \"GST_Number\": \"1234567890\",\n            \"street\": \"101 Gandhi St\",\n            \"city\": \"Rajkot\",\n            \"state\": \"GJ\",\n            \"zip\": \"360001\"\n        },\n        {\n            \"company_name\": \"Dharmgiri Sales\",\n            \"GST_Number\": \"1234567890\",\n            \"street\": \"202 Nehru Rd\",\n            \"city\": \"Surat\",\n            \"state\": \"GJ\",\n            \"zip\": \"395001\"\n        }\n    ]\n}",
+							"raw": "{\n    \"user_id\" : \"2dee0b15-8c35-40ca-bfad-2d8745d4ef22\",\n    \"addresses\": [\n        {\n            \"company_name\": \"Abc Sales\",\n            \"GST_Number\": \"1234567890\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        },\n        {\n            \"company_name\": \"Somnath Sales\",\n            \"GST_Number\": \"1234567890\",\n            \"street\": \"789 Sardar St\",\n            \"city\": \"Surat\",\n            \"state\": \"GJ\",\n            \"zip\": \"395003\"\n        },\n        {\n            \"company_name\": \"Ramnath Sales\",\n            \"GST_Number\": \"1234567890\",\n            \"street\": \"101 Gandhi St\",\n            \"city\": \"Rajkot\",\n            \"state\": \"GJ\",\n            \"zip\": \"360001\"\n        },\n        {\n            \"company_name\": \"Dharmgiri Sales\",\n            \"GST_Number\": \"1234567890\",\n            \"street\": \"202 Nehru Rd\",\n            \"city\": \"Surat\",\n            \"state\": \"GJ\",\n            \"zip\": \"395001\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -920,7 +920,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/pipe-key-template/?pipe_id=1",
+									"raw": "{{base_url}}/pipe-key-template/?pipe_id=2",
 									"host": [
 										"{{base_url}}"
 									],
@@ -931,7 +931,7 @@
 									"query": [
 										{
 											"key": "pipe_id",
-											"value": "1"
+											"value": "2"
 										}
 									]
 								}
