@@ -84,58 +84,99 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
     def extract_keys(self, data):
         result = []
 
-        # Case 1: List of dictionaries with 'name' and 'data' (like basic_data)
+        # Case 1: List of dictionaries with 'name' and 'data'
         if isinstance(data, list) and isinstance(data[0], dict) and "data" in data[0]:
             for group in data:
                 name = group["name"].replace(" ", "_").replace("mtrs", "Kg")
-                keys = list(group["data"][0].keys()) if group["data"] else []
+                keys = (
+                    [k for k in group["data"][0].keys() if k != "id"]
+                    if group["data"]
+                    else []
+                )
                 result.append({"name": name, "key": keys})
 
-        # Case 2: Direct list of dictionaries (like the second example)
+        # Case 2: Direct list of dictionaries
         elif isinstance(data, list) and isinstance(data[0], dict):
-            keys = list(data[0].keys()) if data else []
-            result.append(keys)
+            result = [k for k in data[0].keys() if k != "id"] if data else []
 
         return result
 
-    def post(self, request, *args, **kwargs):
-        # Check if the pipe with the same name already exists at the same level
-        parent_id = request.data.get("parent")
+    def create_or_update_pipe(self, request, instance=None):
+        is_update = instance is not None
         name = request.data.get("name")
+        parent_id = request.data.get("parent")
         product = request.data.get("product")
+        basic_data = request.data.get("basic_data")
 
-        # Check for existing pipe with the same name under the same parent
-        existing_pipe_query = Pipe.objects.filter(name=name)
-        if parent_id:
-            existing_pipe_query = existing_pipe_query.filter(parent_id=parent_id)
+        if not is_update:
+            # On create: Check for duplicate pipe under the same parent
+            existing_pipe_query = Pipe.objects.filter(name=name)
+            if parent_id:
+                existing_pipe_query = existing_pipe_query.filter(parent_id=parent_id)
+            if product:
+                existing_pipe_query = existing_pipe_query.filter(product_id=product)
 
-        if product:
-            existing_pipe_query = existing_pipe_query.filter(product_id=product)
+            if existing_pipe_query.exists():
+                return self.error_response(
+                    "Pipe with this name already exists at this level"
+                )
 
-        if existing_pipe_query.exists():
-            return self.error_response(
-                "Pipe with this name already exists at this level"
-            )
-
-        # Use create update serializer for handling nested creation
-        serializer = PipeCreateUpdateSerializer(data=request.data)
+        # Use serializer to create or update
+        serializer = PipeCreateUpdateSerializer(
+            instance, data=request.data, partial=is_update
+        )
 
         try:
             if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                PipeDetail.objects.create(
-                    pipe=Pipe.objects.get(id=serializer.data.get("id")),
-                    basic_data=request.data.get("basic_data"),
+                pipe = serializer.save()
+                
+                # Create or update PipeDetail
+                PipeDetail.objects.update_or_create(
+                    # pipe=parent_id if parent_id else product,
+                    pipe=pipe,
+                    defaults={"basic_data": basic_data},
                 )
-                PipeKeyTemplate.objects.create(
-                    pipe=Pipe.objects.get(id=serializer.data.get("id")),
-                    keys=self.extract_keys(request.data.get("basic_data")),
+                
+                if is_update:
+                    if pipe.parent:
+                        if PipeKeyTemplate.objects.filter(pipe=pipe.parent.id).exists():
+                            pipe = pipe.parent
+                    if pipe.product:
+                        print(pipe.product, "pipe.product")
+                        if PipeKeyTemplate.objects.filter(
+                            pipe=pipe.product.id
+                        ).exists():
+                            pipe = pipe.product
+                        elif PipeKeyTemplate.objects.filter(
+                            pipe=pipe.product.parent.id
+                        ).exists():
+                            pipe = pipe.product.parent
+
+
+                # Create or update PipeKeyTemplate
+                PipeKeyTemplate.objects.update_or_create(
+                    pipe=pipe,
+                    defaults={"keys": self.extract_keys(basic_data)},
                 )
-                return self.success_response(
-                    "Pipe created successfully",
+
+                # On update: also update marked_as_favorite if present
+                if is_update and "marked_as_favorite" in request.data:
+                    pipe.marked_as_favorite = request.data.get("marked_as_favorite")
+                    pipe.save()
+
+                message = (
+                    "Pipe updated successfully"
+                    if is_update
+                    else "Pipe created successfully"
                 )
+                return self.success_response(message)
+
         except Exception as e:
-            return self.error_response(f"Pipe creation failed: {str(e)}")
+            action = "update" if is_update else "creation"
+            return self.error_response(f"Pipe {action} failed: {str(e)}")
+
+    def post(self, request, *args, **kwargs):
+        return self.create_or_update_pipe(request)
 
     def get(self, request, pk=None):
         user_discount = (
@@ -224,27 +265,12 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         # Then delete the pipe itself
         pipe.delete()
 
-    def put(self, request, pk=None):
+    def put(self, request, pk=None, *args, **kwargs):
         try:
-            # Retrieve the existing pipe
             pipe = Pipe.objects.get(id=pk)
-
-            if pipe.product is not None and "marked_as_favorite" in request.data:
-                pipe.marked_as_favorite = request.data.get("marked_as_favorite")
-                pipe.save()
-            # Use create update serializer for handling update
-            serializer = PipeCreateUpdateSerializer(
-                pipe, data=request.data, partial=True
-            )
-
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                return self.success_response("Pipe updated successfully")
-
+            return self.create_or_update_pipe(request, instance=pipe)
         except Pipe.DoesNotExist:
             return self.error_response(f"Pipe {pk} not found")
-        except Exception as e:
-            return self.error_response(f"Pipe update failed: {str(e)}")
 
 
 class GetPipeViewset(DefaultResponseMixin, generics.GenericAPIView):
