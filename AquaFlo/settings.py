@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "rest_framework_simplejwt",
+    "django_extensions",
     "user",
     "category",
     "Invoice",
@@ -102,24 +103,24 @@ WSGI_APPLICATION = "AquaFlo.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-
-
 # DATABASES = {
 #     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "postgres_aquaflo",
-#         "USER": "postgres_aquaflo_user",
-#         "PASSWORD": "qoinh3TAeAK9mKCgpQ4gpuqmXG57FoXB",
-#         "HOST": "dpg-d04ufm6uk2gs73e2fdcg-a.oregon-postgres.render.com",
-#         "PORT": "5432",
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
 #     }
 # }
+
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "aquaflo",
+        "USER": "postgres",
+        "PASSWORD": "AquaFlo@999",
+        "HOST": "82.112.236.150",
+        "PORT": "5432",
+    }
+}
 
 
 # Password validation
