@@ -81,6 +81,23 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         process_node(data)
         return data
 
+    def extract_keys(self, data):
+        result = []
+
+        # Case 1: List of dictionaries with 'name' and 'data' (like basic_data)
+        if isinstance(data, list) and isinstance(data[0], dict) and "data" in data[0]:
+            for group in data:
+                name = group["name"].replace(" ", "_").replace("mtrs", "Kg")
+                keys = list(group["data"][0].keys()) if group["data"] else []
+                result.append({"name": name, "key": keys})
+
+        # Case 2: Direct list of dictionaries (like the second example)
+        elif isinstance(data, list) and isinstance(data[0], dict):
+            keys = list(data[0].keys()) if data else []
+            result.append(keys)
+
+        return result
+
     def post(self, request, *args, **kwargs):
         # Check if the pipe with the same name already exists at the same level
         parent_id = request.data.get("parent")
@@ -106,7 +123,14 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         try:
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-                # Use recursive serializer to return full nested structure
+                PipeDetail.objects.create(
+                    pipe=Pipe.objects.get(id=serializer.data.get("id")),
+                    basic_data=request.data.get("basic_data"),
+                )
+                PipeKeyTemplate.objects.create(
+                    pipe=Pipe.objects.get(id=serializer.data.get("id")),
+                    keys=self.extract_keys(request.data.get("basic_data")),
+                )
                 return self.success_response(
                     "Pipe created successfully",
                 )
