@@ -129,40 +129,40 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         try:
             if serializer.is_valid(raise_exception=True):
                 pipe = serializer.save()
-                
-                # Create or update PipeDetail
-                PipeDetail.objects.update_or_create(
-                    # pipe=parent_id if parent_id else product,
-                    pipe=pipe,
-                    defaults={"basic_data": basic_data},
-                )
-                
-                if is_update:
-                    if pipe.parent:
-                        if PipeKeyTemplate.objects.filter(pipe=pipe.parent.id).exists():
-                            pipe = pipe.parent
-                    if pipe.product:
-                        print(pipe.product, "pipe.product")
-                        if PipeKeyTemplate.objects.filter(
-                            pipe=pipe.product.id
-                        ).exists():
-                            pipe = pipe.product
-                        elif PipeKeyTemplate.objects.filter(
-                            pipe=pipe.product.parent.id
-                        ).exists():
-                            pipe = pipe.product.parent
+                if basic_data:
+                    # Create or update PipeDetail
+                    PipeDetail.objects.update_or_create(
+                        # pipe=parent_id if parent_id else product,
+                        pipe=pipe,
+                        defaults={"basic_data": basic_data},
+                    )
+                    
+                    if is_update:
+                        if pipe.parent:
+                            if PipeKeyTemplate.objects.filter(pipe=pipe.parent.id).exists():
+                                pipe = pipe.parent
+                        if pipe.product:
+                            print(pipe.product, "pipe.product")
+                            if PipeKeyTemplate.objects.filter(
+                                pipe=pipe.product.id
+                            ).exists():
+                                pipe = pipe.product
+                            elif PipeKeyTemplate.objects.filter(
+                                pipe=pipe.product.parent.id
+                            ).exists():
+                                pipe = pipe.product.parent
 
 
-                # Create or update PipeKeyTemplate
-                PipeKeyTemplate.objects.update_or_create(
-                    pipe=pipe,
-                    defaults={"keys": self.extract_keys(basic_data)},
-                )
+                    # Create or update PipeKeyTemplate
+                    PipeKeyTemplate.objects.update_or_create(
+                        pipe=pipe,
+                        defaults={"keys": self.extract_keys(basic_data)},
+                    )
 
-                # On update: also update marked_as_favorite if present
-                if is_update and "marked_as_favorite" in request.data:
-                    pipe.marked_as_favorite = request.data.get("marked_as_favorite")
-                    pipe.save()
+                    # On update: also update marked_as_favorite if present
+                    if is_update and "marked_as_favorite" in request.data:
+                        pipe.marked_as_favorite = request.data.get("marked_as_favorite")
+                        pipe.save()
 
                 message = (
                     "Pipe updated successfully"
