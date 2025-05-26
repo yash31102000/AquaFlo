@@ -61,7 +61,7 @@ class UserModel(AbstractUser):
 
 class UserDiscount(models.Model):
     """
-    Model to store all discounts for a user in a JSON structure
+    Model to store all discounts and price data for a user in a JSON structure
     """
 
     user = models.OneToOneField(
@@ -70,7 +70,15 @@ class UserDiscount(models.Model):
 
     discount_data = models.JSONField(
         default=dict,
+        blank=True,
+        null=True,
         help_text="JSON structure containing all category and product discounts",
+    )
+    price_data = models.JSONField(
+        default=dict,
+        blank=True,
+        null=True,
+        help_text="JSON structure containing all category and product prices",
     )
 
     is_active = models.BooleanField(default=True)

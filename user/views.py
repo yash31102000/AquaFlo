@@ -163,8 +163,8 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
         serializer = UserDiscountSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return self.success_response("UserDiscount Placed successfully")
-        return self.error_response("UserDiscount Placed Faild")
+            return self.success_response("UserDiscount placed successfully")
+        return self.error_response("UserDiscount placement failed")
 
     def get(self, request):
         user = request.user
@@ -172,44 +172,60 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
             discounts = UserDiscount.objects.all().values()
         else:
             discounts = UserDiscount.objects.filter(user=user).values()
-        return self.success_response("User Discount List Fatch successfully", discounts)
+        return self.success_response("User Discount list fetched successfully", discounts)
 
     def put(self, request, pk):
-        new_discounts = request.data.get("discount_data", [])
         try:
             user_discount = UserDiscount.objects.get(pk=pk, user=request.user)
         except UserDiscount.DoesNotExist:
-            return self.error_response("UserDiscount Not Found")
+            return self.error_response("UserDiscount not found")
 
-        # Ensure it's a list
-        if not isinstance(user_discount.discount_data, list):
-            user_discount.discount_data = []
+        # Merge discount_data
+        new_discounts = request.data.get("discount_data")
+        if new_discounts is not None:
+            if not isinstance(user_discount.discount_data, list):
+                user_discount.discount_data = []
 
-        # Convert existing data to dict with ID as key for fast lookup
-        existing_discounts = {
-            item["id"]: item for item in user_discount.discount_data if "id" in item
-        }
+            existing_discounts = {
+                item["id"]: item for item in user_discount.discount_data if "id" in item
+            }
 
-        for new_item in new_discounts:
-            item_id = new_item.get("id")
-            if item_id in existing_discounts:
-                # Update existing item
-                existing_discounts[item_id].update(new_item)
-            else:
-                # Append new item
-                existing_discounts[item_id] = new_item
+            for new_item in new_discounts:
+                item_id = new_item.get("id")
+                if item_id in existing_discounts:
+                    existing_discounts[item_id].update(new_item)
+                else:
+                    existing_discounts[item_id] = new_item
 
-        # Save back as list
-        user_discount.discount_data = list(existing_discounts.values())
+            user_discount.discount_data = list(existing_discounts.values())
+
+        # Merge price_data (if present)
+        new_prices = request.data.get("price_data")
+        if new_prices is not None:
+            if not isinstance(user_discount.price_data, list):
+                user_discount.price_data = []
+
+            existing_prices = {
+                item["id"]: item for item in user_discount.price_data if "id" in item
+            }
+
+            for new_item in new_prices:
+                item_id = new_item.get("id")
+                if item_id in existing_prices:
+                    existing_prices[item_id].update(new_item)
+                else:
+                    existing_prices[item_id] = new_item
+
+            user_discount.price_data = list(existing_prices.values())
+
         user_discount.save()
-
-        return self.success_response("UserDiscount Update successfully")
+        return self.success_response("UserDiscount updated successfully")
 
     def delete(self, request, pk):
-        user = UserDiscount.objects.filter(id=pk).first()
-        if not user:
-            return self.error_response("UserDiscount Not Found")
-        user.delete()
+        user_discount = UserDiscount.objects.filter(id=pk, user=request.user).first()
+        if not user_discount:
+            return self.error_response("UserDiscount not found")
+        user_discount.delete()
         return self.success_response("UserDiscount deleted successfully.")
 
 

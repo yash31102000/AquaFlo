@@ -47,7 +47,7 @@ class UserDiscountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserDiscount
-        fields = ["id", "user", "discount_data"]
+        fields = ["id", "user", "discount_data", "price_data"]
         read_only_fields = ["created_at", "updated_at"]
 
 

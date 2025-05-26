@@ -136,10 +136,12 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         pipe=pipe,
                         defaults={"basic_data": basic_data},
                     )
-                    
+
                     if is_update:
                         if pipe.parent:
-                            if PipeKeyTemplate.objects.filter(pipe=pipe.parent.id).exists():
+                            if PipeKeyTemplate.objects.filter(
+                                pipe=pipe.parent.id
+                            ).exists():
                                 pipe = pipe.parent
                         if pipe.product:
                             print(pipe.product, "pipe.product")
@@ -151,7 +153,11 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                 pipe=pipe.product.parent.id
                             ).exists():
                                 pipe = pipe.product.parent
-
+                    else:
+                        if pipe.parent:
+                            pipe = pipe.parent
+                        elif pipe.product:
+                            pipe = pipe.product
 
                     # Create or update PipeKeyTemplate
                     PipeKeyTemplate.objects.update_or_create(
