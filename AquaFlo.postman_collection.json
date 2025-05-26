@@ -1472,7 +1472,7 @@
 			]
 		},
 		{
-			"name": "UserDiscount",
+			"name": "UserDiscountAndPrice",
 			"item": [
 				{
 					"name": "create-user-discount",
