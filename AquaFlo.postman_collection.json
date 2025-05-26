@@ -84,7 +84,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "// =-=-=-=-=-=-=-=-=-=-=-=-           admin           =-=-=-=-=-=-=-=-=-=-=-=-\n// {\n//     \"phone_number\":\"9687502200\",\n//     \"password\":\"1234\"\n// }\n\n// =-=-=-=-=-=-=-=-=-=-=-=-           User            =-=-=-=-=-=-=-=-=-=-=-=-\n{\n    \"phone_number\": \"9099159530\",\n    \"password\": \"1234\"\n}",
+							"raw": "// =-=-=-=-=-=-=-=-=-=-=-=-           admin           =-=-=-=-=-=-=-=-=-=-=-=-\n{\n    \"phone_number\":\"9687502200\",\n    \"password\":\"Bhagwatipipe@10\"\n}\n\n// =-=-=-=-=-=-=-=-=-=-=-=-           User            =-=-=-=-=-=-=-=-=-=-=-=-\n// {\n//     \"phone_number\": \"9099159530\",\n//     \"password\": \"1234\"\n// }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -600,13 +600,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/order/39/",
+							"raw": "{{base_url}}/order/33/",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"order",
-								"39",
+								"33",
 								""
 							]
 						}
@@ -1075,7 +1075,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"TEST LAYERS Water Tank\",\r\n    \"product\": \"171\",\r\n    \"basic_data\": [\r\n        {\r\n            \"name\": \"6 mtrs\",\r\n            \"data\": [\r\n                {\r\n                    \"id\": 1,\r\n                    \"size (mm)\": 40,\r\n                    \"od min.\": 40,\r\n                    \"od max.\": 40.3,\r\n                    \"thickness min. (mm)\": 1.8,\r\n                    \"thickness max. (mm)\": 2.2,\r\n                    \"6 mtrs\": 2.0\r\n                },\r\n                {\r\n                    \"id\": 2,\r\n                    \"size (mm)\": 50,\r\n                    \"od min.\": 50,\r\n                    \"od max.\": 50.3,\r\n                    \"thickness min. (mm)\": 1.8,\r\n                    \"thickness max. (mm)\": 2.2,\r\n                    \"6 mtrs\": 2.5\r\n                },\r\n                {\r\n                    \"id\": 3,\r\n                    \"size (mm)\": 63,\r\n                    \"od min.\": 63,\r\n                    \"od max.\": 63.3,\r\n                    \"thickness min. (mm)\": 1.8,\r\n                    \"thickness max. (mm)\": 2.2,\r\n                    \"6 mtrs\": 3.0\r\n                },\r\n                {\r\n                    \"id\": 4,\r\n                    \"size (mm)\": 75,\r\n                    \"od min.\": 75,\r\n                    \"od max.\": 75.3,\r\n                    \"thickness min. (mm)\": 1.8,\r\n                    \"thickness max. (mm)\": 2.2,\r\n                    \"6 mtrs\": 4.0\r\n                },\r\n                {\r\n                    \"id\": 5,\r\n                    \"size (mm)\": 90,\r\n                    \"od min.\": 90,\r\n                    \"od max.\": 90.3,\r\n                    \"thickness min. (mm)\": 1.9,\r\n                    \"thickness max. (mm)\": 2.3,\r\n                    \"6 mtrs\": 5.0\r\n                },\r\n                {\r\n                    \"id\": 6,\r\n                    \"size (mm)\": 110,\r\n                    \"od min.\": 110,\r\n                    \"od max.\": 110.4,\r\n                    \"thickness min. (mm)\": 2.2,\r\n                    \"thickness max. (mm)\": 2.7,\r\n                    \"6 mtrs\": 6.8\r\n                },\r\n                {\r\n                    \"id\": 7,\r\n                    \"size (mm)\": 160,\r\n                    \"od min.\": 160,\r\n                    \"od max.\": 160.5,\r\n                    \"thickness min. (mm)\": 3.2,\r\n                    \"thickness max. (mm)\": 3.8,\r\n                    \"6 mtrs\": 14.0\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"3 mtrs\",\r\n            \"data\": [\r\n                {\r\n                    \"id\": 1,\r\n                    \"size (mm)\": 40,\r\n                    \"od min.\": 40,\r\n                    \"od max.\": 40.3,\r\n                    \"thickness min. (mm)\": 1.8,\r\n                    \"thickness max. (mm)\": 2.2,\r\n                    \"3 mtrs\": 1.0\r\n                },\r\n                {\r\n                    \"id\": 2,\r\n                    \"size (mm)\": 50,\r\n                    \"od min.\": 50,\r\n                    \"od max.\": 50.3,\r\n                    \"thickness min. (mm)\": 1.8,\r\n                    \"thickness max. (mm)\": 2.2,\r\n                    \"3 mtrs\": 1.25\r\n                },\r\n                {\r\n                    \"id\": 3,\r\n                    \"size (mm)\": 63,\r\n                    \"od min.\": 63,\r\n                    \"od max.\": 63.3,\r\n                    \"thickness min. (mm)\": 1.8,\r\n                    \"thickness max. (mm)\": 2.2,\r\n                    \"3 mtrs\": 1.5\r\n                },\r\n                {\r\n                    \"id\": 4,\r\n                    \"size (mm)\": 75,\r\n                    \"od min.\": 75,\r\n                    \"od max.\": 75.3,\r\n                    \"thickness min. (mm)\": 1.8,\r\n                    \"thickness max. (mm)\": 2.2,\r\n                    \"3 mtrs\": 2.0\r\n                },\r\n                {\r\n                    \"id\": 5,\r\n                    \"size (mm)\": 90,\r\n                    \"od min.\": 90,\r\n                    \"od max.\": 90.3,\r\n                    \"thickness min. (mm)\": 1.9,\r\n                    \"thickness max. (mm)\": 2.3,\r\n                    \"3 mtrs\": 2.5\r\n                },\r\n                {\r\n                    \"id\": 6,\r\n                    \"size (mm)\": 110,\r\n                    \"od min.\": 110,\r\n                    \"od max.\": 110.4,\r\n                    \"thickness min. (mm)\": 2.2,\r\n                    \"thickness max. (mm)\": 2.7,\r\n                    \"3 mtrs\": 3.4\r\n                },\r\n                {\r\n                    \"id\": 7,\r\n                    \"size (mm)\": 160,\r\n                    \"od min.\": 160,\r\n                    \"od max.\": 160.5,\r\n                    \"thickness min. (mm)\": 3.2,\r\n                    \"thickness max. (mm)\": 3.8,\r\n                    \"3 mtrs\": 7.0\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"name\": \"LUBRICANT----aaaaaaaa\",\r\n    \"product\": 15,\r\n    \"basic_data\": [\r\n        {\r\n            \"code\": \"A\",\r\n            \"size\": \"100 ml\",\r\n            \"mm\": \"-\",\r\n            \"packing\": \"24\",\r\n            \"id\": 1\r\n        },\r\n        {\r\n            \"code\": \"B\",\r\n            \"size\": \"250 ml\",\r\n            \"mm\": \"-\",\r\n            \"packing\": \"15\",\r\n            \"id\": 2\r\n        },\r\n        {\r\n            \"code\": \"C\",\r\n            \"size\": \"500 ml\",\r\n            \"mm\": \"-\",\r\n            \"packing\": \"8\",\r\n            \"id\": 3\r\n        },\r\n        {\r\n            \"code\": \"D\",\r\n            \"size\": \"1 Ltr\",\r\n            \"mm\": \"-\",\r\n            \"packing\": \"6\",\r\n            \"id\": 4\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1491,7 +1491,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"discount_data\": [\n        {\n            \"id\": 10,\n            \"discount_percent\": 10,\n            \"discount_type\": \"fixed\"\n        }\n    ]\n}",
+							"raw": "//  -------------------------------------------       price_data \n\n{\n    \"price_data\": [\n        {\n            \"id\": 10,\n            \"price\": 10\n        }\n    ]\n}\n\n//  -------------------------------------------       discount_data \n\n\n// {\n//     \"discount_data\": [\n//         {\n//             \"id\": 10,\n//             \"discount_percent\": 10,\n//             \"discount_type\": \"fixed\"\n//         }\n//     ]\n// }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1578,7 +1578,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"discount_data\": [\n        {\n            \"id\": 171,\n            \"discount_percent\": 10,\n            \"discount_type\": \"fixed\"\n        },\n        {\n            \"id\": 3,\n            \"discount_percent\": 10,\n            \"discount_type\": \"fixed\"\n        }\n    ]\n}",
+							"raw": "\n//  -------------------------------------------       price_data \n\n{\n    \"price_data\": [\n        {\n            \"id\": 157,\n            \"price\": 10\n        },\n        {\n            \"id\": 120,\n            \"price\": 10\n        }\n    ]\n}\n\n//  -------------------------------------------       discount_data \n\n\n\n// {\n//     \"discount_data\": [\n//         {\n//             \"id\": 171,\n//             \"discount_percent\": 10,\n//             \"discount_type\": \"fixed\"\n//         },\n//         {\n//             \"id\": 3,\n//             \"discount_percent\": 10,\n//             \"discount_type\": \"fixed\"\n//         }\n//     ]\n// }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1593,6 +1593,34 @@
 							"path": [
 								"user-discount",
 								"3",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-user-price",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-price/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-price",
 								""
 							]
 						}

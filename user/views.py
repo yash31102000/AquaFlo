@@ -172,7 +172,9 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
             discounts = UserDiscount.objects.all().values()
         else:
             discounts = UserDiscount.objects.filter(user=user).values()
-        return self.success_response("User Discount list fetched successfully", discounts)
+        return self.success_response(
+            "User Discount list fetched successfully", discounts
+        )
 
     def put(self, request, pk):
         try:
@@ -227,6 +229,25 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
             return self.error_response("UserDiscount not found")
         user_discount.delete()
         return self.success_response("UserDiscount deleted successfully.")
+
+
+class UserPriceViewSet(DefaultResponseMixin, generics.GenericAPIView):
+    def get(self, request):
+        user_price_data = UserDiscount.objects.select_related("user")
+        price_data_list = []
+        for price_data in user_price_data:
+            price_data_list.append({
+                "id": price_data.user.id,
+                "phone_number": price_data.user.phone_number,
+                "first_name": price_data.user.first_name,
+                "last_name": price_data.user.last_name,
+                "email": price_data.user.email,
+                "addresses": price_data.user.addresses,
+                "price_data":price_data.price_data
+            })
+        return self.success_response(
+            "User Discount list fetched successfully", price_data_list
+        )
 
 
 class ChangePasswordView(DefaultResponseMixin, generics.GenericAPIView):
