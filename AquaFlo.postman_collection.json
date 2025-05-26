@@ -1491,7 +1491,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "//  -------------------------------------------       price_data \n\n{\n    \"price_data\": [\n        {\n            \"id\": 10,\n            \"price\": 10\n        }\n    ]\n}\n\n//  -------------------------------------------       discount_data \n\n\n// {\n//     \"discount_data\": [\n//         {\n//             \"id\": 10,\n//             \"discount_percent\": 10,\n//             \"discount_type\": \"fixed\"\n//         }\n//     ]\n// }",
+							"raw": "//  -------------------------------------------       price_data \n\n{\n    // \"user\" : \"4380aa3d-1a99-41a3-adc1-df0b9ae37d7b\", this wil user only for admin\n    \"price_data\": [\n        {\n            \"id\": 10,\n            \"price\": 10\n        }\n    ]\n}\n\n//  -------------------------------------------       discount_data \n\n\n// {\n        // \"user\" : \"4380aa3d-1a99-41a3-adc1-df0b9ae37d7b\", this wil user only for admin\n//     \"discount_data\": [\n//         {\n//             \"id\": 10,\n//             \"discount_percent\": 10,\n//             \"discount_type\": \"fixed\"\n//         }\n//     ]\n// }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1578,7 +1578,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "\n//  -------------------------------------------       price_data \n\n{\n    \"price_data\": [\n        {\n            \"id\": 157,\n            \"price\": 10\n        },\n        {\n            \"id\": 120,\n            \"price\": 10\n        }\n    ]\n}\n\n//  -------------------------------------------       discount_data \n\n\n\n// {\n//     \"discount_data\": [\n//         {\n//             \"id\": 171,\n//             \"discount_percent\": 10,\n//             \"discount_type\": \"fixed\"\n//         },\n//         {\n//             \"id\": 3,\n//             \"discount_percent\": 10,\n//             \"discount_type\": \"fixed\"\n//         }\n//     ]\n// }",
+							"raw": "\n//  -------------------------------------------       price_data \n\n{\n    // \"user\" : \"4380aa3d-1a99-41a3-adc1-df0b9ae37d7b\", this wil user only for admin\n    \"price_data\": [\n        {\n            \"id\": 157,\n            \"price\": 10\n        },\n        {\n            \"id\": 120,\n            \"price\": 10\n        }\n    ]\n}\n\n//  -------------------------------------------       discount_data \n\n\n\n// {\n        // \"user\" : \"4380aa3d-1a99-41a3-adc1-df0b9ae37d7b\", this wil user only for admin\n//     \"discount_data\": [\n//         {\n//             \"id\": 171,\n//             \"discount_percent\": 10,\n//             \"discount_type\": \"fixed\"\n//         },\n//         {\n//             \"id\": 3,\n//             \"discount_percent\": 10,\n//             \"discount_type\": \"fixed\"\n//         }\n//     ]\n// }",
 							"options": {
 								"raw": {
 									"language": "json"

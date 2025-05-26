@@ -159,7 +159,15 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
     # admin_only_methods = ["POST", "PUT", "DELETE"]
     def post(self, request):
         data = request.data.copy()
-        data["user"] = request.user.id
+
+        # Allow superusers to specify a user ID
+        if request.user.is_superuser and "user" in data:
+            user_id = data["user"]
+        else:
+            user_id = request.user.id
+
+        data["user"] = user_id
+
         serializer = UserDiscountSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -177,8 +185,16 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
         )
 
     def put(self, request, pk):
+        user = request.user
+
+        # Superuser can specify user in payload
+        if user.is_superuser and "user" in request.data:
+            user_id = request.data["user"]
+        else:
+            user_id = user.id
+
         try:
-            user_discount = UserDiscount.objects.get(pk=pk, user=request.user)
+            user_discount = UserDiscount.objects.get(pk=pk, user_id=user_id)
         except UserDiscount.DoesNotExist:
             return self.error_response("UserDiscount not found")
 
@@ -201,7 +217,7 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
             user_discount.discount_data = list(existing_discounts.values())
 
-        # Merge price_data (if present)
+        # Merge price_data
         new_prices = request.data.get("price_data")
         if new_prices is not None:
             if not isinstance(user_discount.price_data, list):
