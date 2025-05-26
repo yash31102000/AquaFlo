@@ -71,17 +71,17 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 if basic_datas:
                     for basic_data in basic_datas.get("basic_data"):
                         if not basic_data.get("id") and basic_data.get("name"):
-                            for data in basic_data.get("data"):
-                                if order_items.get("basic_data_id") == data.get("id"):
-                                    item_basic_data = data
-                                    if data.get("packing") or data.get("large_bag"):
+                            for datass in basic_data.get("data"):
+                                if order_items.get("basic_data_id") == datass.get("id"):
+                                    item_basic_data = datass
+                                    if datass.get("packing") or datass.get("large_bag"):
                                         if order_items.get("message"):
                                             continue
-                                        packing = int(data.get("packing", 0))
-                                        total_units = int(data.get("packing", 0)) * int(
+                                        packing = int(datass.get("packing", 0))
+                                        total_units = int(datass.get("packing", 0)) * int(
                                             order_items.get("quantity", 0)
                                         )
-                                        large_bag = int(data.get("large_bag", 0))
+                                        large_bag = int(datass.get("large_bag", 0))
 
                                         order_items["number_of_pic"] = str(total_units)
                                         if large_bag > 0:
@@ -217,6 +217,17 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                 order_items["discount_type"] = discount_data.get(
                                     "discount_type"
                                 )
+                        for price_data in user_discount.price_data:
+                            if sub_item.product.parent:
+                                if str(price_data.get("id")) == str(sub_item.product.parent.id):
+                                    order_items["price"] = price_data.get("price")
+                                if sub_item.product.parent.parent:
+                                    if str(price_data.get("id")) == str(sub_item.product.parent.parent.id):
+                                        order_items["price"] = price_data.get("price")
+                            if str(price_data.get("id")) == str(sub_item.product.id):
+                                order_items["price"] = price_data.get("price")
+                            if str(price_data.get("id")) == str(sub_item.id):
+                                order_items["price"] = price_data.get("price")
 
         label = "user" if user_id else "all"
         return self.success_response(
