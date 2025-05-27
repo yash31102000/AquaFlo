@@ -232,7 +232,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 return self.error_response(f"Product with ID {pk} not found")
 
         # If no pk, return the list of pipes
-        queryset = Pipe.objects.filter(parent__isnull=True, product__isnull=True)
+        queryset = Pipe.objects.filter(parent__isnull=True, product__isnull=True).order_by("pk")
 
         name_filter = request.query_params.get("name")
         if name_filter:

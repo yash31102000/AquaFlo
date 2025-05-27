@@ -34,7 +34,7 @@ class RecursivePipeSerializer(serializers.ModelSerializer):
         Recursively serialize sub-categories.
         """
         # Get all direct children of the current object
-        sub_categories = obj.sub_categories.all()
+        sub_categories = obj.sub_categories.all().order_by("pk")
 
         # If there are no sub-categories, return an empty list
         if not sub_categories:
@@ -48,7 +48,7 @@ class RecursivePipeSerializer(serializers.ModelSerializer):
         Get products that reference this pipe as their parent product.
         """
         # Find all pipes that reference this one as their product
-        related_products = Pipe.objects.filter(product=obj)
+        related_products = Pipe.objects.filter(product=obj).order_by("pk")
 
         if not related_products:
             return []
