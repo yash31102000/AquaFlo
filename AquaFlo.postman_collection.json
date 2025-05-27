@@ -40,7 +40,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone_number\": \"9998883330\",\n    \"first_name\": \"Raj\",\n    \"last_name\": \"Patel\",\n    \"email\": \"\",\n    \"password\": \"1234\",\n    \"addresses\": [\n        {\n            \"company_name\":\"\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        }\n    ]\n}",
+							"raw": "{\n    \"phone_number\": \"9998533013\",\n    \"first_name\": \"Raj\",\n    \"last_name\": \"Patel\",\n    \"email\": \"\",\n    \"password\": \"1234\",\n    \"addresses\": [\n        {\n            \"company_name\":\"\",\n            \"street\": \"456 Patel St\",\n            \"city\": \"Ahmedabad\",\n            \"state\": \"GJ\",\n            \"zip\": \"380001\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -768,13 +768,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/order-invoice/40/",
+							"raw": "{{base_url}}/order-invoice/33/",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"order-invoice",
-								"40",
+								"33",
 								""
 							]
 						}
@@ -1024,6 +1024,74 @@
 					]
 				},
 				{
+					"name": "positions",
+					"item": [
+						{
+							"name": "product-positions",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"product\": [\r\n        {\r\n            \"id\": 173,\r\n            \"position\": 2\r\n        },\r\n        {\r\n            \"id\": 174,\r\n            \"position\": 3\r\n        },\r\n        {\r\n            \"id\": 172,\r\n            \"position\": 1\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}pipes/product/positions/",
+									"host": [
+										"{{base_url}}pipes"
+									],
+									"path": [
+										"product",
+										"positions",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "categories-positions",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"categories\": [\r\n        {\r\n            \"id\": 1,\r\n            \"position\": 1\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"position\": 2\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/pipes/categories/positions/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"pipes",
+										"categories",
+										"positions",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "pipes",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -1075,7 +1143,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"LUBRICANT----aaaaaaaa\",\r\n    \"product\": 15,\r\n    \"basic_data\": [\r\n        {\r\n            \"code\": \"A\",\r\n            \"size\": \"100 ml\",\r\n            \"mm\": \"-\",\r\n            \"packing\": \"24\",\r\n            \"id\": 1\r\n        },\r\n        {\r\n            \"code\": \"B\",\r\n            \"size\": \"250 ml\",\r\n            \"mm\": \"-\",\r\n            \"packing\": \"15\",\r\n            \"id\": 2\r\n        },\r\n        {\r\n            \"code\": \"C\",\r\n            \"size\": \"500 ml\",\r\n            \"mm\": \"-\",\r\n            \"packing\": \"8\",\r\n            \"id\": 3\r\n        },\r\n        {\r\n            \"code\": \"D\",\r\n            \"size\": \"1 Ltr\",\r\n            \"mm\": \"-\",\r\n            \"packing\": \"6\",\r\n            \"id\": 4\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"name\": \"LUBRICANT----aaaaaaaa\",\r\n    // \"parent\": 2\r\n    \"product\": 16,\r\n    \"basic_data\": [\r\n        {\r\n            \"code\": \"A\",\r\n            \"size\": \"100 ml\",\r\n            \"mm\": \"-\",\r\n            \"packing\": \"24\",\r\n            \"id\": 1\r\n        },\r\n        {\r\n            \"code\": \"B\",\r\n            \"size\": \"250 ml\",\r\n            \"mm\": \"-\",\r\n            \"packing\": \"15\",\r\n            \"id\": 2\r\n        },\r\n        {\r\n            \"code\": \"C\",\r\n            \"size\": \"500 ml\",\r\n            \"mm\": \"-\",\r\n            \"packing\": \"8\",\r\n            \"id\": 3\r\n        },\r\n        {\r\n            \"code\": \"D\",\r\n            \"size\": \"1 Ltr\",\r\n            \"mm\": \"-\",\r\n            \"packing\": \"6\",\r\n            \"id\": 4\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1155,7 +1223,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"ELBOW\",\r\n    \"basic_data\": [\r\n        {\r\n            \"code\": \"A\",\r\n            \"size\": \"1/2\",\r\n            \"mm\": \"15\",\r\n            \"packing\": \"100\",\r\n            \"large_bag\": \"500\",\r\n            \"id\": 1\r\n        },\r\n        {\r\n            \"code\": \"B\",\r\n            \"size\": \"3/4\",\r\n            \"mm\": \"20\",\r\n            \"packing\": \"50\",\r\n            \"large_bag\": \"350\",\r\n            \"id\": 2\r\n        },\r\n        {\r\n            \"code\": \"C\",\r\n            \"size\": \"1\",\r\n            \"mm\": \"25\",\r\n            \"packing\": \"40\",\r\n            \"large_bag\": \"200\",\r\n            \"id\": 3\r\n        },\r\n        {\r\n            \"code\": \"D\",\r\n            \"size\": \"1 1/4\",\r\n            \"mm\": \"32\",\r\n            \"packing\": \"20\",\r\n            \"large_bag\": \"120\",\r\n            \"id\": 4\r\n        },\r\n        {\r\n            \"code\": \"E\",\r\n            \"size\": \"1 1/2\",\r\n            \"mm\": \"40\",\r\n            \"packing\": \"15\",\r\n            \"large_bag\": \"90\",\r\n            \"id\": 5\r\n        },\r\n        {\r\n            \"code\": \"F\",\r\n            \"size\": \"2\",\r\n            \"mm\": \"50\",\r\n            \"packing\": \"10\",\r\n            \"large_bag\": \"40\",\r\n            \"id\": 6\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"name\": \"LUBRICANT--\",\r\n    // \"parent\": 2\r\n    \"product\": 16,\r\n    \"basic_data\": [\r\n        {\r\n            \"code\": \"A\",\r\n            \"size\": \"100 ml\",\r\n            \"mm\": \"-\",\r\n            \"packing\": \"24\",\r\n            \"id\": 1\r\n        },\r\n        {\r\n            \"code\": \"B\",\r\n            \"size\": \"250 ml\",\r\n            \"mm\": \"-\",\r\n            \"packing\": \"15\",\r\n            \"id\": 2\r\n        },\r\n        {\r\n            \"code\": \"C\",\r\n            \"size\": \"500 ml\",\r\n            \"mm\": \"-\",\r\n            \"packing\": \"8\",\r\n            \"id\": 3\r\n        },\r\n        {\r\n            \"code\": \"D\",\r\n            \"size\": \"1 Ltr\",\r\n            \"mm\": \"-\",\r\n            \"packing\": \"6\",\r\n            \"id\": 4\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1163,13 +1231,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/pipes/17/",
+							"raw": "{{base_url}}/pipes/179/",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"pipes",
-								"17",
+								"179",
 								""
 							]
 						}

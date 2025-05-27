@@ -14,4 +14,7 @@ urlpatterns = [
     path("pipe-detail/<int:pk>/", PipeDetailViewset.as_view()),
     path('pipe-key-template/', PipeKeyTemplateViewset.as_view()),
     path('pipe-key-template/<int:pk>/', PipeKeyTemplateViewset.as_view()),
+    # Position management
+    path('pipes/product/positions/', PositionUpdateView.as_view()),
+    path('pipes/categories/positions/', BulkReorderView.as_view()),
 ]
