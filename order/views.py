@@ -82,7 +82,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                             order_items.get("quantity", 0)
                                         )
                                         large_bag = int(datass.get("large_bag", 0))
-
+                                        order_items["price"] = str(basic_data.get("rate", ""))
                                         order_items["number_of_pic"] = str(total_units)
                                         if large_bag > 0:
                                             full_large_bags = total_units // large_bag
@@ -126,7 +126,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                         basic_data.get("packing", 0)
                                     ) * int(order_items.get("quantity", 0))
                                     large_bag = int(basic_data.get("large_bag", 0))
-
+                                    order_items["price"] = str(basic_data.get("rate", ""))
                                     order_items["number_of_pic"] = str(total_units)
                                     if large_bag > 0:
                                         full_large_bags = total_units // large_bag
