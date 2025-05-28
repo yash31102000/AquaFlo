@@ -50,7 +50,11 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
             )
             .filter(is_deleted=False, is_superuser=False)
         )
-        return self.success_response("Registered successfully", all_user)
+        all_addresses_city_list = []
+        for user in all_user:
+            for addresses in user.get("addresses"):
+                all_addresses_city_list.append(addresses.get("city"))
+        return self.success_response("Registered successfully", all_user, set(all_addresses_city_list), "city_list")
 
     def put(self, request, user_id=None):
         if user_id is None:
@@ -101,20 +105,6 @@ class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
             )
         user = authenticate(request, phone_number=phone_number, password=password)
         if user:
-            # addresses = [
-            #     {
-            #         **addr,
-            #         "company_name": addr.get("company_name") or "-",
-            #         "GST_Number":addr.get("GST_Number") or "-",
-            #         "street": addr.get("street") or "-",
-            #         "city": addr.get("city") or "-",
-            #         "state": addr.get("state") or "-",
-            #         "zip": addr.get("zip") or "-"
-
-            #     }
-            #     for addr in user.addresses
-            # ]
-
             response_data = {
                 "id": user.id,
                 "phone_number": user.phone_number,

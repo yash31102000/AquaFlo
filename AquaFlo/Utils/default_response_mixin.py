@@ -2,7 +2,7 @@ from rest_framework import status, response
 
 
 class DefaultResponseMixin:
-    def success_response(self, message, data=None):
+    def success_response(self, message, data=None, other = None, key = None):
         """
         Create a standardized success response with 200 OK status
 
@@ -10,7 +10,10 @@ class DefaultResponseMixin:
         :param data: Optional data to be included in the response
         :return: Response object with 200 OK status
         """
-        response_data = {"status": True, "message": message, "data": data or {}}
+        if other or key:
+            response_data = {"status": True, "message": message, key: other,"data": data or {}}
+        else:
+            response_data = {"status": True, "message": message, "data": data or {}}
 
         return response.Response(response_data, status=status.HTTP_200_OK)
 
