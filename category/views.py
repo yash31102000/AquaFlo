@@ -1,3 +1,4 @@
+import json
 import requests
 from rest_framework import generics
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
@@ -134,7 +135,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     PipeDetail.objects.update_or_create(
                         # pipe=parent_id if parent_id else product,
                         pipe=pipe,
-                        defaults={"basic_data": basic_data},
+                        defaults={"basic_data": json.loads(basic_data)},
                     )
 
                     if is_update:
