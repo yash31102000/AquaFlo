@@ -69,13 +69,13 @@ class UserDiscount(models.Model):
     )
 
     discount_data = models.JSONField(
-        default=dict,
+        default=list,
         blank=True,
         null=True,
         help_text="JSON structure containing all category and product discounts",
     )
     price_data = models.JSONField(
-        default=dict,
+        default=list,
         blank=True,
         null=True,
         help_text="JSON structure containing all category and product prices",

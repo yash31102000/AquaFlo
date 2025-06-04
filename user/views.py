@@ -1,3 +1,4 @@
+import json
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from AquaFlo.Utils.permissions import CustomAPIPermissions
 from .serializers import *
@@ -157,7 +158,29 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
             user_id = request.user.id
 
         data["user"] = user_id
-
+        user_discounts = UserDiscount.objects.get(user=data.get("user"))
+        if user_discounts:
+            if data.get("price_data"):
+                new_list = user_discounts.price_data+data.get("price_data")
+                unique_data = []
+                seen = set()
+                for item in new_list:
+                    item_str = json.dumps(item, sort_keys=True)
+                    if item_str not in seen:
+                        seen.add(item_str)
+                        unique_data.append(item)
+                user_discounts.price_data = unique_data
+            if data.get("discount_data"):
+                new_list = user_discounts.discount_data+data.get("discount_data")
+                unique_data = []
+                seen = set()
+                for item in new_list:
+                    item_str = json.dumps(item, sort_keys=True)
+                    if item_str not in seen:
+                        seen.add(item_str)
+                        unique_data.append(item)
+                user_discounts.discount_data = unique_data
+            return self.success_response("UserDiscount placed successfully")
         serializer = UserDiscountSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()

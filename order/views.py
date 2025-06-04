@@ -218,16 +218,36 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                     "discount_type"
                                 )
                         for price_data in user_discount.price_data:
-                            if sub_item.product.parent:
-                                if str(price_data.get("id")) == str(sub_item.product.parent.id):
-                                    order_items["price"] = price_data.get("price")
-                                if sub_item.product.parent.parent:
-                                    if str(price_data.get("id")) == str(sub_item.product.parent.parent.id):
-                                        order_items["price"] = price_data.get("price")
-                            if str(price_data.get("id")) == str(sub_item.product.id):
-                                order_items["price"] = price_data.get("price")
-                            if str(price_data.get("id")) == str(sub_item.id):
-                                order_items["price"] = price_data.get("price")
+                            basic_data_list = price_data.get("basic_data", [])
+                            price_data_id = str(price_data.get("id"))
+                            for basic_data in basic_data_list:
+                                basic_price = basic_data.get("price")
+                                # Match with parent
+                                parent = sub_item.product.parent
+                                if parent and price_data_id == str(parent.id):
+                                    order_items["price"] = basic_price
+                                # Match with grandparent
+                                grandparent = parent.parent if parent else None
+                                if grandparent and price_data_id == str(grandparent.id):
+                                    order_items["price"] = basic_price
+                                # Match with product
+                                if price_data_id == str(sub_item.product.id):
+                                    if basic_data.get("name") and isinstance(basic_data.get("data"), list):
+                                        for bd in basic_data["data"]:
+                                            order_items["price"] = bd.get("price")
+                                    else:
+                                        order_items["price"] = basic_price
+                                # Match with sub_item
+                                if price_data_id == str(sub_item.id):
+                                    if basic_data.get("name") and isinstance(basic_data.get("data"), list):
+                                        for bd in basic_data["data"]:
+                                            bd_id = str(bd.get("id"))
+                                            item_bd_id = str(order_items.get("item", {}).get("basic_data", {}).get("id"))
+                                            if bd_id == item_bd_id:
+                                                order_items["price"] = bd.get("price")
+                                    else:
+                                        order_items["price"] = basic_price
+
 
         label = "user" if user_id else "all"
         return self.success_response(
