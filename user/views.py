@@ -180,6 +180,7 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         seen.add(item_str)
                         unique_data.append(item)
                 user_discounts.discount_data = unique_data
+            user_discounts.save()
             return self.success_response("UserDiscount placed successfully")
         serializer = UserDiscountSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
