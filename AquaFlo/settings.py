@@ -13,9 +13,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -103,24 +105,24 @@ WSGI_APPLICATION = "AquaFlo.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-
-
 # DATABASES = {
 #     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "aquaflo",
-#         "USER": "postgres",
-#         "PASSWORD": "AquaFlo@999",
-#         "HOST": "82.112.236.150",
-#         "PORT": "5432",
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
 #     }
 # }
+
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "aquaflo",
+        "USER": "postgres",
+        "PASSWORD": "AquaFlo@999",
+        "HOST": "82.112.236.150",
+        "PORT": "5432",
+    }
+}
 
 
 # Password validation
@@ -192,8 +194,13 @@ SIMPLE_JWT = {
 
 
 # Media files (for handling file uploads)
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+if (os.getenv('SERVER') == "PROD"):
+    
+    MEDIA_ROOT = "/var/www/aquaflo/media"
+    MEDIA_URL = "/media/"
+else:
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Email backend settings
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
