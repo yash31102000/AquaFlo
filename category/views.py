@@ -1,5 +1,5 @@
 import json
-import requests
+import os
 from rest_framework import generics
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from AquaFlo.Utils.permissions import CustomAPIPermissions
@@ -132,10 +132,18 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 pipe = serializer.save()
                 if basic_data:
                     # Create or update PipeDetail
+                    if isinstance(basic_data, str):
+                        try:
+                            basic_data_parsed = json.loads(basic_data)
+                        except json.JSONDecodeError:
+                            basic_data_parsed = basic_data  # fallback or handle error
+                    else:
+                        basic_data_parsed = basic_data  # already a Python list/dict
+
                     PipeDetail.objects.update_or_create(
                         # pipe=parent_id if parent_id else product,
                         pipe=pipe,
-                        defaults={"basic_data": json.loads(basic_data)},
+                        defaults = {"basic_data": basic_data_parsed}
                     )
 
                     if is_update:
@@ -265,11 +273,17 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
     def _recursive_delete(self, pipe):
         """
-        Recursively delete a pipe and all its sub-categories
+        Recursively delete a pipe and all its sub-categories,
+        including the associated image file from the storage.
         """
         # First, delete all sub-categories
         for sub_category in pipe.sub_categories.all():
             self._recursive_delete(sub_category)
+
+        # Delete the image file from the storage if it exists
+        if pipe.image and pipe.image.name:
+            if os.path.isfile(pipe.image.path):  # This ensures the file exists before deleting
+                os.remove(pipe.image.path)
 
         # Then delete the pipe itself
         pipe.delete()
