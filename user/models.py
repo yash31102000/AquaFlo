@@ -29,6 +29,12 @@ class UserManager(BaseUserManager):
 
 
 class UserModel(AbstractUser):
+    ROLE_CHOICES = [
+        ("ADMIN", "Admin"),
+        ("VENDOR", "Vendor"),
+        ("SUPERVISOR", "Supervisor"),
+    ]
+
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, unique=True
     )
@@ -44,7 +50,8 @@ class UserModel(AbstractUser):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
-
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="VENDOR")
+    role_flag = models.BooleanField(default=False)
     objects = UserManager()  # Set custom manager
 
     USERNAME_FIELD = "phone_number"

@@ -61,6 +61,10 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
         if user_id is None:
             return self.error_response("User ID is required")
         user = UserModel.objects.get(id=user_id, is_deleted=False)
+        
+        if "role_flag" in request.data and not request.user.is_superuser:
+             return self.error_response("You are not allowed to edit 'role_flag'.")
+        
         serializer = RegisterSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -106,6 +110,15 @@ class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
             )
         user = authenticate(request, phone_number=phone_number, password=password)
         if user:
+            # Check role_flag
+            if not user.is_superuser and not user.role_flag:
+                return self.error_response("Your account is not authorized to login. Please contact the administrator.")
+
+            # If superuser, ensure role_flag is set
+            if user.is_superuser and not user.role_flag:
+                user.role_flag = True
+                user.save()
+           
             response_data = {
                 "id": user.id,
                 "phone_number": user.phone_number,
