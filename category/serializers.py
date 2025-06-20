@@ -13,7 +13,6 @@ class SimpleProductSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "image",
-            "position",
             "marked_as_favorite",
         ]
 
@@ -21,7 +20,6 @@ class SimpleProductSerializer(serializers.ModelSerializer):
 class RecursivePipeSerializer(serializers.ModelSerializer):
     """
     Recursive serializer that allows for nested sub-categories of unlimited depth.
-    Now includes position-based ordering.
     """
 
     sub_categories = serializers.SerializerMethodField()
@@ -29,13 +27,13 @@ class RecursivePipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Pipe
-        fields = ["id", "name", "image", "position", "sub_categories", "product"]
+        fields = ["id", "name", "image", "sub_categories", "product"]
 
     def get_sub_categories(self, obj):
         """
-        Recursively serialize sub-categories ordered by position.
+        Recursively serialize sub-categories ordered
         """
-        sub_categories = obj.sub_categories.all().order_by("position", "name")
+        sub_categories = obj.sub_categories.all().order_by("name")
 
         # If there are no sub-categories, return an empty list
         if not sub_categories:
@@ -48,10 +46,10 @@ class RecursivePipeSerializer(serializers.ModelSerializer):
 
     def get_product(self, obj):
         """
-        Get products that reference this pipe as their parent product, ordered by position.
+        Get products that reference this pipe as their parent product, ordered by.
         """
-        # Find all pipes that reference this one as their product, ordered by position
-        related_products = Pipe.objects.filter(product=obj).order_by("position", "name")
+        # Find all pipes that reference this one as their product, ordered by
+        related_products = Pipe.objects.filter(product=obj).order_by("name")
 
         if not related_products:
             return []
@@ -86,15 +84,14 @@ class RecursivePipeSerializer(serializers.ModelSerializer):
 class PipeSerializer(serializers.ModelSerializer):
     """
     A more basic serializer that can be used for simpler representations.
-    Includes basic_data from the related PipeDetail and position field.
+    Includes basic_data from the related PipeDetail
     """
 
     basic_data = serializers.SerializerMethodField()
 
     class Meta:
         model = Pipe
-        fields = ["id", "name", "image", "position", "basic_data"]  # Added position
-
+        fields = ["id", "name", "image", "basic_data"]
     def get_basic_data(self, obj):
         pipe_detail = PipeDetail.objects.filter(pipe=obj).first()
         if pipe_detail:
@@ -105,7 +102,7 @@ class PipeSerializer(serializers.ModelSerializer):
 class PipeCreateUpdateSerializer(serializers.ModelSerializer):
     """
     Serializer for creating and updating Pipe instances,
-    including nested sub-categories with position support.
+    including nested sub-categories with support.
     """
 
     sub_categories = serializers.ListField(
@@ -118,7 +115,6 @@ class PipeCreateUpdateSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "image",
-            "position",  # Added position field
             "parent",
             "product",
             "sub_categories",
@@ -127,37 +123,15 @@ class PipeCreateUpdateSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "parent": {"required": False, "allow_null": True},
             "product": {"required": False, "allow_null": True},
-            "position": {
-                "required": False,
-                "allow_null": False,
-            },  # Added position validation
             "marked_as_favorite": {"required": False, "allow_null": False},
         }
 
     def create(self, validated_data):
         """
-        Custom create method to handle nested sub-categories with auto-positioning.
+        Custom create method to handle nested sub-categories 
         """
         # Extract sub-categories if provided
         sub_categories = validated_data.pop("sub_categories", [])
-
-        # Auto-assign position if not provided
-        if "position" not in validated_data or validated_data["position"] == 0:
-            product = validated_data.get("product")
-            if product:
-                siblings = Pipe.objects.filter(product=product)
-                max_position = (
-                    siblings.aggregate(max_pos=models.Max("position"))["max_pos"] or 0
-                )
-                validated_data["position"] = max_position + 1
-            else:
-                siblings = Pipe.objects.filter(product__isnull=True).values(
-                    "position", "name"
-                )
-                max_position = (
-                    siblings.aggregate(max_pos=models.Max("position"))["max_pos"] or 0
-                )
-                validated_data["position"] = max_position + 1
 
         # Create the parent pipe
         pipe = Pipe.objects.create(**validated_data)
@@ -189,7 +163,7 @@ class PipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     def _create_sub_categories(self, parent, sub_categories):
         """
-        Recursive method to create sub-categories with auto-positioning.
+        Recursive method to create sub-categories.
         """
         for index, sub_category in enumerate(sub_categories):
             # Create a copy to avoid modifying the original
@@ -200,10 +174,6 @@ class PipeCreateUpdateSerializer(serializers.ModelSerializer):
 
             # Handle product reference if it exists
             product_id = sub_data.pop("product", None)
-
-            # Auto-assign position if not provided
-            if "position" not in sub_data or sub_data["position"] == 0:
-                sub_data["position"] = index + 1
 
             # Create sub-category
             sub_pipe = Pipe.objects.create(parent=parent, **sub_data)
@@ -220,49 +190,6 @@ class PipeCreateUpdateSerializer(serializers.ModelSerializer):
             # Recursively create nested sub-categories
             if nested_sub_categories:
                 self._create_sub_categories(sub_pipe, nested_sub_categories)
-
-
-# New serializers for position management
-class PositionUpdateSerializer(serializers.Serializer):
-    """
-    Serializer for updating positions of multiple items.
-    """
-
-    product = serializers.ListField(
-        child=serializers.DictField(child=serializers.IntegerField()),
-        help_text="List of objects with 'id' and 'position' keys",
-    )
-
-    def validate_items(self, value):
-        for item in value:
-            if "id" not in item or "position" not in item:
-                raise serializers.ValidationError(
-                    "Each item must have 'id' and 'position' keys"
-                )
-            if item["position"] < 0:
-                raise serializers.ValidationError("Position must be a positive integer")
-        return value
-
-
-class BulkPositionUpdateSerializer(serializers.Serializer):
-    """
-    Serializer for updating positions of multiple items.
-    """
-
-    categories = serializers.ListField(
-        child=serializers.DictField(child=serializers.IntegerField()),
-        help_text="List of objects with 'id' and 'position' keys",
-    )
-
-    def validate_items(self, value):
-        for item in value:
-            if "id" not in item or "position" not in item:
-                raise serializers.ValidationError(
-                    "Each item must have 'id' and 'position' keys"
-                )
-            if item["position"] < 0:
-                raise serializers.ValidationError("Position must be a positive integer")
-        return value
 
 class BestSellerSerializer(serializers.ModelSerializer):
     toggel = serializers.BooleanField(required=False)

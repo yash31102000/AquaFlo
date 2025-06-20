@@ -243,8 +243,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         # If no pk, return the list of pipes
         queryset = Pipe.objects.filter(
             parent__isnull=True, product__isnull=True
-        ).order_by("position")
-
+        )
         name_filter = request.query_params.get("name")
         if name_filter:
             queryset = queryset.filter(name__icontains=name_filter)
@@ -601,49 +600,3 @@ class PipeKeyTemplateViewset(DefaultResponseMixin, generics.GenericAPIView):
             return self.success_response("Pipe Key Template deleted successfully")
         except PipeKeyTemplate.DoesNotExist:
             return self.error_response("Pipe Key Template not found")
-
-
-# Update positions of multiple items
-class PositionUpdateView(DefaultResponseMixin, generics.GenericAPIView):
-    def post(self, request):
-        serializer = PositionUpdateSerializer(data=request.data)
-        if serializer.is_valid():
-            items_data = serializer.validated_data["product"]
-
-            with transaction.atomic():
-                for item_data in items_data:
-                    try:
-                        pipe = Pipe.objects.get(id=item_data["id"])
-                        pipe.position = item_data["position"]
-                        pipe.save(update_fields=["position"])
-                    except Pipe.DoesNotExist:
-                        return self.error_response(
-                            f"Pipe with ID {item_data['id']} not found"
-                        )
-
-            return self.success_response("Positions updated successfully")
-
-        return self.error_response(serializer.errors)
-
-
-# Bulk reorder items (like the management command)
-class BulkReorderView(DefaultResponseMixin, generics.GenericAPIView):
-    def post(self, request):
-        serializer = BulkPositionUpdateSerializer(data=request.data)
-        if serializer.is_valid():
-            items_data = serializer.validated_data["categories"]
-
-            with transaction.atomic():
-                for item_data in items_data:
-                    try:
-                        pipe = Pipe.objects.get(id=item_data["id"])
-                        pipe.position = item_data["position"]
-                        pipe.save(update_fields=["position"])
-                    except Pipe.DoesNotExist:
-                        return self.error_response(
-                            f"Pipe with ID {item_data['id']} not found"
-                        )
-
-            return self.success_response("Positions updated successfully")
-
-        return self.error_response(serializer.errors)
