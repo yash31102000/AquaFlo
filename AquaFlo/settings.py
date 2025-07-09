@@ -127,7 +127,7 @@ WSGI_APPLICATION = "AquaFlo.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "aquaflo_db",
+        "NAME": "aquaflo_prod",
         "USER": "aquaflo",
         "PASSWORD": "AquaFlo@999",
         "HOST": "178.16.139.235",
