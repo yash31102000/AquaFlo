@@ -24,13 +24,13 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include("user.urls")),
+    path("app3/", include("user.urls")),
     path("token/refresh/", TokenRefreshView.as_view()),
-    path("api/", include("category.urls")),
-    path("api/", include("banner.urls")),
-    path("api/", include("order.urls")),
-    path("api/", include("Invoice.urls")),
-    path("api/", include("stocks.urls")),
+    path("app3/", include("category.urls")),
+    path("app3/", include("banner.urls")),
+    path("app3/", include("order.urls")),
+    path("app3/", include("Invoice.urls")),
+    path("app3/", include("stocks.urls")),
 ]
 
 if settings.DEBUG:
