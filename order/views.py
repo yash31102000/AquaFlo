@@ -8,6 +8,12 @@ from datetime import datetime
 
 keys_to_remove = ["quantity", "mm", "code", "price"]
 
+def safe_int(value):
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return 0
+
 
 # Create your views here.
 class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
@@ -81,7 +87,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                         total_units = int(datass.get("packing", 0)) * int(
                                             order_items.get("quantity", 0)
                                         )
-                                        large_bag = int(datass.get("large_bag", 0))
+                                        large_bag = safe_int(basic_data.get("large_bag"))
                                         order_items["price"] = str(basic_data.get("rate", ""))
                                         order_items["number_of_pic"] = str(total_units)
                                         if large_bag > 0:
@@ -125,7 +131,7 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                                     total_units = int(
                                         basic_data.get("packing", 0)
                                     ) * int(order_items.get("quantity", 0))
-                                    large_bag = int(basic_data.get("large_bag", 0))
+                                    large_bag = safe_int(basic_data.get("large_bag"))
                                     order_items["price"] = str(basic_data.get("rate", ""))
                                     order_items["number_of_pic"] = str(total_units)
                                     if large_bag > 0:
