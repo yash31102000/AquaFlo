@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import *
+from .views import OrderViewSet, OrderSplitViewSet
 
 urlpatterns = [
     path("order/", OrderViewSet.as_view()),

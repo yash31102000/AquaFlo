@@ -47,6 +47,60 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
         return self.error_response("Failed to update invoice.", serializer.errors)
 
+    def _to_int(self, val, default=0):
+        try:
+            return int(val)
+        except Exception:
+            return default
+
+    def apply_packing_calculation(self, order_items, basic_data):
+        """
+        Calculate number_of_pic, large_bag_quantity, bag_quantity, and quantity (loose pieces left after full bags).
+        """
+        if order_items.get("message"):
+            return
+
+        packing = self._to_int(basic_data.get("packing", 0))
+        large_bag = self._to_int(basic_data.get("large_bag", 0))
+        order_items["price"] = str(basic_data.get("rate", ""))
+
+        total_units = self._to_int(order_items.get("quantity", 0))
+        order_items["number_of_pic"] = str(total_units)  # total pieces ordered
+
+        # Reset stale quantities
+        order_items.pop("large_bag_quantity", None)
+        order_items.pop("bag_quantity", None)
+
+        if large_bag > 0:
+            # Large bag calculation
+            full_large_bags = total_units // large_bag
+            remainder_units = total_units % large_bag
+
+            order_items["large_bag_quantity"] = str(full_large_bags) if self.is_accepted(full_large_bags) else "0"
+
+            # Small bag calculation
+            if packing > 0:
+                bag_qty = remainder_units // packing
+                leftover_pieces = remainder_units % packing
+                order_items["bag_quantity"] = str(bag_qty)
+                order_items["quantity"] = str(leftover_pieces)  # only loose pieces
+            else:
+                order_items["bag_quantity"] = "0"
+                order_items["quantity"] = str(remainder_units)
+
+        else:
+            # No large bag packaging
+            order_items["large_bag_quantity"] = "0"
+            if packing > 0:
+                bag_qty = total_units // packing
+                leftover_pieces = total_units % packing
+                order_items["bag_quantity"] = str(bag_qty)
+                order_items["quantity"] = str(leftover_pieces)
+            else:
+                order_items["bag_quantity"] = "0"
+                order_items["quantity"] = str(total_units)
+
+
     def get(self, request, *args, **kwargs):
         if kwargs.get("pk", None):
             invoices = Invoice.objects.filter(
@@ -58,6 +112,7 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
             ).select_related("order__user")
         else:
             invoices = Invoice.objects.all().select_related("order__user")
+
         serializer = InvoiceSerializer(
             invoices, many=True, context={"request": request}
         )
@@ -66,7 +121,6 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
         for invoice in serializer.data:
 
             order = invoice.get("order")
-
             if isinstance(order, int):
                 invoice_order = Order.objects.get(id=order)
 
@@ -90,112 +144,39 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     category_value_name = f"{pipe_details.product.parent.name}   ➤   {pipe_details.product.name}"
                 else:
                     category_value_name = pipe_details.product.name
+
                 basic_datas = (
                     PipeDetail.objects.filter(pipe_id=order_item.get("item_id"))
                     .values("basic_data")
                     .first()
                 )
+
                 if basic_datas:
                     for basic_data in basic_datas.get("basic_data"):
                         if not basic_data.get("id") and basic_data.get("name"):
                             for data in basic_data.get("data"):
                                 if order_item.get("basic_data_id") == data.get("id"):
                                     item_basic_data = data
-                                    if data.get("packing") or data.get("large_bag"):
-                                        if order_item.get("message"):
-                                            continue
-                                        packing = int(data.get("packing", 0))
-                                        total_units = int(data.get("packing", 0)) * int(
-                                            order_item.get("quantity", 0)
-                                        )
-                                        large_bag = int(data.get("large_bag", 0))
-
-                                        order_item["number_of_pic"] = str(total_units)
-                                        if large_bag > 0:
-                                            full_large_bags = total_units // large_bag
-                                            remainder_units = total_units % large_bag
-                                            if self.is_accepted(full_large_bags):
-                                                order_item["large_bag_quantity"] = str(
-                                                    full_large_bags
-                                                )
-                                                if remainder_units > 0 and packing > 0:
-                                                    order_item["bag_quantity"] = str(
-                                                        int(remainder_units / packing)
-                                                    )
-                                                # order_items.pop("quantity")
-                                        else:
-                                            order_item["number_of_pic"] = str(
-                                                total_units
-                                            )
-                                            order_item["bag_quantity"] = str(
-                                                int(order_item.get("quantity", 0))
-                                            )
-                                    else:
-                                        order_item["number_of_pic"] = str(
-                                            order_item.get("quantity", 0)
-                                        )
-                                        order_item["bag_quantity"] = str(
-                                            int(order_item.get("quantity", 0))
-                                        )
-                                    order_item.pop("basic_data_id")
+                                    self.apply_packing_calculation(order_item, data)
+                                    order_item.pop("basic_data_id", None)
                                     break
-
                         else:
                             if order_item.get("basic_data_id") == basic_data.get("id"):
                                 item_basic_data = basic_data
-                                if basic_data.get("packing") or basic_data.get(
-                                    "large_bag"
-                                ):
-                                    if order_item.get("message"):
-                                        continue
-                                    packing = int(basic_data.get("packing", 0))
-                                    total_units = int(
-                                        basic_data.get("packing", 0)
-                                    ) * int(order_item.get("quantity", 0))
-                                    large_bag = int(basic_data.get("large_bag", 0))
-
-                                    order_item["number_of_pic"] = str(total_units)
-                                    if large_bag > 0:
-                                        full_large_bags = total_units // large_bag
-                                        remainder_units = total_units % large_bag
-                                        if self.is_accepted(full_large_bags):
-                                            order_item["large_bag_quantity"] = str(
-                                                full_large_bags
-                                            )
-                                            if remainder_units > 0 and packing > 0:
-                                                order_item["bag_quantity"] = str(
-                                                    int(remainder_units / packing)
-                                                )
-                                            # order_item.pop("quantity")
-                                    else:
-                                        order_item["number_of_pic"] = str(total_units)
-                                        order_item["bag_quantity"] = str(
-                                            int(order_item.get("quantity", 0))
-                                        )
-                                else:
-                                    order_item["number_of_pic"] = str(
-                                        order_item.get("quantity", 0)
-                                    )
-                                    order_item["bag_quantity"] = str(
-                                        int(order_item.get("quantity", 0))
-                                    )
-                                order_item.pop("basic_data_id")
+                                self.apply_packing_calculation(order_item, basic_data)
+                                order_item.pop("basic_data_id", None)
                                 break
-                base_url = request.build_absolute_uri("/").rstrip("/")
 
                 image_url = str(pipe_details.image) if pipe_details.id else ""
-                if pipe_details:
-                    order_item["item"] = {
-                        "id": pipe_details.id,
-                        "name": pipe_details.name,
-                        "image": (
-                            base_url + "/media/" + image_url if image_url else None
-                        ),
-                        # "image_base64" : image_base64,
-                        "category": category_value_name,
-                        "basic_data": item_basic_data,
-                    }
-                    order_item.pop("item_id", None)
+                order_item["item"] = {
+                    "id": pipe_details.id,
+                    "name": pipe_details.name,
+                    "image": base_url + "/media/" + image_url if image_url else None,
+                    "category": category_value_name,
+                    "basic_data": item_basic_data,
+                }
+                order_item.pop("item_id", None)
+
                 try:
                     user_discount = UserDiscount.objects.get(user=invoice_order.user.id)
                 except:
@@ -203,32 +184,17 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 if user_discount:
                     for discount_data in user_discount.discount_data:
                         if pipe_details.product.parent:
-                            if discount_data.get("id") == str(
-                                pipe_details.product.parent.id
-                            ):
-                                order_item["discount_percent"] = discount_data.get(
-                                    "discount_percent"
-                                )
-                                order_item["discount_type"] = discount_data.get(
-                                    "discount_type"
-                                )
+                            if discount_data.get("id") == str(pipe_details.product.parent.id):
+                                order_item["discount_percent"] = discount_data.get("discount_percent")
+                                order_item["discount_type"] = discount_data.get("discount_type")
                             if pipe_details.product.parent.parent:
-                                if discount_data.get("id") == str(
-                                    pipe_details.product.parent.parent.id
-                                ):
-                                    order_item["discount_percent"] = discount_data.get(
-                                        "discount_percent"
-                                    )
-                                    order_item["discount_type"] = discount_data.get(
-                                        "discount_type"
-                                    )
+                                if discount_data.get("id") == str(pipe_details.product.parent.parent.id):
+                                    order_item["discount_percent"] = discount_data.get("discount_percent")
+                                    order_item["discount_type"] = discount_data.get("discount_type")
                         if discount_data.get("id") == str(pipe_details.product.id):
-                            order_item["discount_percent"] = discount_data.get(
-                                "discount_percent"
-                            )
-                            order_item["discount_type"] = discount_data.get(
-                                "discount_type"
-                            )
+                            order_item["discount_percent"] = discount_data.get("discount_percent")
+                            order_item["discount_type"] = discount_data.get("discount_type")
+
                 if order_item.get("discount_type") == "%":
                     discount_percent = order_item.get("discount_percent")
                     item_total = (
@@ -240,19 +206,15 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     discount_amount = item_total * int(discount_percent) / 100
                     final_price = int(item_total - discount_amount)
                 elif order_item.get("discount_type") == "₹":
-                    discount_percent = order_item.get("discount_percent")
-                    if discount_percent == "":
-                        discount_percent = 0
+                    discount_percent = order_item.get("discount_percent") or 0
                     if not order_item.get("price"):
                         continue
-                    price = int(order_item.get("number_of_pic", 0)) * int(
-                        order_item.get("price", 0)
+                    price = int(float(order_item.get("number_of_pic", 0))) * int(
+                        float(order_item.get("price", 0))
                     )
                     final_price = price - int(discount_percent)
                 else:
-                    discount_percent = order_item.get("discount_percent", 0)
-                    if discount_percent == "":
-                        discount_percent = 0
+                    discount_percent = order_item.get("discount_percent", 0) or 0
                     final_price = (
                         int(order_item.get("quantity", 0))
                         * (float(order_item.get("price", 0)) - float(discount_percent))
@@ -286,8 +248,8 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 "address_link": invoice_order.address_link,
                 "cancellation_reason": invoice_order.cancellation_reason,
             }
-        return self.success_response("Invoices fetched successfully.", serializer.data)
 
+        return self.success_response("Invoices fetched successfully.", serializer.data)
 
 class TotalTransactionViewSet(DefaultResponseMixin, generics.GenericAPIView):
     def get(self, request):

@@ -1,9 +1,9 @@
 from rest_framework import generics
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from user.models import UserDiscount
-from .models import *
+from .models import Order
 from category.models import Pipe, PipeDetail
-from .serializers import *
+from .serializers import OrderSerializer
 from datetime import datetime
 
 keys_to_remove = ["quantity", "mm", "code", "price"]
@@ -17,7 +17,6 @@ def safe_int(value):
 
 # Create your views here.
 class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
-    # permission_classes = [IsAuthenticated]
     serializer_class = OrderSerializer  # Use OrderSerializer to handle order creation
 
     def is_accepted(self, value):
@@ -37,228 +36,198 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
             return self.success_response("Order placed successfully")
         return self.error_response("Order Placed Faild")
 
-    def get(self, request, user_id=None, pk=None):
-        """
-        Fetch all orders or orders for a specific user (if user_id is provided).
-        """
-        user_id = request.query_params.get("user_id", None)
+    def _to_int(self, val, default=0):
+        try:
+            return int(val)
+        except Exception:
+            return default
 
-        if user_id:
-            queryset = Order.objects.filter(user_id=user_id)
-        elif pk:
-            queryset = Order.objects.filter(pk=pk)
+    def apply_packing_calculation(self, order_items, basic_data):
+        """
+        Calculate number_of_pic, large_bag_quantity, bag_quantity, and quantity (loose pieces left after full bags).
+        """
+        if order_items.get("message"):
+            return
+
+        packing = self._to_int(basic_data.get("packing", 0))
+        large_bag = self._to_int(basic_data.get("large_bag", 0))
+        order_items["price"] = str(basic_data.get("rate", ""))
+
+        total_units = self._to_int(order_items.get("quantity", 0))
+        order_items["number_of_pic"] = str(total_units)  # total pieces ordered
+
+        # Reset stale quantities
+        order_items.pop("large_bag_quantity", None)
+        order_items.pop("bag_quantity", None)
+
+        if large_bag > 0:
+            # Large bag calculation
+            full_large_bags = total_units // large_bag
+            remainder_units = total_units % large_bag
+
+            order_items["large_bag_quantity"] = str(full_large_bags) if self.is_accepted(full_large_bags) else "0"
+
+            # Small bag calculation
+            if packing > 0:
+                bag_qty = remainder_units // packing
+                leftover_pieces = remainder_units % packing
+                order_items["bag_quantity"] = str(bag_qty)
+                order_items["quantity"] = str(leftover_pieces)  # only loose pieces
+            else:
+                order_items["bag_quantity"] = "0"
+                order_items["quantity"] = str(remainder_units)
+
         else:
-            queryset = Order.objects.all()
+            # No large bag packaging
+            order_items["large_bag_quantity"] = "0"
+            if packing > 0:
+                bag_qty = total_units // packing
+                leftover_pieces = total_units % packing
+                order_items["bag_quantity"] = str(bag_qty)
+                order_items["quantity"] = str(leftover_pieces)
+            else:
+                order_items["bag_quantity"] = "0"
+                order_items["quantity"] = str(total_units)
 
-        queryset = queryset.order_by("-created_at")
-        serializer = OrderSerializer(queryset, many=True)
-        response_data = serializer.data.copy()
 
-        for data in response_data:
-            # Format created_at
-            data["created_at"] = (
-                datetime.fromisoformat(data["created_at"].replace("Z", ""))
+
+    def get(self, request, user_id=None, pk=None):
+        """Fetch all orders or orders for a specific user (if user_id provided)."""
+        queryset = self.get_orders_queryset(request, pk)
+        response_data = self.serialize_orders(queryset)
+
+        for order in response_data:
+            self.format_created_at(order)
+            for order_item in order.get("order_items", []):
+                self.enrich_order_item(order, order_item, request)
+
+        label = "user" if user_id else "all"
+        return self.success_response(f"Orders for {label} fetched successfully", response_data)
+
+    # ---------------- Helper Methods ---------------- #
+
+    def get_orders_queryset(self, request, pk):
+        query_user_id = request.query_params.get("user_id")
+        if query_user_id:
+            return Order.objects.filter(user_id=query_user_id).order_by("-created_at")
+        elif pk:
+            return Order.objects.filter(pk=pk).order_by("-created_at")
+        return Order.objects.all().order_by("-created_at")
+
+    def serialize_orders(self, queryset):
+        return OrderSerializer(queryset, many=True).data.copy()
+
+    def format_created_at(self, order):
+        if not order.get("created_at"):
+            return
+        try:
+            order["created_at"] = (
+                datetime.fromisoformat(order["created_at"].replace("Z", ""))
                 .date()
                 .strftime("%d-%m-%Y")
             )
+        except Exception:
+            pass  # Keep original if parsing fails
 
-            for order_items in data.get("order_items"):
-                item_id = order_items.get("item_id")
-                sub_item = (
-                    Pipe.objects.filter(pk=item_id)
-                    .select_related("product", "parent")
-                    .first()
-                )
+    def enrich_order_item(self, order, order_item, request):
+        sub_item = self.get_sub_item(order_item.get("item_id"))
+        item_basic_data = self.get_item_basic_data(order_item)
 
-                basic_datas = (
-                    PipeDetail.objects.filter(pipe=item_id).values("basic_data").first()
-                )
-                item_basic_data = {}
-                if basic_datas:
-                    for basic_data in basic_datas.get("basic_data"):
-                        if not basic_data.get("id") and basic_data.get("name"):
-                            for datass in basic_data.get("data"):
-                                if order_items.get("basic_data_id") == datass.get("id"):
-                                    item_basic_data = datass
-                                    if datass.get("packing") or datass.get("large_bag"):
-                                        if order_items.get("message"):
-                                            continue
-                                        packing = int(datass.get("packing", 0))
-                                        total_units = int(datass.get("packing", 0)) * int(
-                                            order_items.get("quantity", 0)
-                                        )
-                                        large_bag = safe_int(basic_data.get("large_bag"))
-                                        order_items["price"] = str(basic_data.get("rate", ""))
-                                        order_items["number_of_pic"] = str(total_units)
-                                        if large_bag > 0:
-                                            full_large_bags = total_units // large_bag
-                                            remainder_units = total_units % large_bag
-                                            if self.is_accepted(full_large_bags):
-                                                order_items["large_bag_quantity"] = str(
-                                                    full_large_bags
-                                                )
-                                                if remainder_units > 0 and packing > 0:
-                                                    order_items["bag_quantity"] = str(
-                                                        int(remainder_units / packing)
-                                                    )
-                                                # order_items.pop("quantity")
-                                        else:
-                                            order_items["number_of_pic"] = str(
-                                                total_units
-                                            )
-                                            order_items["bag_quantity"] = str(
-                                                int(order_items.get("quantity", 0))
-                                            )
-                                    else:
-                                        order_items["number_of_pic"] = str(
-                                            order_items.get("quantity", 0)
-                                        )
-                                        order_items["bag_quantity"] = str(
-                                            int(order_items.get("quantity", 0))
-                                        )
-                                    order_items.pop("basic_data_id")
-                                    break
+        if sub_item:
+            order_item.pop("item_id", None)
+            order_item["item"] = self.build_item_data(sub_item, request, item_basic_data)
+            self.apply_discounts(order, order_item, sub_item)
+            self.apply_prices(order_item, sub_item)
 
-                        else:
-                            if order_items.get("basic_data_id") == basic_data.get("id"):
-                                item_basic_data = basic_data
-                                if basic_data.get("packing") or basic_data.get(
-                                    "large_bag"
-                                ):
-                                    if order_items.get("message"):
-                                        continue
-                                    packing = int(basic_data.get("packing", 0))
-                                    total_units = int(
-                                        basic_data.get("packing", 0)
-                                    ) * int(order_items.get("quantity", 0))
-                                    large_bag = safe_int(basic_data.get("large_bag"))
-                                    order_items["price"] = str(basic_data.get("rate", ""))
-                                    order_items["number_of_pic"] = str(total_units)
-                                    if large_bag > 0:
-                                        full_large_bags = total_units // large_bag
-                                        remainder_units = total_units % large_bag
-                                        if self.is_accepted(full_large_bags):
-                                            order_items["large_bag_quantity"] = str(
-                                                full_large_bags
-                                            )
-                                            if remainder_units > 0 and packing > 0:
-                                                order_items["bag_quantity"] = str(
-                                                    int(remainder_units / packing)
-                                                )
-                                            # order_items.pop("quantity")
-                                    else:
-                                        order_items["number_of_pic"] = str(total_units)
-                                        order_items["bag_quantity"] = str(
-                                            int(order_items.get("quantity", 0))
-                                        )
-                                else:
-                                    order_items["number_of_pic"] = str(
-                                        order_items.get("quantity", 0)
-                                    )
-                                    order_items["bag_quantity"] = str(
-                                        int(order_items.get("quantity", 0))
-                                    )
-                                order_items.pop("basic_data_id")
-                                break
+    def get_sub_item(self, item_id):
+        return Pipe.objects.filter(pk=item_id).select_related("product", "parent").first()
 
-                if sub_item:
-                    base_url = request.build_absolute_uri("/").rstrip("/")
-                    image_url = str(sub_item.image) if sub_item.image else None
-                    product = sub_item.product
-                    parent = product.parent if product else None
-                    grandparent = parent.parent if parent else None
+    def get_item_basic_data(self, order_item):
+        basic_datas = PipeDetail.objects.filter(pipe=order_item.get("item_id")).values("basic_data").first()
+        if not basic_datas:
+            return {}
 
-                    names = [
-                        grandparent.name if grandparent else None,
-                        parent.name if parent else None,
-                        product.name if product else None,
-                    ]
+        for basic_data in basic_datas.get("basic_data", []):
+            if not basic_data.get("id") and basic_data.get("name"):
+                for datass in basic_data.get("data", []):
+                    if order_item.get("basic_data_id") == datass.get("id"):
+                        self.apply_packing_calculation(order_item, datass)
+                        order_item.pop("basic_data_id", None)
+                        return datass
+            elif order_item.get("basic_data_id") == basic_data.get("id"):
+                self.apply_packing_calculation(order_item, basic_data)
+                order_item.pop("basic_data_id", None)
+                return basic_data
+        return {}
 
-                    # Keep only the last 2 non-empty names
-                    category_value_name = "   ➤   ".join([n for n in names if n][-2:])
+    def build_item_data(self, sub_item, request, item_basic_data):
+        base_url = request.build_absolute_uri("/").rstrip("/")
+        image_url = str(sub_item.image) if sub_item.image else None
 
-                    order_items.pop("item_id", None)
-                    order_items["item"] = {
-                        "id": sub_item.id,
-                        "name": sub_item.name,
-                        "image": (
-                            base_url + "/media/" + image_url if image_url else None
-                        ),
-                        "category": category_value_name,
-                        "basic_data": item_basic_data,
-                    }
+        product = sub_item.product
+        parent = product.parent if product else None
+        grandparent = parent.parent if parent else None
 
-                    try:
-                        user_discount = UserDiscount.objects.get(
-                            user=data.get("user_data").get("id")
-                        )
-                    except:
-                        user_discount = None
-                    if user_discount:
-                        for discount_data in user_discount.discount_data:
-                            if sub_item.product.parent:
-                                if str(discount_data.get("id")) == str(
-                                    sub_item.product.parent.id
-                                ):
-                                    order_items["discount_percent"] = discount_data.get(
-                                        "discount_percent"
-                                    )
-                                    order_items["discount_type"] = discount_data.get(
-                                        "discount_type"
-                                    )
-                                if sub_item.product.parent.parent:
-                                    if str(discount_data.get("id")) == str(
-                                        sub_item.product.parent.parent.id
-                                    ):
-                                        order_items["discount_percent"] = (
-                                            discount_data.get("discount_percent")
-                                        )
-                                        order_items["discount_type"] = (
-                                            discount_data.get("discount_type")
-                                        )
-                            if str(discount_data.get("id")) == str(sub_item.product.id):
-                                order_items["discount_percent"] = discount_data.get(
-                                    "discount_percent"
-                                )
-                                order_items["discount_type"] = discount_data.get(
-                                    "discount_type"
-                                )
-                        for price_data in user_discount.price_data:
-                            basic_data_list = price_data.get("basic_data", [])
-                            price_data_id = str(price_data.get("id"))
-                            for basic_data in basic_data_list:
-                                basic_price = basic_data.get("price")
-                                # Match with parent
-                                parent = sub_item.product.parent
-                                if parent and price_data_id == str(parent.id):
-                                    order_items["price"] = basic_price
-                                # Match with grandparent
-                                grandparent = parent.parent if parent else None
-                                if grandparent and price_data_id == str(grandparent.id):
-                                    order_items["price"] = basic_price
-                                # Match with product
-                                if price_data_id == str(sub_item.product.id):
-                                    if basic_data.get("name") and isinstance(basic_data.get("data"), list):
-                                        for bd in basic_data["data"]:
-                                            order_items["price"] = bd.get("price")
-                                    else:
-                                        order_items["price"] = basic_price
-                                # Match with sub_item
-                                if price_data_id == str(sub_item.id):
-                                    if basic_data.get("name") and isinstance(basic_data.get("data"), list):
-                                        for bd in basic_data["data"]:
-                                            bd_id = str(bd.get("id"))
-                                            item_bd_id = str(order_items.get("item", {}).get("basic_data", {}).get("id"))
-                                            if bd_id == item_bd_id:
-                                                order_items["price"] = bd.get("price")
-                                    else:
-                                        order_items["price"] = basic_price
+        names = [grandparent.name if grandparent else None,
+                parent.name if parent else None,
+                product.name if product else None]
+        category_value_name = "   ➤   ".join([n for n in names if n][-2:])
 
+        return {
+            "id": sub_item.id,
+            "name": sub_item.name,
+            "image": (base_url + "/media/" + image_url) if image_url else None,
+            "category": category_value_name,
+            "basic_data": item_basic_data,
+        }
 
-        label = "user" if user_id else "all"
-        return self.success_response(
-            f"Orders for {label} fetched successfully", response_data
-        )
+    def apply_discounts(self, order, order_item, sub_item):
+        try:
+            user_discount = UserDiscount.objects.get(user=order.get("user_data").get("id"))
+        except Exception:
+            return
+
+        for discount_data in user_discount.discount_data:
+            self.match_discount(order_item, discount_data, sub_item)
+
+    def match_discount(self, order_item, discount_data, sub_item):
+        ids_to_check = [
+            sub_item.product.parent.id if sub_item.product.parent else None,
+            sub_item.product.parent.parent.id if sub_item.product.parent and sub_item.product.parent.parent else None,
+            sub_item.product.id
+        ]
+        if str(discount_data.get("id")) in map(str, filter(None, ids_to_check)):
+            order_item["discount_percent"] = discount_data.get("discount_percent")
+            order_item["discount_type"] = discount_data.get("discount_type")
+
+    def apply_prices(self, order_item, sub_item):
+        try:
+            user_discount = UserDiscount.objects.get(user=order_item.get("user_id"))
+        except Exception:
+            return
+
+        for price_data in user_discount.price_data:
+            self.match_price(order_item, price_data, sub_item)
+
+    def match_price(self, order_item, price_data, sub_item):
+        price_data_id = str(price_data.get("id"))
+        for basic_data in price_data.get("basic_data", []):
+            basic_price = basic_data.get("price")
+            if self.price_matches(price_data_id, sub_item, basic_data, order_item):
+                order_item["price"] = basic_price
+
+    def price_matches(self, price_data_id, sub_item, basic_data, order_item):
+        parent = sub_item.product.parent
+        grandparent = parent.parent if parent else None
+        if price_data_id in [str(pid) for pid in [parent.id if parent else None, grandparent.id if grandparent else None, sub_item.product.id, sub_item.id]]:
+            if basic_data.get("name") and isinstance(basic_data.get("data"), list):
+                for bd in basic_data["data"]:
+                    if str(bd.get("id")) == str(order_item.get("item", {}).get("basic_data", {}).get("id")):
+                        order_item["price"] = bd.get("price")
+                        return True
+            else:
+                return True
+        return False
 
     def put(self, request, pk):
 

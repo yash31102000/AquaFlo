@@ -19,7 +19,7 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=ORDER_STATUS, default="PENDING")
     address = models.JSONField()
     address_link = models.CharField(max_length=250, null=False, blank=False)
-    cancellation_reason = models.CharField(max_length=250, null=True, blank=True)
+    cancellation_reason = models.CharField(max_length=250, blank=True)
     old_order = models.ForeignKey(
         "self",
         on_delete=models.CASCADE,

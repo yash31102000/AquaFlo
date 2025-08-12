@@ -1,12 +1,13 @@
 import json
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from AquaFlo.Utils.permissions import CustomAPIPermissions
-from .serializers import *
+from .serializers import RegisterSerializer, LoginSerializer, UserDiscountSerializer, ChangePasswordSerializer
 from rest_framework import generics
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import check_password
 from django.conf import settings
+from .models import UserModel  # Correct relative import for UserModel
 
 
 # Create your views here.
@@ -30,7 +31,7 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
             Send a welcome email to the newly registered user.
             """
             subject = "Registration Successful"
-            message = f"Hello,\n\nYou have been successfully registered on our platform.\n\nThanks,\nThe Team"
+            message = "Hello,\n\nYou have been successfully registered on our platform.\n\nThanks,\nThe Team"
             from_email = (
                 settings.EMAIL_HOST_USER
             )  # You can use your default email or configure one in settings
@@ -137,11 +138,9 @@ class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
 
 
 class AddorRemoveAddressAPI(DefaultResponseMixin, generics.GenericAPIView):
-    # permission_classes = [IsAuthenticated]
 
     def post(self, request):
         user_id = request.data.get("user_id", request.user.id)
-        # user_id = request.user.id
         addresses = request.data.get("addresses")
 
         get_address = UserModel.objects.filter(id=user_id).first()
@@ -158,9 +157,6 @@ class AddorRemoveAddressAPI(DefaultResponseMixin, generics.GenericAPIView):
 
 
 class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
-    # permission_classes = [CustomAPIPermissions]
-    # public_methods = ["GET"]
-    # admin_only_methods = ["POST", "PUT", "DELETE"]
     def post(self, request):
         data = request.data.copy()
 
