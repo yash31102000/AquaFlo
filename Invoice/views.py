@@ -198,9 +198,8 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 if order_item.get("discount_type") == "%":
                     discount_percent = order_item.get("discount_percent")
                     item_total = (
-                        int(order_item.get("quantity", 0))
-                        * int(order_item.get("price", 0))
-                        if order_item.get("price")
+                        float(order_item.get("quantity", 0)) * float(order_item.get("price", 0))
+                        if order_item.get("price") is not None
                         else 0
                     )
                     discount_amount = item_total * int(discount_percent) / 100
