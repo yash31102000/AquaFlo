@@ -54,7 +54,6 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
         order_items["price"] = str(basic_data.get("rate", ""))
 
         total_units = self._to_int(order_items.get("quantity", 0))
-        order_items["number_of_pic"] = str(total_units)  # total pieces ordered
 
         # Reset stale quantities
         order_items.pop("large_bag_quantity", None)
@@ -72,10 +71,10 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 bag_qty = remainder_units // packing
                 leftover_pieces = remainder_units % packing
                 order_items["bag_quantity"] = str(bag_qty)
-                order_items["quantity"] = str(leftover_pieces)  # only loose pieces
+                order_items["number_of_pic"] = str(leftover_pieces)  # only loose pieces
             else:
                 order_items["bag_quantity"] = "0"
-                order_items["quantity"] = str(remainder_units)
+                order_items["number_of_pic"] = str(remainder_units)
 
         else:
             # No large bag packaging
@@ -84,10 +83,10 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 bag_qty = total_units // packing
                 leftover_pieces = total_units % packing
                 order_items["bag_quantity"] = str(bag_qty)
-                order_items["quantity"] = str(leftover_pieces)
+                order_items["number_of_pic"] = str(leftover_pieces)
             else:
                 order_items["bag_quantity"] = "0"
-                order_items["quantity"] = str(total_units)
+                order_items["number_of_pic"] = str(total_units)
 
 
 
