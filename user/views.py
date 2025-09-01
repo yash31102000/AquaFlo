@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import check_password
 from django.conf import settings
-from .models import UserModel  # Correct relative import for UserModel
+from .models import UserDiscount, UserModel
 
 
 # Create your views here.
@@ -48,7 +48,7 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
         all_user = (
             UserModel.objects.all()
             .values(
-                "id", "phone_number", "first_name", "last_name", "email", "addresses"
+                "id", "phone_number", "first_name", "last_name", "email", "addresses","is_active", "role", "role_flag"
             )
             .filter(is_deleted=False, is_superuser=False)
         )
