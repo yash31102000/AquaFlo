@@ -91,6 +91,13 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
         user.save()
         return self.success_response("User deleted successfully.")
 
+class DeletedUserList(DefaultResponseMixin, generics.GenericAPIView):
+    def get(self, request):
+        deleted_users = (
+            UserModel.objects.filter(is_deleted=True)
+            .values("id", "phone_number", "first_name", "last_name", "email", "addresses","is_active", "role", "role_flag")
+        )
+        return self.success_response("Deleted users fetched successfully", deleted_users)
 
 class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
     """
