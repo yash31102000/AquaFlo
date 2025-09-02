@@ -98,6 +98,20 @@ class DeletedUserList(DefaultResponseMixin, generics.GenericAPIView):
             .values("id", "phone_number", "first_name", "last_name", "email", "addresses","is_active", "role", "role_flag")
         )
         return self.success_response("Deleted users fetched successfully", deleted_users)
+    
+    def put(self, request):
+        user_id = request.data.get("user_id")
+        if not user_id:
+            return self.error_response("User ID is required")
+
+        try:
+            user = UserModel.objects.get(id=user_id, is_deleted=True)
+        except UserModel.DoesNotExist:
+            return self.error_response("Deleted user not found.")
+
+        user.is_deleted = False
+        user.save()
+        return self.success_response("User restored successfully.")
 
 class LoginAPI(DefaultResponseMixin, generics.GenericAPIView):
     """
