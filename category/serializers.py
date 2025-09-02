@@ -17,6 +17,7 @@ class SimpleProductSerializer(serializers.ModelSerializer):
         ]
 
 
+
 class RecursivePipeSerializer(serializers.ModelSerializer):
     """
     Recursive serializer that allows for nested sub-categories of unlimited depth.
@@ -31,49 +32,55 @@ class RecursivePipeSerializer(serializers.ModelSerializer):
 
     def get_sub_categories(self, obj):
         """
-        Recursively serialize sub-categories ordered
+        Recursively serialize non-deleted sub-categories ordered by name
         """
-        sub_categories = obj.sub_categories.all().order_by("name")
+        sub_categories = (
+            obj.sub_categories.filter(is_deleted=False).order_by("name")
+        )
 
-        # If there are no sub-categories, return an empty list
-        if not sub_categories:
+        if not sub_categories.exists():
             return []
 
-        # Recursively serialize sub-categories
         return RecursivePipeSerializer(
             sub_categories, many=True, context=self.context
         ).data
 
     def get_product(self, obj):
         """
-        Get products that reference this pipe as their parent product, ordered by.
+        Get products that reference this pipe as their parent product,
+        excluding soft-deleted ones, ordered by name.
         """
-        # Find all pipes that reference this one as their product, ordered by
-        related_products = Pipe.objects.filter(product=obj).order_by("name")
+        # Only fetch non-deleted related products
+        related_products = Pipe.objects.filter(
+            product=obj, is_deleted=False
+        ).order_by("name")
 
-        if not related_products:
+        if not related_products.exists():
             return []
 
-        # Create a list to store serialized products with basic_data
         serialized_products = []
 
-        # Process each product individually to add basic_data
         for product in related_products:
-            # Serialize the product first
+            # Serialize product
             serialized_product = SimpleProductSerializer(
                 product, context=self.context
             ).data
 
-            # Get basic_data for this product and add it to the serialized data
+            # Fetch basic_data, ignoring deleted details (if you add soft delete on PipeDetail too)
             basic_data_obj = (
-                PipeDetail.objects.filter(pipe=product.id).values("basic_data").first()
+                PipeDetail.objects.filter(pipe=product.id)
+                .values("basic_data")
+                .first()
             )
             if basic_data_obj:
                 basic_data_list = basic_data_obj["basic_data"]
+
+                # Replace None/"None" with "-"
                 for item in basic_data_list:
                     for key, value in item.items():
                         if value in ["None", None]:
                             item[key] = "-"
+
                 serialized_product["basic_data"] = basic_data_list
 
             serialized_products.append(serialized_product)

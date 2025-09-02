@@ -7,7 +7,6 @@ from user.models import UserDiscount
 from .serializers import *
 from order.models import Order
 from collections import defaultdict
-from django.db import transaction
 
 
 class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
@@ -143,7 +142,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                     PipeDetail.objects.update_or_create(
                         # pipe=parent_id if parent_id else product,
                         pipe=pipe,
-                        defaults = {"basic_data": basic_data_parsed}
+                        defaults={"basic_data": basic_data_parsed},
                     )
 
                     if is_update:
@@ -211,7 +210,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         if pk:
             try:
                 pipe = (
-                    Pipe.objects.filter(pk=pk, product__isnull=False)
+                    Pipe.objects.filter(pk=pk, product__isnull=False, is_deleted=False)
                     .select_related("product", "parent")
                     .first()
                 )
@@ -241,9 +240,7 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 return self.error_response(f"Product with ID {pk} not found")
 
         # If no pk, return the list of pipes
-        queryset = Pipe.objects.filter(
-            parent__isnull=True, product__isnull=True
-        )
+        queryset = Pipe.objects.filter(parent__isnull=True, product__isnull=True,is_deleted=False)
         name_filter = request.query_params.get("name")
         if name_filter:
             queryset = queryset.filter(name__icontains=name_filter)
@@ -279,13 +276,9 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
         for sub_category in pipe.sub_categories.all():
             self._recursive_delete(sub_category)
 
-        # Delete the image file from the storage if it exists
-        if pipe.image and pipe.image.name:
-            if os.path.isfile(pipe.image.path):  # This ensures the file exists before deleting
-                os.remove(pipe.image.path)
-
         # Then delete the pipe itself
-        pipe.delete()
+        pipe.is_deleted = True
+        pipe.save()
 
     def put(self, request, pk=None, *args, **kwargs):
         try:

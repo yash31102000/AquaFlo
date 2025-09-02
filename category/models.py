@@ -27,7 +27,7 @@ class Pipe(models.Model):
         null=True,
     )
     marked_as_favorite = models.BooleanField(default=False)
-
+    is_deleted = models.BooleanField(default=False)
     def __str__(self):
         return self.name
 
