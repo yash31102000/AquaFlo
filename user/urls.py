@@ -19,5 +19,5 @@ urlpatterns = [
     path("user-discount/<int:pk>/", UserDiscountViewSet.as_view()),
     path("user-price/", UserPriceViewSet.as_view()),
     path("change-password/", ChangePasswordView.as_view()),
-    path("delted-usere-list/", DeletedUserList.as_view()),
+    path("delted-user-list/", DeletedUserList.as_view()),
 ]
