@@ -88,7 +88,12 @@ class OrderViewSet(DefaultResponseMixin, generics.GenericAPIView):
                 order_items["bag_quantity"] = "0"
                 order_items["number_of_pic"] = str(total_units)
 
-
+    def delete(self, request, pk):
+        order = Order.objects.filter(id=pk).first()
+        if not order:
+            return self.error_response("Order not found")
+        order.delete()
+        return self.success_response("Order deleted successfully")
 
     def get(self, request, user_id=None, pk=None):
         """Fetch all orders or orders for a specific user (if user_id provided)."""
