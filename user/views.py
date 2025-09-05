@@ -17,7 +17,7 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
     """
 
     serializer_class = RegisterSerializer
-    permission_classes = [CustomAPIPermissions]
+    # permission_classes = [CustomAPIPermissions]
 
     def post(self, request):
         serializer = RegisterSerializer(
