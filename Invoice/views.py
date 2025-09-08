@@ -201,6 +201,8 @@ class InvoiceViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         if order_item.get("price") is not None
                         else 0
                     )
+
+                    discount_percent = int(discount_percent) if discount_percent.strip() else 0
                     discount_amount = item_total * int(discount_percent) / 100
                     final_price = int(item_total - discount_amount)
                 elif order_item.get("discount_type") == "₹":
