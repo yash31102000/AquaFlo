@@ -1,6 +1,6 @@
 import json
-import os
 from rest_framework import generics
+from django.db import models
 from AquaFlo.Utils.default_response_mixin import DefaultResponseMixin
 from AquaFlo.Utils.permissions import CustomAPIPermissions
 from user.models import UserDiscount

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import *
+from .models import Pipe, PipeDetail, BestSeller
 
 
 class SimpleProductSerializer(serializers.ModelSerializer):
@@ -76,16 +76,19 @@ class RecursivePipeSerializer(serializers.ModelSerializer):
                 basic_data_list = basic_data_obj["basic_data"]
 
                 # Replace None/"None" with "-"
-                for item in basic_data_list:
-                    for key, value in item.items():
-                        if value in ["None", None]:
-                            item[key] = "-"
-
-                serialized_product["basic_data"] = basic_data_list
+                self.basic_data_list(serialized_product, basic_data_list)
 
             serialized_products.append(serialized_product)
 
         return serialized_products
+
+    def basic_data_list(self, serialized_product, basic_data_list):
+        for item in basic_data_list:
+            for key, value in item.items():
+                if value in ["None", None]:
+                    item[key] = "-"
+
+        serialized_product["basic_data"] = basic_data_list
 
 
 class PipeSerializer(serializers.ModelSerializer):
