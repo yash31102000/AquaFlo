@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import check_password
 from django.conf import settings
 from .models import UserDiscount, UserModel
 
+USERIDREQ = "User ID is required"
 
 # Create your views here.
 class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
@@ -17,7 +18,6 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
     """
 
     serializer_class = RegisterSerializer
-    # permission_classes = [CustomAPIPermissions]
 
     def post(self, request):
         serializer = RegisterSerializer(
@@ -60,7 +60,7 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
 
     def put(self, request, user_id=None):
         if user_id is None:
-            return self.error_response("User ID is required")
+            return self.error_response(USERIDREQ)
         user = UserModel.objects.get(id=user_id, is_deleted=False)
         
         if "role_flag" in request.data and not request.user.is_superuser:
@@ -77,7 +77,7 @@ class RegisterAPI(DefaultResponseMixin, generics.GenericAPIView):
         Delete a user by ID
         """
         if user_id is None:
-            return self.error_response("User ID is required")
+            return self.error_response(USERIDREQ)
 
         try:
             user = UserModel.objects.get(id=user_id, is_deleted=False)
@@ -102,7 +102,7 @@ class DeletedUserList(DefaultResponseMixin, generics.GenericAPIView):
     def put(self, request):
         user_id = request.data.get("user_id")
         if not user_id:
-            return self.error_response("User ID is required")
+            return self.error_response(USERIDREQ)
 
         try:
             user = UserModel.objects.get(id=user_id, is_deleted=True)
@@ -200,16 +200,7 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         seen.add(item_str)
                         unique_data.append(item)
                 user_discounts.price_data = unique_data
-            if data.get("discount_data"):
-                new_list = user_discounts.discount_data+data.get("discount_data")
-                unique_data = []
-                seen = set()
-                for item in new_list:
-                    item_str = json.dumps(item, sort_keys=True)
-                    if item_str not in seen:
-                        seen.add(item_str)
-                        unique_data.append(item)
-                user_discounts.discount_data = unique_data
+            self.discount_data(data, user_discounts)
             user_discounts.save()
             return self.success_response("UserDiscount placed successfully")
         serializer = UserDiscountSerializer(data=data)
@@ -217,6 +208,18 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
             serializer.save()
             return self.success_response("UserDiscount placed successfully")
         return self.error_response("UserDiscount placement failed")
+
+    def discount_data(self, data, user_discounts):
+        if data.get("discount_data"):
+            new_list = user_discounts.discount_data+data.get("discount_data")
+            unique_data = []
+            seen = set()
+            for item in new_list:
+                item_str = json.dumps(item, sort_keys=True)
+                if item_str not in seen:
+                    seen.add(item_str)
+                    unique_data.append(item)
+            user_discounts.discount_data = unique_data
 
     def get(self, request):
         user = request.user
@@ -244,22 +247,7 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
         # Merge discount_data
         new_discounts = request.data.get("discount_data")
-        if new_discounts is not None:
-            if not isinstance(user_discount.discount_data, list):
-                user_discount.discount_data = []
-
-            existing_discounts = {
-                item["id"]: item for item in user_discount.discount_data if "id" in item
-            }
-
-            for new_item in new_discounts:
-                item_id = new_item.get("id")
-                if item_id in existing_discounts:
-                    existing_discounts[item_id].update(new_item)
-                else:
-                    existing_discounts[item_id] = new_item
-
-            user_discount.discount_data = list(existing_discounts.values())
+        self.new_discount(user_discount, new_discounts)
 
         # Merge price_data
         new_prices = request.data.get("price_data")
@@ -282,6 +270,24 @@ class UserDiscountViewSet(DefaultResponseMixin, generics.GenericAPIView):
 
         user_discount.save()
         return self.success_response("UserDiscount updated successfully")
+
+    def new_discount(self, user_discount, new_discounts):
+        if new_discounts is not None:
+            if not isinstance(user_discount.discount_data, list):
+                user_discount.discount_data = []
+
+            existing_discounts = {
+                item["id"]: item for item in user_discount.discount_data if "id" in item
+            }
+
+            for new_item in new_discounts:
+                item_id = new_item.get("id")
+                if item_id in existing_discounts:
+                    existing_discounts[item_id].update(new_item)
+                else:
+                    existing_discounts[item_id] = new_item
+
+            user_discount.discount_data = list(existing_discounts.values())
 
     def delete(self, request, pk):
         user_discount = UserDiscount.objects.filter(id=pk, user=request.user).first()
