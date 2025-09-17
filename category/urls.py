@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import *
+from .views import PipeViewSet, GetPipeViewset, BestSellerViewset, GetBestSellerViewset, GetMainCategoryViewset, MarkedAsfavoriteViewset, PipeDetailViewset
 
 urlpatterns = [
     path("pipes/", PipeViewSet.as_view()),
@@ -12,6 +12,4 @@ urlpatterns = [
     path("markasfavorite/", MarkedAsfavoriteViewset.as_view()),
     path("pipe-detail/", PipeDetailViewset.as_view()),
     path("pipe-detail/<int:pk>/", PipeDetailViewset.as_view()),
-    path('pipe-key-template/', PipeKeyTemplateViewset.as_view()),
-    path('pipe-key-template/<int:pk>/', PipeKeyTemplateViewset.as_view()),
 ]

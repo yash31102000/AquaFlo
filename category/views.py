@@ -145,34 +145,10 @@ class PipeViewSet(DefaultResponseMixin, generics.GenericAPIView):
                         defaults={"basic_data": basic_data_parsed},
                     )
 
-                    if is_update:
-                        if pipe.parent:
-                            if PipeKeyTemplate.objects.filter(
-                                pipe=pipe.parent.id
-                            ).exists():
-                                pipe = pipe.parent
-                        if pipe.product:
-                            print(pipe.product, "pipe.product")
-                            if PipeKeyTemplate.objects.filter(
-                                pipe=pipe.product.id
-                            ).exists():
-                                pipe = pipe.product
-                            elif PipeKeyTemplate.objects.filter(
-                                pipe=pipe.product.parent.id
-                            ).exists():
-                                pipe = pipe.product.parent
-                    else:
-                        if pipe.parent:
-                            pipe = pipe.parent
-                        elif pipe.product:
-                            pipe = pipe.product
-
-                    # Create or update PipeKeyTemplate
-                    PipeKeyTemplate.objects.update_or_create(
-                        pipe=pipe,
-                        defaults={"keys": self.extract_keys(basic_data)},
-                    )
-
+                    if pipe.parent:
+                        pipe = pipe.parent
+                    elif pipe.product:
+                        pipe = pipe.product
                     # On update: also update marked_as_favorite if present
                     if is_update and "marked_as_favorite" in request.data:
                         pipe.marked_as_favorite = request.data.get("marked_as_favorite")
@@ -525,71 +501,3 @@ class PipeDetailViewset(DefaultResponseMixin, generics.GenericAPIView):
             serializer.save()
             return self.success_response("Pipe Detail Update successfully")
         return self.error_response("PipeDetail Update Faild")
-
-
-class PipeKeyTemplateViewset(DefaultResponseMixin, generics.GenericAPIView):
-    serializer_class = PipeKeyTemplateSerializer
-    queryset = PipeKeyTemplate.objects.all()
-
-    def get(self, request, *args, **kwargs):
-        pipe_id = request.query_params.get("pipe_id")
-
-        if pipe_id:
-            queryset = PipeKeyTemplate.objects.filter(pipe__id=pipe_id)
-            if not queryset.exists():
-                return self.error_response(
-                    "No Pipe Key Template found for given pipe_id"
-                )
-            serializer = self.get_serializer(queryset, many=True)
-            return self.success_response(
-                "Pipe Key Templates for given pipe_id retrieved", serializer.data
-            )
-        else:
-            queryset = PipeKeyTemplate.objects.all()
-            serializer = self.get_serializer(queryset, many=True)
-            return self.success_response(
-                "All Pipe Key Templates retrieved successfully", serializer.data
-            )
-
-    def post(self, request, *args, **kwargs):
-        pipe_id = request.data.get("pipe")
-
-        if not pipe_id:
-            return self.error_response("pipe ID is required")
-
-        # Check if pipe exists and is not a product
-        try:
-            pipe_instance = Pipe.objects.get(id=pipe_id)
-            if pipe_instance.product:
-                return self.error_response("Cannot create template for a product pipe")
-        except Pipe.DoesNotExist:
-            return self.error_response("Pipe not found")
-
-        # Proceed with creation if valid
-        serializer = self.get_serializer(data=request.data)
-        try:
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                return self.success_response("Pipe Key Template created successfully")
-        except Exception as e:
-            return self.error_response(f"Pipe Key Template creation failed: {str(e)}")
-
-    def put(self, request, pk):
-        try:
-            instance = PipeKeyTemplate.objects.get(pk=pk)
-        except PipeKeyTemplate.DoesNotExist:
-            return self.error_response("Pipe Key Template not found")
-
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return self.success_response("Pipe Key Template updated successfully")
-        return self.error_response("Pipe Key Template update failed")
-
-    def delete(self, request, pk):
-        try:
-            instance = PipeKeyTemplate.objects.get(pk=pk)
-            instance.delete()
-            return self.success_response("Pipe Key Template deleted successfully")
-        except PipeKeyTemplate.DoesNotExist:
-            return self.error_response("Pipe Key Template not found")
