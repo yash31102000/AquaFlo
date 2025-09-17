@@ -22,15 +22,17 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
+APP3_PREFIX = "app3/"
+
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("app3/", include("user.urls")),
+    path(APP3_PREFIX, include("user.urls")),
     path("token/refresh/", TokenRefreshView.as_view()),
-    path("app3/", include("category.urls")),
-    path("app3/", include("banner.urls")),
-    path("app3/", include("order.urls")),
-    path("app3/", include("Invoice.urls")),
-    path("app3/", include("stocks.urls")),
+    path(APP3_PREFIX, include("category.urls")),
+    path(APP3_PREFIX, include("banner.urls")),
+    path(APP3_PREFIX, include("order.urls")),
+    path(APP3_PREFIX, include("Invoice.urls")),
+    path(APP3_PREFIX, include("stocks.urls")),
 ]
 
 if settings.DEBUG:
