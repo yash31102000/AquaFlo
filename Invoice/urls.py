@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import *
+from .views import InvoiceViewSet, TotalTransactionViewSet
 
 urlpatterns = [
     path("invoice/", InvoiceViewSet.as_view()),
