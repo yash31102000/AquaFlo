@@ -111,7 +111,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "aquaflo_prod",
         "USER": "aquaflo",
-        "PASSWORD": "AquaFlo@999",
+        "PASSWORD": "aquaflo2025",
         "HOST": "178.16.139.235",
         "PORT": "5432",
     }
