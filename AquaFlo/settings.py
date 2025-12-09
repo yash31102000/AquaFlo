@@ -106,13 +106,20 @@ WSGI_APPLICATION = "AquaFlo.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": "db.sqlite3",
+#     }
+# }
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "aquaflo_prod",
-        "USER": "aquaflo",
-        "PASSWORD": "aquaflo2025",
-        "HOST": "178.16.139.235",
+        "NAME": "aqua-test",
+        "USER": "postgres",
+        "PASSWORD": "evenmore@1234",
+        "HOST": "localhost",
         "PORT": "5432",
     }
 }
@@ -202,5 +209,3 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "yash31102000.s@gmail.com"
 EMAIL_HOST_PASSWORD = "dkjpwkdhlsvuirfm"
-
-GST_API_KEY = "MzIxNDU2OTg3MDMyNzY2MzQ2ODA"

@@ -27,6 +27,8 @@ class BannerViewSet(DefaultResponseMixin, generics.GenericAPIView):
         """
         Retrieve a list of all banners
         """
+        if not self.request.user.is_authenticated:
+            return self.error_response("Not authenticated user.")
         if self.request.user.is_deleted:
             return self.error_response("User was not found, please contact Admin")
         if self.request.user.is_superuser:

@@ -1,0 +1,190 @@
+@import "tailwindcss";
+
+body {
+    background-color: #F5F5F5; 
+}
+
+
+/* Custom gradient for backgorund & text */
+.custom-gradient {
+    background: #13609b;
+    color: white !important;
+}
+
+.custom-gradient-1 {
+    background: linear-gradient(to bottom, #8EC5FC, #E0C3FC);
+}
+
+.custom-text-gradient {
+    background: linear-gradient(to right, #559de5, #b987e8);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
+/* Custom sweetalert input & label */
+.custom-swal-div {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px;
+}
+.custom-swal-input-label {
+    margin-left: 35px !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    text-align: left !important;
+}
+
+.custom-swal-label {
+    display: block;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 10px;
+    color: #333;
+}
+
+.custom-swal-input {
+    width: 100% !important;
+    margin: 8px 0px !important;
+    padding: 8px;
+    font-size: 18px;
+    border: 1px solid #D1D5DB  !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-radius: 5px;
+}
+
+.custom-swal-input:focus {
+    border-color: #13609b !important;
+}
+
+.custom-swal-exchange-title p {
+    text-align: center !important;
+}
+
+.custom-swal-order-input, 
+.custom-swal-exchange-input {
+    font-size: 18px;
+    border: 1px solid #D1D5DB  !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-radius: 5px;
+}
+
+.custom-swal-order-input:focus,
+.custom-swal-exchange-input:focus {
+    border-color: #13609b !important;
+}
+
+.custom-swal-confirm-order-input {
+    margin-top: 8px !important;
+    font-size: 18px;
+    border: 1px solid #D1D5DB  !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-radius: 5px;
+}
+
+.custom-swal-table-input {
+    width: 100% !important;
+    margin: 0px !important;
+    padding: 3px;
+    font-size: 18px;
+    border: 1px solid #D1D5DB  !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-radius: 5px;
+}
+
+.custom-swal-table-input:focus {
+    border-color: #13609b !important;
+}
+
+.custom-swal-class-product {
+    width: 50%;
+}
+
+
+/* Customize Thin Scrollbar */
+.thin-scrollbar {
+    scrollbar-width: thin;              /* Firefox */
+    scrollbar-color: #cbd5e0 transparent; /* optional: thumb and track colors */
+}
+  
+.thin-scrollbar::-webkit-scrollbar {
+    height: 6px;                        /* horizontal scrollbar height */
+}
+  
+.thin-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #cbd5e0;         /* scrollbar thumb color */
+    border-radius: 10px;
+}
+  
+.thin-scrollbar::-webkit-scrollbar-track {
+    background: transparent;           /* scrollbar track */
+}
+  
+/* Custom Increase & Decrease Button */
+.custom-swal-increase-decrease-btn {
+    margin: 8px 0px !important;
+    background-color: #13609b;
+    font-weight: bold;
+}
+
+
+/* Custom Switch For Pop-UP */
+.switch input[type="checkbox"] {
+    width: 44px;
+    height: 24px;
+    appearance: none;
+    background: #ccc;
+    border-radius: 12px;
+    position: relative;
+    outline: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.switch input[type="checkbox"]:checked {
+    background: #00c951;
+}
+
+.switch input[type="checkbox"]::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 4px;
+    left: 7px;
+    transition: transform 0.3s;
+}
+
+.switch input[type="checkbox"]:checked::before {
+    transform: translateX(14px);
+}
+
+
+/* Hide Arrow Button Of Increase-Decrease In Number Input Field */
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.no-spinner {
+    -moz-appearance: textfield;
+}
+
+
+/* hide calender icon  */
+/* input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    cursor: pointer;
+}
+
+input[type="date"] {
+    -moz-appearance: textfield;
+  } */
