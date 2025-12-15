@@ -123,6 +123,16 @@ DATABASES = {
         "PORT": "5432",
     }
 }
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "aqua-test",
+#         "USER": "postgres",
+#         "PASSWORD": "evenmore@1234",
+#         "HOST": "localhost",
+#         "PORT": "5432",
+#     }
+# }
 
 
 # Password validation
