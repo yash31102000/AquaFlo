@@ -13,7 +13,7 @@ DB_CONFIG = {
 MEDIA_DIR = "C:/Users/Admin/Desktop/AquaFlo/media"
 
 VALID_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
-DELETE_UNUSED_IMAGES = True
+DELETE_UNUSED_IMAGES = False
 # =========================================
 
 
